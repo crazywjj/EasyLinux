@@ -1,16 +1,25 @@
 # YUM仓库配置与使用
 
-## 应用场景
+# 1.1 应用场景
 
 在项目实施过程中，很多实施单位存在没有外网的情况。此时，在服务器上直接使用Yum命令根本无法使用，为了方便在本地搭建环境，为了方便快捷安装软件依赖包，我们采用临时解决方案进行本地Yum仓库搭建，不但可以供搭建机器使用，更可以供整个服务器群使用。
 
 
 
-## yum仓库搭建
+# 1.2 环境介绍
 
-### 服务端搭建
+| 主机名 | 角色   | 系统      | ip地址    | 备注 |
+| ------ | ------ | --------- | --------- | ---- |
+| c701   | 服务端 | CentOS7.7 | 10.0.0.41 |      |
+| c702   | 客户端 | CentOS7.7 | 10.0.0.42 |      |
 
-**1.1 修改yum配置文件**
+
+
+# 1.3 YUM仓库搭建
+
+## 1.3.1 服务端搭建
+
+**1、修改yum配置文件**
 
 yum下载软件不清空
 
@@ -18,25 +27,21 @@ yum下载软件不清空
 sed -i 's#keepcache=0#keepcache=1#g' /etc/yum.conf
 ```
 
-
-
-**1.2 创建目录用来做 YUM 仓库的使用**
+**2、创建目录用来做 YUM 仓库的使用**
 
 ```shell
 mkdir -p /yum/centos7
 ```
 
-
-
-**1.3 安装 createrepo 软件，用于生成 yum 仓库数据库的软件**
+**3、安装 createrepo 软件，用于生成 yum 仓库数据库的软件**
 
 ```shell
 yum -y install createrepo   yum-utils 
 ```
 
+由于没有外网，也可以将需要软件的rpm包进行上传安装。
 
-
-**1.4 初始化repodata索引文件**
+**4、初始化repodata索引文件**
 
 ```shell
 cd /yum/centos7
@@ -48,9 +53,7 @@ yumdownloader tree
 createrepo -pdo /yum/centos7/ /yum/centos7/
 ```
 
-
-
-**1.5提供yum服务**
+**5、提供yum服务**
 
 可以用Apache或nginx提供web服务，但用Python的http模块更简单，适用于内网环境
 
@@ -61,9 +64,7 @@ python -m SimpleHTTPServer 81 &>/dev/null &
 
 可以通过浏览器输入本机IP查看: 如http://10.0.0.41:81/
 
-
-
-**1.6添加新的rpm包**
+**6、添加新的rpm包**
 
 ```shell
 # 只下载软件不安装
@@ -75,10 +76,10 @@ createrepo --update /yum/centos7/
 
 
 
-### 客户端配置
+## 1.3.2 客户端配置
 
 ```shell
-mv /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.ori
+mv /etc/yum.repos.d/epel.repo{,.bak}
 cat >/etc/yum.repos.d/centos7.repo<<EOF
 [centos7]
 name=Server
@@ -100,30 +101,32 @@ yum --enablerepo=centos7 --disablerepo=base,extras,updates,epel list
 sed -i -e '19a enabled=0' -e '29a enabled=0' -e '39a enabled=0' /etc/yum.repos.d/CentOS-Base.repo
 ```
 
-### 测试下载
+
+
+## 1.3.3 测试下载
 
 注释`/etc/resolv.conf`
 
 ```bash
-[root@ c7-42 yum.repos.d]# cat /etc/resolv.conf
+[root@ c702 yum.repos.d]# cat /etc/resolv.conf
 #nameserver 223.5.5.5
 #nameserver 223.6.6.6
 
-[root@ c7-42 yum.repos.d]# ping qq.com
+[root@ c702 yum.repos.d]# ping qq.com
 ping: qq.com: Name or service not known
 ```
 
 服务端安装nginx或者找nginx相关rpm
 
 ```
-[root@ c7-41 centos7]# yum -y install nginx
+[root@ c701 centos7]# yum -y install nginx
 ```
 
 找到nginx所有的相关rpm
 
 ```bash
-[root@ c7-41 7]# cd /var/cache/yum/x86_64/7/
-[root@ c7-41 7]# find . -name '*.rpm'
+[root@ c701 7]# cd /var/cache/yum/x86_64/7/
+[root@ c701 7]# find . -name '*.rpm'
 ./base/packages/createrepo-0.9.9-28.el7.noarch.rpm
 ./base/packages/deltarpm-3.6-3.el7.x86_64.rpm
 ./base/packages/python-chardet-2.2.1-3.el7.noarch.rpm
@@ -155,14 +158,14 @@ ping: qq.com: Name or service not known
 然后，添加到自己的yum仓库
 
 ```bash
-[root@ c7-41 7]# find . -name '*.rpm'|xargs -i cp {} /yum/centos7
+[root@ c701 7]# find . -name '*.rpm'|xargs -i cp {} /yum/centos7
 ```
 
 更新自己的yum仓库
 
 ```bash
-[root@ c7-41 centos7]# cd /yum/centos7/
-[root@ c7-41 centos7]# createrepo --update /yum/centos7/
+[root@ c701 centos7]# cd /yum/centos7/
+[root@ c701 centos7]# createrepo --update /yum/centos7/
 ```
 
 客户端重新加载yum缓存并下载nginx

@@ -2,7 +2,7 @@
 
 # NFS共享存储
 
-## NFS共享存储
+## 介绍
 
 **网络文件系统**，英文Network File System(NFS)，是由SUN公司研制的UNIX表示层协议(pressentation layer protocol)，能使使用者访问网络上别处的文件就像在使用自己的计算机一样。
 
@@ -19,6 +19,15 @@ NFS应用场景，常用于**文件共享**，**多台服务器共享同样的�
 
 
 ## centos7 安装配置nfs服务
+
+### 环境介绍
+
+| 主机名 | 角色   | ip        | 备注 |
+| ------ | ------ | --------- | ---- |
+| c701   | 服务端 | 10.0.0.41 |      |
+| c702   | 客户端 | 10.0.0.42 |      |
+
+
 
 ### nfs的服务端操作
 
@@ -72,10 +81,10 @@ systemctl restart rpcbind
 
 ```shell
 mkdir -p /data
-mount 10.0.0.42:/data /data
+mount 10.0.0.41:/data /data
 
 #查看挂载情况
-[root@ c701 ~]# df -h
+[root@ c702 ~]# df -h
 Filesystem           Size  Used Avail Use% Mounted on
 /dev/mapper/cl-root   17G  2.7G   15G  16% /
 devtmpfs             478M     0  478M   0% /dev
@@ -84,13 +93,13 @@ tmpfs                489M  6.7M  482M   2% /run
 tmpfs                489M     0  489M   0% /sys/fs/cgroup
 /dev/sda1           1014M  121M  894M  12% /boot
 tmpfs                 98M     0   98M   0% /run/user/0
-10.0.0.42:/data       17G  1.9G   16G  11% /data
+10.0.0.41:/data       17G  1.9G   16G  11% /data
 ```
 
 **添加到开机自动挂载**
 
 ```shell
-echo '/bin/mount 10.0.0.42:/data /data'>>/etc/rc.local
+echo '/bin/mount 10.0.0.41:/data /data'>>/etc/rc.local
 ```
 
 
@@ -100,8 +109,8 @@ echo '/bin/mount 10.0.0.42:/data /data'>>/etc/rc.local
 ```shell
 #分别两台机器的data目录下创建不同的目录然后查看共享情况
 
-[root@ c702 data]# mkdir www
-[root@ c701 data]# mkdir aaa
+[root@ c701 data]# mkdir www
+[root@ c702 data]# mkdir aaa
 
 
 [root@ c701 data]# ll

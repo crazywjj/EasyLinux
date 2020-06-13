@@ -64,11 +64,6 @@ FTP客户端连接到FTP服务器的21端口→发送用户名和密码登录，
 
 
 
-
-
-
-​	
-
 ### 4.1.2 vsftpd软件
 
 #### 4.1.2.1 vsftpd简介
@@ -221,7 +216,7 @@ tcp_wrappers=YES
 [root@ c6m01 ftp]# /etc/init.d/vsftpd restart
 ```
 
-### 4.2.1 测试匿名用户登录
+### 4.2.2 测试匿名用户登录
 
 所在文件夹要有写入权限 例如：`chmod -R o+w /var/ftp/ `
 

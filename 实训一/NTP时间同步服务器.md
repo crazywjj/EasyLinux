@@ -1,6 +1,6 @@
 # NTP时间同步服务器
 
-## 1.1 NTP 简介
+# 1.1 NTP 简介
 
 NTP（ Network Time Protocol，网络时间协议）是用来使网络中的各个计算机时间同步的一种协
 
@@ -12,11 +12,16 @@ NTP 服务器就是利用 NTP 协议提供时间同步服务的。
 
 
 
-**NTP服务端：   c701    10.0.0.41**    
+## 1.1.1 环境介绍
 
-**NTP客户端：   c702    10.0.0.42**
+| 主机名 | 角色      | 系统      | ip地址    | 备注 |
+| ------ | --------- | --------- | --------- | ---- |
+| c701   | NTP服务端 | CentOS7.7 | 10.0.0.41 |      |
+| c702   | NTP客户端 | CentOS7.7 | 10.0.0.42 |      |
 
-### 1.1.2 NTP服务器安装
+
+
+## 1.1.2 NTP服务器安装
 
 ```shell
 yum -y install ntp        
@@ -24,7 +29,7 @@ yum -y install ntp
 
 
 
-### 1.1.3 配置NTP服务
+## 1.1.3 配置NTP服务
 
 ```shell
 vim /etc/ntp.conf 
@@ -44,7 +49,7 @@ server ntp1.aliyun.com
 
 
 
-### 1.1.4 重启ntp并设置开机自启
+## 1.1.4 重启ntp并设置开机自启
 
 ```shell
 systemctl restart ntpd
@@ -53,7 +58,7 @@ systemctl enable ntpd
 
 
 
-## 2.1 客户端同步时间
+# 2.1 客户端同步时间
 
 ```shell
 [root@ c702 yum.repos.d]# systemctl stop ntpd

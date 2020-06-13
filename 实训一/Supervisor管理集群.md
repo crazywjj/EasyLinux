@@ -28,7 +28,18 @@ monit可以管理已经在运行的程序；supervisor还要求管理的程序�
 
 ## 1.3 安装配置
 
-**supervisor安装完成后会生成三个执行程序：**
+**1、环境介绍**
+
+| 主机名 | 安装软件                          | 系统      | ip地址    | 备注 |
+| ------ | --------------------------------- | --------- | --------- | ---- |
+| c701   | supervisor、jdk、tomcat           | CentOS7.7 | 10.0.0.41 |      |
+| c702   | supervisor-monitor插件、nginx负载 | CentOS7.7 | 10.0.0.42 |      |
+
+
+
+**2、supervisor安装及组件介绍**
+
+supervisor安装完成后会生成三个执行程序：
 
 - supervisord : supervisor的守护进程服务（用于接收进程管理命令）
 - supervisorctl : 客户端（用于和守护进程通信，发送管理进程的指令）
@@ -38,21 +49,24 @@ monit可以管理已经在运行的程序；supervisor还要求管理的程序�
 #安装supervisor
 yum -y install supervisor
 
-#设置开机自启
+#启动并设置开机自启
 systemctl enable supervisord.service
+systemctl start supervisord.service
 
 #常用supervisorctl命令
-supervisorctl status
-supervisorctl stop tomcat
-supervisorctl start tomcat
-supervisorctl restart tomcat
-supervisorctl reread
-supervisorctl update
+supervisorctl status   # 查看子进程状态
+supervisorctl stop tomcat    # 停止tomcat子进程
+supervisorctl start tomcat   # 启动tomcat子进程
+supervisorctl restart tomcat  # 重启tomcat子进程
+supervisorctl reread    # 重新加载子配置文件；一般是配置文件发生了内容修改执行
+supervisorctl update    # 重新加载子配置文件；一般是配置文件增加或被删除执行
 ```
 
-**通过supervisor管理tomcat**
 
-**配置jdk环境:**
+
+**3、通过supervisor管理tomcat**
+
+配置jdk环境：
 
 ```bash
 tar -zxvf jdk-8u60-linux-x64.tar.gz -C /usr/local/
@@ -68,7 +82,7 @@ source /etc/profile
 java -version
 ```
 
-**安装tomcat:**
+安装tomcat：
 
 ```bash
 tar -zxvf apache-tomcat-8.5.29.tar.gz
@@ -76,10 +90,10 @@ mkdir -p /opt/app01
 cp -a apache-tomcat-8.5.29/* /opt/app01/
 ```
 
-**supervisor主配置文件详解：**
+supervisor主配置文件详解：
 
 ```bash
-[root@ c7-41 etc]# cat /etc/supervisord.conf
+[root@ c701 etc]# cat /etc/supervisord.conf
 ; Sample supervisor config file.
 
 [unix_http_server]  		# 负责supervisorctl和supervisord主程序通讯的
@@ -214,7 +228,7 @@ files = supervisord.d/*.ini
 
 
 
-**创建supervisor管理tomcat的子配置文件:**
+4、创建supervisor管理tomcat的子配置文件：
 
 ```bash
 vim /etc/supervisord.d/app01.ini
@@ -227,6 +241,12 @@ user = root
 autostart = true
 autorestart=true
 startsecs = 5
+```
+
+5、载入新增的配置
+
+```
+supervisorctl update
 ```
 
 
@@ -247,7 +267,7 @@ supervisorctl update
 交互模式：
 
 ```bash
-[root@ c7-41 tmp]# supervisorctl
+[root@ c701 tmp]# supervisorctl
 app01                            RUNNING   pid 3227, uptime 0:13:49
 
 supervisor> help
@@ -267,6 +287,8 @@ app01: stopped
 
 
 ##  1.5 自带Web管理界面 
+
+浏览器访问：http://10.0.0.41:9001
 
 ![1587369669451](assets/1587369669451.png)
 
@@ -303,23 +325,29 @@ root     16928     1  0 22:21 ?        00:00:00 /usr/bin/python /usr/bin/supervi
 root     17109 15876  0 22:42 pts/3    00:00:00 grep sup
 [root@ sfaapp9 conf.d]# kill -9 16928
 [root@ sfaapp9 conf.d]# /etc/init.d/supervisord start
-此报错，要关掉所有supervisor管理的进程和supervisor本身进程，然后重启启动supervisor。
+
+# 此报错，要关掉所有supervisor管理的进程和supervisor本身进程，然后重启启动supervisor；原因是本身进程已是启动状态与supervisor管理有冲突。
 ```
 
 
 
 # 第2章 supervisor-monitor多服务器管理工具
 
-![img](https://note.youdao.com/yws/public/resource/e10ef4356add0c9d694ecb373fb403c3/xmlnote/0F00C208D36D4113BDE5C673C34F6821/20861)
+![img](assets/wps3.jpeg)
 
-**2.1 安装 PHP**
+- server01、02、03等；在此相当于每台服务器；建议使用主机名
+- process01、02、03等；是supervisor管理下的子进程
+
+
+
+## 2.1 安装 PHP
 
 注意: supervisor-monitor 需要搭建php环境
 
 搭建php环境
 
 ```bash
-[root@ lb01 ~]# 
+[root@ c702 ~]# 
 yum install -y php-fpm
 ```
 
@@ -335,16 +363,16 @@ chkconfig php-fpm on
 /etc/init.d/php-fpm start
 ```
 
-**2.2 安装 Supervisor-monitor**
+## 2.2 安装 Supervisor-monitor
 
 ```
-[root@ lb01 ~]# 
+[root@ c702 ~]# 
 cd /opt
 git clone https://github.com/mlazarov/supervisord-monitor
 cd /opt/supervisord-monitor/application/config
 ```
 
-复制一份配置文件
+复制一份配置文件；由Supervisor-monitor通过RPC2与supervisor通信；进行集中管理
 
 ```
 cp supervisor.php.example supervisor.php
@@ -352,7 +380,7 @@ vim /opt/supervisord-monitor/application/config/supervisor.php
 主要修改
 $config['supervisor_servers'] = array(
         'tomcat_8080' => array(
-                'url' => 'http://10.0.0.7/RPC2',
+                'url' => 'http://10.0.0.41/RPC2',
                 'port' => '9001',
                 'username' => 'admin',
                 'password' => '123456'
@@ -361,22 +389,23 @@ $config['supervisor_servers'] = array(
 
 ```
 
-![clipboard](assets/clipboard.png)
+- tomcat_8080：最好是机器的主机名，此处为了测试而命名的
+- admin和123456：为supervisor自带的web界面用户和密码
 
 
 
-**2.3 nginx配置，使nginx支持php**
+## 2.3 nginx配置，使nginx支持php
 
 如果supervisor-monitor安装在代理服务器nginx上,需配置如下:
 
 ```bash
-[root@ lb01 ext]# pwd
+[root@ c702 ext]# pwd
 /application/nginx/conf/ext
-[root@ lb01 ext]# vi supervisor.conf
+[root@ c702 ext]# vi supervisor.conf
 
 server {
         listen       80;
-        server_name  10.0.0.5 www.supervisor.com;
+        server_name  10.0.0.42 www.supervisor.com;
         root         /opt/supervisord-monitor/public_html;
         index        index.html index.htm index.php;
 
@@ -401,22 +430,25 @@ server {
     }
 ```
 
-**nginx配置auth_basic 本机认证**
+## 2.4 nginx配置auth_basic 本机认证
 
 ```bash
-yum -y install httpd-tools
-[root@ lb01 conf]# htpasswd -c /application/nginx/conf/supervisor_passwd wanjiaji
+# htpasswd为httpd工具组件
+[root@ c702 conf]# yum -y install httpd-tools
+[root@ c702 conf]# htpasswd -c /application/nginx/conf/supervisor_passwd admin
 New password:123456
 Re-type new password:123456
-Adding password for user wanjiaji
-[root@ lb01 conf]# cat /application/nginx/conf/supervisor_passwd
-wanjiaji:SWs7bjYdd66xQ
+Adding password for user admin
+[root@ c702 conf]# cat /application/nginx/conf/supervisor_passwd
+admin:SWs7bjYdd66xQ
 
-chmod 400 /application/nginx/conf/supervisor_passwd
-chown -R nginx.nginx  /application/nginx/conf/supervisor_passwd
+[root@ c702 conf]# chmod 400 /application/nginx/conf/supervisor_passwd
+[root@ c702 conf]# chown -R nginx.nginx  /application/nginx/conf/supervisor_passwd
 ```
 
-配置完后,重启nginx
+配置完后,重启nginx；访问www.supervisor.com或者http://10.0.0.42
+
+![1592014488981](assets/1592014488981.png)
 
 ![wps4](assets/wps4.jpeg)
 
