@@ -450,6 +450,4 @@ admin:SWs7bjYdd66xQ
 
 ![1592014488981](assets/1592014488981.png)
 
-![wps4](assets/wps4.jpeg)
-
 ![wps5](assets/wps5.jpeg)

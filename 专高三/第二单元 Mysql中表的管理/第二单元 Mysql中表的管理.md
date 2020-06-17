@@ -8,13 +8,13 @@
 
 # 第二单元-mysql数据库中表的管理
 
-## 2.1 mysql中表的创建、删除
+## 2.1 mysql表的创建、删除
 
 ### 2.1.1 create table命令的使用
 
 **创建表的格式：**
 
-```
+```sql
 create table 表名(
 字段名1  类型  [字段约束],
 字段名2  类型  [字段约束],
@@ -26,7 +26,7 @@ create table 表名(
 
 创建一个学生基本信息表student，字段为：学号 姓名 科目 分数
 
-```
+```sql
 CREATE TABLE student (
 id  int NOT NULL AUTO_INCREMENT ,  -- 自增ID
 studentID  varchar(20) NULL,       -- 学号
@@ -38,9 +38,10 @@ PRIMARY KEY (id)                   -- 主键设置
 ```
 
 例如：
+
 创建一个英雄基本信息表hero，字段为：角色 攻击类型 攻击力
 
-```
+```sql
 CREATE TABLE hero (
 id  int NOT NULL AUTO_INCREMENT ,
 角色  varchar(20) NULL,
@@ -54,18 +55,18 @@ PRIMARY KEY (id)
 
 ### 2.1.2 drop table命令的使用
 
-```
+```sql
 drop table 表名;
 drop table if exists 表名;
 ```
 
 
 
-## 2.2 mysql中表结构的操作
+## 2.2 mysql表结构的操作
 
-**显示表结构**
+**1、显示表结构**
 
-```
+```sql
 desc 库名.表名;
 desc boy.test;
 show columns from 库名.表名;
@@ -76,13 +77,13 @@ show columns from boy.test;
 
 
 
-**查询表结构SQL语句**
+**2、查询表结构SQL语句**
 
 ```
 show create table 表名\G
 ```
 
-**查看表库中的表**
+**3、查看表库中的表**
 
 ```
 show tables from 库名;
@@ -99,13 +100,13 @@ show tables;
 
 alter table 语句用于创建后对表的修改
 
-**添加列**
+**1、添加列**
 
-基本形式: alter table 表名 add 列名 列数据类型 [after 插入位置];
+基本形式：alter table 表名 add 列名 列数据类型 [after 插入位置]；
 
-在表的最后追加列 攻速:   
+在表的最后追加列 攻速：
 
-```
+```sql
 alter table hero add 攻速 double;
 ```
 
@@ -113,9 +114,9 @@ alter table hero add 攻速 double;
 
 
 
-在名为 攻击力 的列后插入列 血量:  
+在名为 攻击力 的列后插入列 血量：
 
-```
+```sql
 alter table hero add 血量 varchar(20) after 攻击力;
 ```
 
@@ -123,16 +124,16 @@ alter table hero add 血量 varchar(20) after 攻击力;
 
 
 
-**修改列**
+**2、修改列**
 
-基本形式: alter table 表名 change 列名称 列新名称 新数据类型;
+基本形式：alter table 表名 change 列名称 列新名称 新数据类型;
 
-示例:
+示例：
 
-基本形式: 
+基本形式：
 alter table 表名 change 列名称 列新名称 新数据类型;
 
-```
+```sql
 alter table hero change 攻击类型 职业 varchar(20);
 ```
 
@@ -142,21 +143,21 @@ alter table hero change 攻击类型 职业 varchar(20);
 
 将 name 列的数据类型改为 char(16): 
 
-```
+```sql
 alter table students change name name char(16) not null;
 ```
 
 
 
-**删除列**
+**3、删除列**
 
-基本形式: alter table 表名 drop 列名称;
+基本形式：alter table 表名 drop 列名称;
 
-示例:
+示例：
 
-删除 攻速 列:  
+删除 攻速 列：
 
-```
+```sql
 alter table hero drop 攻速;
 ```
 
@@ -167,25 +168,25 @@ alter table hero drop 攻速;
 
 
 
-## 2.3 mysql中表的重命名和复制
+## 2.3 mysql表的重命名和复制
 
 
 
 ### 2.3.1 修改表名
 
-a) alter table 表名 rename [to] 新表名；
+1、alter table 表名 rename [to] 新表名；
 
 例子：将student表重新命名为stu
 
-```
+```sql
 alter table student rename to stu;  
 ```
 
-b) rename table 旧表名 to 新表名;
+2、rename table 旧表名 to 新表名;
 
 例子：将stu表重命名student表
 
-```
+```sql
 rename table stu to student; 
 ```
 
@@ -195,22 +196,24 @@ rename table stu to student;
 
 ### 2.3.2 表的复制
 
-a) create table 新表名 like 旧表名;      **//只复制表结构不复制数据**
+1、create table 新表名 like 旧表名;      **//只复制表结构不复制数据**
 
 ![1569573751473](assets/1569573751473.png)
 
-b) create table 新表名 select * from 旧表名;      **//表结构和数据一起复制**
+2、create table 新表名 select * from 旧表名;      **//表结构和数据一起复制**
 
 ![1569573928393](assets/1569573928393.png)
 
 
 
-## 2.4 mysql表中数据的插入、删除和修改
+## 2.4 mysql表数据的增、删、改
 
 ### 2.4.1 insert和insert into…select…语句
 
 1）insert into 表名 values(字段值1,字段值2,字段值3,..); 	//全部列插入的方式
+
 2）insert into 表名(字段名1,字段名2,...) values(字段值1,字段值2,..) ; 	//部分列插入的方式
+
 3）insert into 表名 select 字段 from 表名2;	//将查询结果插入的方式
 
 
@@ -231,6 +234,7 @@ insert into student values(1,'Tom',19,55),(2,'Joan',17,66), (3,'Wang',20,77);
 ### 2.4.3 delete语句
 
 delete from 表名; //清空表
+
 delete from 表名 where 条件;//删除满足指定条件的记录
 
 
@@ -238,7 +242,9 @@ delete from 表名 where 条件;//删除满足指定条件的记录
 ### 2.4.4 update语句
 
 语法：update 表名 set 字段=新值,… where 条件
+
 例子： mysql> update MyClass set name='Mary' where id=1;
+
 注意： 使用update时，必须使用where条件限制，否则修改了整列
 
 ![1569578546115](assets/1569578546115.png)
@@ -259,9 +265,7 @@ delete from 表名 where 条件;//删除满足指定条件的记录
 
 
 
-**select * from 表名**
-
-表示显示所有字段。
+**select * from 表名;**   表示显示所有字段。
 
 ![1569576703548](assets/1569576703548.png)
 
@@ -303,17 +307,16 @@ SQL Select语句完整的执行顺序：
 
 根据筛选条件可以分为以下几类：
 
-  1.按照条件按表达式进行筛选
+  1、按照条件按表达式进行筛选
 
      常用条件运算符如下：> 、<、=、!=、<>、<=、>=
      
      不等号(!=,<>)
 
- 
 
 
 
- 2.按照逻辑表达式进行筛选
+ 2、按照逻辑表达式进行筛选
 
      逻辑运算符的主要作用：用于连接条件表达式
     
@@ -322,8 +325,7 @@ SQL Select语句完整的执行顺序：
  
 
 
-
- 3.模糊查询
+ 3、模糊查询
 
     like、between and 、in、is null
 

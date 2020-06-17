@@ -175,6 +175,7 @@
         <td><a href="杂货铺/Windows计划任务添加.md">Windows计划任务添加</a></td>
          <td><a href="杂货铺/CwRsync实现windows下文件定时同步.md">CwRsync实现windows文件定时同步</a></td>
     </tr>
+    <td><a href="杂货铺/Zabbix4.0 离线安装.md">Zabbix4.0 离线安装</a></td>
 </table>
 
 

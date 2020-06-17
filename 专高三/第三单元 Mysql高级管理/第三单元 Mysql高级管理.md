@@ -522,7 +522,7 @@ mydumper -u 用户名 -p 密码 -B 数据库名字 -T 空表 -e -o /tmp/bak
 设置长查询的上限，如果存在比这个还长的查询则退出mydumper，也可以设置杀掉这个长查询
 
 ```
-mydumper -u leshami -p pwd -B sakila --long-query-guard 200 --kill-long-queries
+mydumper -u root -p pwd -B sakila --long-query-guard 200 --kill-long-queries
 ```
 
 备份时输出详细更多日志
@@ -536,7 +536,7 @@ mydumper -u 用户名 -p 密码 -B 数据库名字 -T 空表 -v 3 -o /tmp/bak
 导出binlog，使用-b参数，会自动在导出目录生成binlog_snapshot文件夹及binlog
 
 ```
-mydumper -u leshami -p pwd -P 3306 -b -o /tmp/bak
+mydumper -u root -p pwd -P 3306 -b -o /tmp/bak
 ```
 
 总结：
