@@ -86,8 +86,10 @@
      <tr>
      <tr>
         <td><a href="实训一/Rsync+Crond实现定时备份.md">Rsync+Crond实现定时备份</a></td>
+         <td><a href="实训一/NTP时间同步服务器.md">NTP时间同步服务器</a></td>
      <tr>
 </table>
+
 
 
 
@@ -175,8 +177,12 @@
         <td><a href="杂货铺/Windows计划任务添加.md">Windows计划任务添加</a></td>
          <td><a href="杂货铺/CwRsync实现windows下文件定时同步.md">CwRsync实现windows文件定时同步</a></td>
     </tr>
-    <td><a href="杂货铺/Zabbix4.0 离线安装.md">Zabbix4.0 离线安装</a></td>
+         <tr>
+        <td><a href="杂货铺/Zabbix4.0 离线安装.md">Zabbix4.0 离线安装</a></td>
+        <td><a href="杂货铺/CentOS7.4mini离线安装ansible.md">CentOS7.4mini离线安装ansible</a></td>
+    </tr>   
 </table>
+
 
 
 

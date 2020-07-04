@@ -77,3 +77,58 @@ cat >>/var/spool/cron/root<<EOF
 EOF
 ```
 
+
+
+
+
+# 3.1 无外网时间同步
+
+服务端
+
+1、关闭防火墙和selinux
+
+
+
+2、手动修改时间
+
+```
+date -s '20200629 08:44:00'
+```
+
+设置的时间写到硬件时间中去（也就是CMOS里面的时间）
+
+```
+clock -w
+hwclock --systohc
+```
+
+
+
+3、修改ntp配置文件
+
+
+
+修改/etc/ntp.conf
+
+1. 注释掉原来的restrict default ignore这一行，这一行本身是不响应任何的ntp更新请求，
+
+    其实也就是禁用了本机的ntp server的功能，所以需要注释掉。
+    
+    2. 加入下面3行： 
+    
+    restrict 10.10.10.0 mask 255.255.255.0 nomodify notrap
+    （注释:用于让10.10.10.0/24网段上的机器能和本机做时间同步）
+    server 127.127.1.0 # local clock
+    fudge 127.127.1.0 stratum 10
+    
+    后两行是让本机的ntpd和本地硬件时间同步。
+    
+    3./etc/init.d/ntpd restart或者 service ntpd restart
+    4.chkconfig ntpd on 设置开机自启动
+    5.修改iptables配置，将tcp和udp 123端口开放，这是ntp需要的端口，在/etc/services中可以查到这个端口
+
+
+
+
+
+
