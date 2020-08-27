@@ -1,4 +1,4 @@
-# 开源是一种精神；分享是一种美德！！！
+# 开源是一种精神  分享是一种美德
 
 <img src="assets/hack.gif" alt="hack" style="zoom:200%;" />
 
@@ -91,8 +91,6 @@
 </table>
 
 
-
-
 # 实训二
 
 <table border="0">
@@ -148,8 +146,11 @@
     <tr>
         <td><a href="Kubernetes/01-Kubernets高可用集群.md">01-Kubernets 高可用集群</a></td>
         <td><a href="Kubernetes/02-Kubernetes集群插件.md">02-Kubernetes 集群插件</a></td>
+        <td><a href=""></a></td>
+        <td><a href=""></a></td>
     </tr>
 </table>
+
 
 <table border="0">
     <tr>
@@ -180,6 +181,16 @@
          <tr>
         <td><a href="杂货铺/Zabbix4.0 离线安装.md">Zabbix4.0 离线安装</a></td>
         <td><a href="杂货铺/CentOS7.4mini离线安装ansible.md">CentOS7.4mini离线安装ansible</a></td>
+    </tr>   
+</table>
+
+
+
+# 网络
+
+<table border="0">
+    <tr>
+        <td><a href="网络/linux多网卡绑定(bond模式).md">linux多网卡绑定(bond模式)</a></td>
     </tr>   
 </table>
 

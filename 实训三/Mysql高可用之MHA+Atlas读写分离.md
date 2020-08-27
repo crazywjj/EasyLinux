@@ -124,11 +124,11 @@ yum -y install sshpass
 UserName=root
 IPlist=(10.0.0.41 10.0.0.42 10.0.0.43 10.0.0.44 )
 #创建密钥
-ssh-keygen -t dsa -f ~/.ssh/id_dsa -P "" &>/dev/null
+ssh-keygen -t rsa -f ~/.ssh/id_rsa -P "" &>/dev/null
 #分发公钥
 for i in ${IPlist[*]}
   do
-    sshpass -p "123456" ssh-copy-id -i ~/.ssh/id_dsa.pub -p 22 -o StrictHostKeyChecking=no $UserName@$i &>/dev/null
+    sshpass -p "123456" ssh-copy-id -i ~/.ssh/id_rsa.pub -p 22 -o StrictHostKeyChecking=no $UserName@$i &>/dev/null
 done
 ```
 

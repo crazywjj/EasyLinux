@@ -506,7 +506,7 @@ etcd-0               Healthy   {"health":"true"}
 
 node上也是需要下载安装一些镜像的，需要下载的镜像为：kube-proxy、pause、flannel
 
-```
+```shell
 $ docker images
 REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
 quay.io/coreos/flannel   v0.12.0-ppc64le     bc2581fdbbc4        4 hours ago         70.3MB
@@ -616,7 +616,7 @@ kubectl create -f nginx-ds.yml
 
 **（2）检查各节点的 Pod IP 连通性**
 
-```
+```shell
 $ kubectl get pods -o wide|grep nginx-ds
 nginx-ds-j7m44   1/1     Running   0          3m5s   10.244.2.3   k8s-m02   <none>           <none>
 $ ping 10.244.2.3

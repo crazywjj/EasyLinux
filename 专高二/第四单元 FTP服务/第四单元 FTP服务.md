@@ -10,7 +10,7 @@
 
 
 
-## 4.1 FTP 服务概述
+# 4.1 FTP 服务概述
 
 **FTP** 是`File Transfer Protocol`（**文件传输协议**）的英文简称，它**工作在OSI模型的第七层**，TCP模型的第四层上，即传输，使用TCP传输而不是UDP，这样FTP客户在和服务器建立连接前就要经过一个被广为熟知的”三次握手”的过程，它带来的意义在于客户与服务器之间的连接是可靠的，而且是面向连接，为数据的传输提供了可靠的保证。
 
@@ -28,7 +28,7 @@ FTP软件：**vsftpd**,wu-ftp,proftp等
 
 
 
-### 4.1.1 FTP两种工作模式及原理
+## 4.1.1 FTP两种工作模式及原理
 
 ftp协议的连接方式有两种，一种是命令连接，一种是数据连接，而ftp的数据连接模式也有两种，一种是主动模式，一种是被动模式。
 
@@ -64,9 +64,9 @@ FTP客户端连接到FTP服务器的21端口→发送用户名和密码登录，
 
 
 
-### 4.1.2 vsftpd软件
+## 4.1.2 vsftpd软件
 
-#### 4.1.2.1 vsftpd简介
+### 4.1.2.1 vsftpd简介
 
 软件：vsftpd
 
@@ -76,7 +76,7 @@ FTP客户端连接到FTP服务器的21端口→发送用户名和密码登录，
 
 
 
-#### 4.1.2.2 安装vsftpd服务端和客户端
+### 4.1.2.2 安装vsftpd服务端和客户端
 
 ```shell
 yum install -y vsftpd   #服务端
@@ -92,7 +92,7 @@ sed -i '/^SELINUX=/s#SELINUX=.*#SELINUX=disabled#g' /etc/sysconfig/selinux
 
 
 
-#### 4.1.2.3 配置文件结构
+### 4.1.2.3 配置文件结构
 
 ```shell
 vsftpd的核心文件和目录：
@@ -113,7 +113,10 @@ vsftp传输方式默认是PORT模式
 port_enable=YES|NO
 ```
 
-**vsftp提供3种远程的登录方式：** 
+
+
+### 4.1.2.4 vsftp的3种远程的登录方式
+
 （1）匿名用户登录方式 
 　　就是不需要用户名和密码。就能登录到服务器vsftp（默认只有下载权限）
 （2）本地用户方式 
@@ -121,7 +124,7 @@ port_enable=YES|NO
 （3）虚拟用户方式 
 　　同样需要用户名和密码才能登录。但是和上面的区别就是，这个用户名和密码，在你linux系统中是没有的(没有该用户帐号)
 
-#### 4.1.2.4 vsftpd默认配置
+### 4.1.2.5 vsftpd默认配置
 
 ```shell
 [root@ c6m01 vsftpd]# cp vsftpd.conf{,.bak}
@@ -140,28 +143,127 @@ userlist_enable=YES
 tcp_wrappers=YES
 ```
 
-#### 4.1.2.5 常见参数含义
+### 4.1.2.6 vsftpd配置文件参数详解
 
-```shell
-use_localtime=YES          #ftp时间和系统同步,如果启动有错误，请注销
-reverse_lookup_enable=NO   #添加此行，解决客户端登陆缓慢问题
-listen_port=21    		   #默认无此行，ftp端口为21
-anonymous_enable=NO　　  	  #禁止匿名用户
-local_enable=YES		   #设定本地用户可以访问
-write_enable=YES         	#全局设置，是否容许写入
-local_umask=022 			#设定上传后文件的权限掩码
-local_root=/home/tom		#本地用户ftp根目录，默认是本地用户的家目录
-local_max_rate=0			#本地用户最大传输速率（字节）。0为不限制
-anon_upload_enable=NO 		#禁止匿名用户上传。
-anon_mkdir_write_enable=NO  #禁止匿名用户建立目录
-connect_from_port_20=YES 	#设定端口20进行数据连接
-chown_uploads=NO 			#设定禁止上传文件更改宿主
-pam_service_name=vsftpd 	#设定PAM服务下Vsftpd的验证配置文件名，PAM验证将参考/etc/pam.d/下
-userlist_enable=YES    		#设为YES的时候，如果一个用户名是在userlist_file参数指定的文件中，那么在要求他们输入密码之前，会直接拒绝他们登陆
-tcp_wrappers=YES  是否支持tcp_wrapper
-idle_session_timeout=300    #超时设置
-data_connection_timeout=1    #空闲1秒后服务器断开
+**匿名用户相关参数**
+
+```bash
+anonymous_enable=YES    # 是否允许匿名用户登陆
+no_anon_password=NO     # 是否忽略对匿名用户的密码检测
+anon_root               # 匿名登陆后尝试更改的目录
+ftp_username=ftp        # 匿名用户登陆的username
+anon_mkdir_write_enable=NO    # 是否允许匿名用户创建目录
+anon_other_write_enable=NO    # 是否允许匿名用户对文件增、删、改
+anon_upload_enable=NO         # 是否允许匿名用户上传文件
+anon_world_readable_only=YES  # 如果为YES，匿名用户只能下载可读的文件
+anon_max_rate=0               # 允许匿名用户最大数据传输速率，单位为B/s
+anon_umask=077
+chown_uploads=NO              # 如果设置为YES，所有的匿名用户上传的文件属主都设置为chown_username指定用户
+chown_username=root           # 指定chown_uploads中所需的文件属主用户
+deny_email_enable=NO          # 如果设置为YES，则提供一个内容为mail address的文件，若是使用匿名登入，则会要求输入email address，如果它不在文件内，则禁止进入
+banned_email_file=/etc/vsftpd/banned_emails # 指定deny_email_enable中的文件路径
 ```
+
+**本地用户相关参数**
+
+```bash
+local_enable=YES     # 是否允许本地用户登陆
+write_enable=YES     # 本地用户写权限
+local_umask=022      # 本地用户的文件umask码
+local_root=none      # 本地用户登陆后改变的目录，默认是各自家目录
+local_max_rate=0(unlimited)     # 本地用户使用的最大传输速度，单位为B/s
+```
+
+**虚拟用户相关参数**
+
+```bash
+pam_service_name=vsftpd      # 设置PAM使用的名称
+guest_enable=NO              # 是否启用虚拟用户
+guest_username=vsftpuser     # 指定本地用户名，用来映射虚拟用户
+virtual_use_local_privs=NO   # 如果启用，虚拟用户将使用与本地用户相同的权限，否则与匿名用户权限相同
+```
+
+**banner参数**
+
+```bash
+dirmessage_enable=YES      # 如果设置为YES，当用户首次进入一个目录后，会查找.message文件并显示。
+message_file=.message      # 设置message文件
+ftpd_banner=Welcome to blah FTP service.  #设置进入banner信息
+banner_file=none        # 设置一个包含banner信息的文件路径，开启它将会覆盖ftpd_banner
+```
+
+**数据传输模式**
+
+```bash
+ascii_upload_enable=YES    # 是否启用ASCII模式上传数据
+ascii_download_enable=YES  # 是否启用ASCII模式下载数据
+```
+
+**工作模式与端口设置**
+
+```bash
+listen_port=21              # 设置ftp服务工作的端口
+connect_from_port_20=YES    # 主动模式数据传输的端口
+pasv_enable=YES             # YES为被动模式工作，NO则是主动模式，默认YES
+pasv_max_port=0             # PASV模式下，最大传输数据端口号，0为任意无限制
+pasv_min_port=0             # PASV模式下，最小传输数据端口号
+```
+
+**超时时间设置**
+
+```bash
+idle_session_timeout=600       # 客户端连接FTP后无命令超时时间
+data_connection_timeout=120    # 无数据传输超时时间
+accept_timeout=60              # 建立FTP连接的超时时间
+connect_timeout=60             # PORT模式下建立数据连接的超时时间
+```
+
+**目录权限，锁定家目录**
+
+```bash
+chroot_local_user=NO     # 是否禁止本地用户切换到家目录上级目录，绑定家目录为用户的根目录 限制所有用户都在家目录
+chroot_list_enable=NO    # 是否启用chroot列表文件，写入文件中的用户将锁定家目录
+chroot_list_file=/etc/vsftpd/chroot_list       # 指定用户列表文件的文件路径
+
+chroot_local_user=YES，chroot_list_enable=YES  # chroot_list 文件中的用户可以切换到其他目录
+chroot_local_user=NO，chroot_list_enable=YES   # chroot_list_file文件中的用户将锁定在家目录下
+chroot_local_user=YES，chroot_list_enable=NO   # 所有本地用户都锁定在家目录下
+chroot_local_user=NO，chroot_list_enable=NO    # 所有本地用户都可以切换到其他目录
+```
+
+**主服务运行模式与连接设置**
+
+```bash
+listen=YES
+# 设 置vsftpd服务器是否以standalone模式运行，有很多与服务器运行相关的配置命令，需要在此模式下才有效
+# 若设置为NO，则vsftpd以super daemon运行，要受到xinetd 服务的管控，功能上会受到限制max_clients=0(unlimited)
+# 设置客户端最大连接数，standalone模式下有效max_per_ip=0(unlimited)
+# 同一IP客户端最大连接数，standalone模式下有效
+```
+
+**用户访问控制**
+
+```bash
+userlist_file=/etc/vsftpd/user_list      # 控制用户访问FTP的文件
+userlist_enable=NO      # 如果启用，vsftpd将从userlist_file提供的文件名加载用户名列表
+userlist_deny=YES       # 如果设为YES，userlist_file文件中的用户不可以访问FTP服务；如果设为NO，只用文件中用户才能访问服务
+/etc/vsftpd/ftpusers    # 文件用来定义不允许访问FTP服务的用户列表，优先级比userlist_deny高
+```
+
+**自定义用户配置**
+
+```bash
+user_config_dir=/etc/vsftpd/virtual_user_conf/  # 指定虚拟用户配置文件目录，目录下可以创建与虚拟用户名相同的文件，给予不同的权限设置
+```
+
+**其他设置**
+
+```bash
+download_enable=YES   # 如果设置为NO，所有下载请求被拒绝
+ls_recurse_enable=NO  # 启用后，允许使用ls -R命令，此命令可能会消耗大量资源
+```
+
+
 
 **测试访问：**
 
@@ -183,9 +285,9 @@ Windows资源管理器输入：ftp://10.0.0.21/
 
 
 
-## 4.2 匿名用户登录
+# 4.2 匿名用户登录
 
-### 4.2.1 匿名用户常用参数
+## 4.2.1 匿名用户常用参数
 
 ```shell
 anon_root=/var/ftp				#匿名用户默认共享目录
@@ -216,7 +318,7 @@ tcp_wrappers=YES
 [root@ c6m01 ftp]# /etc/init.d/vsftpd restart
 ```
 
-### 4.2.2 测试匿名用户登录
+## 4.2.2 测试匿名用户登录
 
 所在文件夹要有写入权限 例如：`chmod -R o+w /var/ftp/ `
 
@@ -228,9 +330,9 @@ tcp_wrappers=YES
 
 
 
-## 4.3 本地用户默认配置
+# 4.3 本地用户登录
 
-### 4.3.1 创建本地用户tom并设置密码
+## 4.3.1 创建本地用户tom并设置密码
 
 如果tom用户已存在则不需要创建
 
@@ -239,7 +341,7 @@ useradd   tom
 echo '123456'|passwd --stdin tom
 ```
 
-### 4.3.2 本地用户常用参数
+## 4.3.2 本地用户常用参数
 
 ```shell
 local_enable=YES	#设定本地用户可以访问
@@ -249,7 +351,38 @@ local_root=/home/tom		#本地用户ftp根目录，默认是本地用户的家目
 local_max_rate=0			#本地用户最大传输速率（字节）。0为不限制
 ```
 
-### 4.3.3 测试本地用户上传下载
+## 4.3.3 全局配置文件
+
+```bash
+cat /etc/vsftpd/vsftpd.conf
+
+
+anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+local_umask=022
+dirmessage_enable=YES
+xferlog_enable=YES
+connect_from_port_20=YES
+xferlog_std_format=YES
+listen=NO
+listen_ipv6=YES
+pam_service_name=vsftpd
+userlist_enable=YES
+tcp_wrappers=YES
+
+chroot_local_user=YES
+chroot_list_enable=YES
+chroot_list_file=/etc/vsftpd/chroot_list
+allow_writeable_chroot=YES
+
+
+echo "tom" >>/etc/vsftpd/chroot_list
+```
+
+
+
+## 4.3.4 测试本地用户上传下载
 
 **使用winscp客户端**
 
@@ -261,9 +394,9 @@ local_max_rate=0			#本地用户最大传输速率（字节）。0为不限制
 
 
 
-## 4.4 FTP客户端
+# 4.4 FTP客户端
 
-### 4.4.1 Linux下FTP客户端
+## 4.4.1 Linux下FTP客户端
 
 ```shell
 1. yum install -y lftp
@@ -315,7 +448,7 @@ exit 		退出ftp
 
 
 
-### 4.4.2 Windows下FTP客户端
+## 4.4.2 Windows下FTP客户端
 
 1.个人喜欢xftp和winscp工具。
 
@@ -325,7 +458,7 @@ exit 		退出ftp
 
 
 
-## 4.5 FTP限速等参数	
+# 4.5 FTP限速等参数	
 
 ```shell
 max_clients=50 	#设置vsftpd允许的最大连接数，默认值为0，表示不受限制。若设置为100时，则同时允许有100个连接，超出的将被拒绝。只有在standalone模式运行才有效。 
