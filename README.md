@@ -191,8 +191,12 @@
 <table border="0">
     <tr>
         <td><a href="网络/linux多网卡绑定(bond模式).md">linux多网卡绑定(bond模式)</a></td>
+        <td><a href="网络/路由器与交换机详解.md">路由器与交换机详解</a></td>
+        <td><a href="网络/华为交换机常用命令(s5700-SI).md">华为交换机常用命令(s5700-SI)</a></td>
+        <td><a href="网络/华为S5700交换机三层转发.md">华为S5700交换机三层转发</a></td>
     </tr>   
 </table>
+
 
 
 
