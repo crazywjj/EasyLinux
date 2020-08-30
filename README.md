@@ -197,6 +197,7 @@
     </tr>
     <tr>
         <td><a href="网络/华为(ensp)静态路由实验.md">华为(ensp)静态路由实验</a></td>
+        <td><a href="网络/华为(ensp)RIP实验.md">华为(ensp)RIP实验</a></td>
     </tr>
 </table>
 
