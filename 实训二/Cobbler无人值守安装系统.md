@@ -6,7 +6,7 @@
 
 # Cobbler无人值守安装系统
 
-# 1.1 Cobbler简介
+# 1 Cobbler简介
 
 > Cobbler是通过将DHCP、TFTP、DNS、HTTP等服务进行集成，创建一个中央管理节点，其可以实现的功能有配置服务，创建存储库，解压缩操作系统媒介，代理或集成一个配置管理系统，控制电源管理等。 Cobbler的最终目的是实现无需进行人工干预即可安装机器。在进行进一步的操作之前，我们有必要先了解下pxe和kickstart 。
 
@@ -17,7 +17,7 @@ cobbler官方网站：http://cobbler.github.io/
 
 
 
-# 1.2 Cobbler功能
+# 2 Cobbler功能
 
 - pxe支持
 - dhcp管理
@@ -30,7 +30,7 @@ cobbler官方网站：http://cobbler.github.io/
 
 
 
-# 1.3 Cobbler框架
+# 3 Cobbler框架
 
 ![1583055454979](assets/1583055454979.png)
 
@@ -43,7 +43,7 @@ cobbler官方网站：http://cobbler.github.io/
 
 
 
-# 1.4 Cobbler工作原理
+# 4 Cobbler工作原理
 
 ![1583055517826](assets/1583055517826.png)
 
@@ -72,9 +72,9 @@ cobbler官方网站：http://cobbler.github.io/
 
 
 
-# 1.5 Cobbler部署
+# 5 Cobbler部署
 
-## 1.5.1 环境介绍
+## 5.1 环境介绍
 
 | 主机名  | 系统           | 配置  | 外网ip    | 内网ip      |
 | ------- | -------------- | ----- | --------- | ----------- |
@@ -83,7 +83,7 @@ cobbler官方网站：http://cobbler.github.io/
 
 说明：虚拟机网卡采用NAT模式或者仅主机模式，不要使用桥接模式，因为后面会搭建DHCP服务器，在同一个局域网多个DHCP服务会有冲突。VMware的NAT模式的dhcp服务也关闭，避免干扰。
 
-## 1.5.2 安装
+## 5.2 安装
 
 ```shell
 
@@ -101,9 +101,11 @@ xinetd　　#诸多服务的超级守护进程
 [root@ cobbler ~]# systemctl start httpd cobblerd
 [root@ cobbler ~]# systemctl enable httpd cobblerd
 
+#查看xinetd管理的服务
+[root@ cobbler ~]# chkconfig
 ```
 
-## 1.5.3 配置cobbler
+## 5.3 配置Cobbler
 
 检查Cobbler的配置，如果看不到下面的结果，再次重启cobbler。
 
@@ -176,7 +178,7 @@ $1$random-p$mzxQ/Sx848sXgvfwJCoZM0
 No configuration problems found.  All systems go.
 ```
 
-## 1.5.4 配置DHCP
+## 5.4 配置DHCP
 
 ```shell
 [root@ cobbler ~]# cobbler setting edit --name=manage_dhcp --value=1
@@ -188,9 +190,13 @@ subnet 10.0.0.0 netmask 255.255.255.0 {   #这里改为分配的网段和掩码
      option subnet-mask         255.255.255.0;  #改为分配的IP的掩码
      range dynamic-bootp        10.0.0.100 10.0.0.200;  #改为分配的IP的范围
 
+# 重启dhcpd服务
+[root@ cobbler ~]# cobbler sync
+[root@ cobbler ~]# systemctl  restart dhcpd && systemctl  enable dhcpd
+
 ```
 
-## 1.5.5 同步cobbler配置
+## 5.5 同步Cobbler配置
 
 ```
 [root@ cobbler ~]# cobbler sync
@@ -248,7 +254,7 @@ group {
 }
 ```
 
-## 1.5.6 cobbler命令帮助
+## 5.6 Cobbler命令帮助
 
 | 命令             | 说明                                       |
 | ---------------- | ------------------------------------------ |
@@ -261,18 +267,95 @@ group {
 | cobbler system   | 查看添加的系统信息                         |
 | cobbler profile  | 查看配置信息                               |
 
+
+
+4.1 Cobbler命令说明
+
+| 命令名称         | 命令用途                                |
+| ---------------- | --------------------------------------- |
+| cobbler check    | 检查cobbler配置                         |
+| cobbler list     | 列出所有的cobbler元素                   |
+| cobbler report   | 列出元素的详细信息                      |
+| cobbler distro   | 查看导入的发行版系统信息                |
+| cobbler system   | 查看添加的系统信息                      |
+| cobbler profile  | 查看配置信息                            |
+| cobbler sync     | 同步Cobbler配置，更改配置最好都要执行下 |
+| cobbler reposync | 同步yum仓库                             |
+
+命令参考
+
+cobbler --help
+
+cobbler distro --help 
+
+cobbler distro add --help
+
+
+
+
+
+## 5.7 Cobbler目录说明
+
+Cobbler配置文件存放在/etc/cobbler下
+
+```
+配置文件目录:/etc/cobbler
+/etc/cobbler/settings : cobbler 主配置文件
+/etc/cobbler/iso/ : iso模板配置文件
+/etc/cobbler/pxe : pxe模板文件
+/etc/cobbler/power : 电源配置文件
+/etc/cobbler/users.conf : Web服务配置文件
+/etc/cobbler/users.digest : 用于web访问的用户名密码配置文件
+/etc/cobbler/dhcp.template : DHCP服务配置模板文件
+/etc/cobbler/dnsmasq.template : DNS服务配置模板文件
+/etc/cobbler/tftpd.template : tftp服务配置模板文件
+/etc/cobbler/modules.conf : Cobbler模块配置文件
+
+ 
+
+数据目录:/var/lib/cobbler
+/var/lib/cobbler/config : 用于存放distros systems profiles等信息配置文件
+/var/lib/cobbler/triggers : 用于存放用户自定义的cobbler命令
+/var/lib/cobbler/kickstarts : 默认存放kickstart文件
+/var/lib/cobbler/loaders : 存放各种引导程序
+
+ 
+镜像数据目录: /var/www/cobbler
+/var/www/cobbler/ks_mirror : 导入的发行版系统的所有数据
+/var/www/cobbler/images : 导入发行版的kernel和initrd镜像用于远程网络启动
+/var/www/cobbler/repo_mirror/ :yum仓库存储目录
+
+ 
+
+日志目录:/var/log/cobbler
+/var/log/cobbler/install.log : 客户端系统安装日志
+/var/log/cobbler/cobbler.log : cobbler日志
+
+ 
+
+Cobbler Commands(常用使用命令参数)
+    * * Import
+    * * Sync
+    * * Reposync 
+    * * Build ISO (使用发行版、配置文件、制作出系统镜像)
+    * * Command Line Search
+    * * Replication
+    * * Validata Kickstart
+    * * ACL Setup
+```
+
 这时候创建一个新虚拟机可以获取到如下信息，没有镜像选择，只能从本地启动。
 
 ![1583062308505](assets/1583062308505.png)
 
-# 1.6 Cobbler安装centos6.8
+# 6 Cobbler安装centos6.8
 
 注意：由于我这台是在`centos7`系统上面配置的`cobbler`，并没有centos6.8镜像，所以需要上传了一个`centos6.8`的镜像并进行挂载。
 
-## 1.6.1 创建挂载点并挂载
+## 6.1 创建挂载到cobbler服务器
 
 ```
-[root@ cobbler ~]# ll
+[root@ cobbler ~]# mkdir -p /centos6.8
 total 4764676
 -rw-------. 1 root root       1277 2019-09-17 22:18 anaconda-ks.cfg
 -rw-r--r--  1 root root 3916431360 2020-03-01 19:54 CentOS-6.8-x86_64-bin-DVD1.iso
@@ -280,13 +363,13 @@ total 4764676
 [root@ cobbler ~]# mount -o loop CentOS-6.8-x86_64-bin-DVD1.iso /centos6.8
 ```
 
-## 1.6.2 查看挂载后的目录
+## 6.2 查看挂载后的目录
 
 ```
-[root@ cobbler kickstarts]# ls /centos6.8/
+[root@ cobbler kickstarts]# ls /centos6.8
 ```
 
-## 1.6.3 导入镜像
+## 6.3 导入镜像
 
 ```shell
 [root@ cobbler ~]# cobbler import --path=/centos6.8 --name=centos6.8 --arch=x86_64
@@ -296,7 +379,7 @@ total 4764676
 # 安装源的唯一标示就是根据name参数来定义，本例导入成功后，安装源的唯一标示就是：centos6.8，如果重复，系统会提示导入失败。
 ```
 
-## 1.6.4 查看导入后镜像信息
+## 6.4 查看导入后镜像信息
 
 ```shell
 [root@ cobbler ~]# cobbler distro report --name=centos6.8-x86_64
@@ -319,7 +402,7 @@ Red Hat Management Server      : <<inherit>>
 Template Files                 : {}
 ```
 
-## 1.6.5 查看profile信息
+## 6.5 查看profile信息
 
 ```
 [root@ cobbler ~]# cobbler profile report --name=centos6.8-x86_64
@@ -357,7 +440,7 @@ Virt RAM (MB)                  : 512
 Virt Type                      : kvm
 ```
 
-## 1.6.6 编辑centos6.8镜像的kickstart文件
+## 6.6 编辑centos6.8镜像的kickstart文件
 
 ```shell
 [root@ cobbler ~]# cd /var/lib/cobbler/kickstarts/
@@ -372,7 +455,7 @@ text
 # System keyboard
 keyboard us
 # System language
-lang en_US
+lang en_US.UTF-8
 # System timezone
 timezone  Asia/ShangHai
 #Root password
@@ -463,7 +546,7 @@ Kickstart                      : /var/lib/cobbler/kickstarts/centos6.8.ks
 Kickstart Metadata             : {}
 ```
 
-## 1.6.7 同步cobbler配置
+## 6.7 同步cobbler配置
 
 注意：系统镜像文件centos6.8.ks，每修改一次都要进行同步。
 
@@ -473,7 +556,7 @@ Kickstart Metadata             : {}
 
 
 
-## 1.6.8 新建虚拟机进行测试
+## 6.8 新建虚拟机进行测试
 
 ![1583067422714](assets/1583067422714.png)
 
@@ -483,7 +566,7 @@ Kickstart Metadata             : {}
 
 
 
-# 1.7 Cobbler安装centos7.3
+# 7 Cobbler安装centos7.3
 
 由于我这里实在`centos7.3`系统上面配置的`cobbler`，所以直接挂载/dev/cdrom即可。
 
@@ -508,7 +591,7 @@ Kickstart Metadata             : {}
 
 > 如果出现/sbin/dmsquash-live-root: line 286: printf: write error: No space left on device因为内存不足2G的原因
 
-# 1.8 cobbler Web界面配置
+# 8 Cobbler Web界面配置
 
 web界面有很多功能，包括上传镜像、编辑kickstart、等等很多在命令行操作的都可以在web界面直接操作。
 在上面已经安装了cobbler-web软件，访问地址：https://10.0.0.44/cobbler_web 即可。
@@ -541,6 +624,317 @@ Re-type new password: superman
 ```
 
 再次登录即使用新设置的密码登录即可。
+
+
+
+# 9 Cobbler自动安装KVM虚机
+
+经过上面的学习测试，cobbler自动装机应该已经学会了。但是你会发现一些小问题，就是当你装系统的时候，如果安装系统界面超时后，会报`No bootalbe device`;而无法安装系统。这时可以通过自定义cobbler（其实是pxe）的启动界面来实现。
+
+<img src="assets/image-20200917165854493.png" alt="image-20200917165854493" style="zoom: 50%;" />
+
+
+
+**9.1 自定义pxe启动界面**
+
+```bash
+[root@ localhost pxelinux.cfg]# cobbler distro list
+   CentOS-7.4-x86_64
+
+# pxe启动界面模板文件；
+[root@ cobbler pxelinux.cfg]# cat /etc/cobbler/pxe/pxedefault.template
+
+DEFAULT menu   # 指定菜单风格
+PROMPT 0       # 是否等用户选择；0为是，1为否
+MENU TITLE Cobbler | http://cobbler.github.io/
+TIMEOUT 200  #等待20s进入默认菜单
+TOTALTIMEOUT 6000
+ONTIMEOUT CentOS-7.4-x86_64   # 超时后启动CentOS-7.4-x86_64
+
+LABEL local
+MENU LABEL (local)
+MENU DEFAULT
+LOCALBOOT -1
+
+$pxe_menu_items
+
+MENU end
+
+
+[root@ cobbler pxelinux.cfg]# cobbler sync  # 执行cobbler  sync后会覆盖/var/lib/tftpboot/pxelinux.cfg/default
+```
+
+**9.2 修改KS自动安装文件**
+
+```bash
+[root@ localhost ~]# cat /var/lib/cobbler/kickstarts/CentOS-7.4.ks
+install
+text
+keyboard us
+lang en_US.UTF-8
+timezone --utc Asia/Shanghai
+rootpw --iscrypted $default_password_crypted
+auth  --useshadow  --enablemd5
+firewall --disabled
+selinux --disabled
+url --url=http://10.159.237.1/cobbler/ks_mirror/CentOS-7.4-x86_64/
+
+zerombr
+bootloader --location=mbr
+clearpart --all --initlabel
+part /boot --fstype=xfs --size=500
+part swap --fstype=swap --size=2048
+part / --fstype=xfs --grow --size=500 --asprimary
+
+
+repo --name=base --baseurl=http://10.159.237.1/cobbler/ks_mirror/CentOS-7.4-x86_64/
+
+
+skipx
+
+firstboot --disable
+
+network --bootproto=dhcp --device=eth0 --onboot=yes --noipv6 --activate
+reboot
+
+
+%packages --nobase
+@core
+%end
+
+
+%post
+systemctl stop kdump.service
+systemctl disable kdump.service
+sed -ri "/^#UseDNS/c\UseDNS no" /etc/ssh/sshd_config
+sed -ri "/^GSSAPIAuthentication/c\GSSAPIAuthentication no" /etc/ssh/sshd_config
+%end
+```
+
+**9.3 安装kvm虚机**
+
+**pxe网络引导**
+
+```bash
+#虚机名称
+vmname=vm01
+virt-install \
+--connect qemu+ssh://root@10.159.237.1/system \
+--name=${vmname} \
+--virt-type=kvm \
+--vcpus=4 \
+--ram=8192 \
+--pxe \
+--network bridge=br0,model=virtio \
+--disk path=/data0/${vmname}.qcow2,size=100,format=qcow2 \
+--graphics vnc,listen=0.0.0.0 \
+--noautoconsole \
+--force \
+--autostart \
+--os-type=linux \
+--os-variant=rhel7
+```
+
+
+
+
+
+# 10 kickstar-KS文件和语法解析
+
+
+
+**10.1 ks文件说明**
+
+使用kickstart，只需事先定义好一个Kickstart自动应答配置文件ks.cfg（通常存放在安装服务器上），并让安装程序知道该配置文件的位置，在安装过程中安装程序就可以自己从该文件中读取安装配置，这样就避免了在安装过程中多次的人机交互，从而实现无人值守的自动化安装。
+
+**1.生成kickstart配置文件的三种方法**
+
+- 方法1：
+  每安装好一台Centos机器，Centos安装程序都会创建一个kickstart配置文件，名字叫anaconda-ks.cfg位于/root/anaconda-ks.cfg ,记录真实安装配置。
+- 方法2：
+  Centos提供了一个图形化的kickstart配置工具。在任何一个安装好的Linux系统上运行该工具，就可以很容易地创建你自己的kickstart配置文件。
+- 方法3：
+  阅读kickstart配置文件的手册。用任何一个文本编辑器都可以创建你自己的kickstart配置文件。
+  官方链接:
+  https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/installation_guide/sect-kickstart-howto
+
+**2.kickstart文件语法检查**
+
+```
+yum install pykickstart
+ksvalidator /var/www/html/ks_config/CentOS-7-ks.cfg 
+```
+
+请记住这个验证工具有其局限性。Kickstart 文件可能会很复杂；ksvalidator 可保证其语法正确，且该文件不包含淘汰的选项，但它无法保证安装会成功。它也不会尝试验证 Kickstart 文件的 %pre、%post 和 %packages 部分。
+
+**3.root密码生成**
+
+1. python法
+
+```
+python -c 'import crypt; print(crypt.crypt("123456"))'
+$6$mM/gpJHUs......AFcT3Q0CMJCqWk9d90
+```
+
+1. grub-crypt法
+
+```
+grub-crypt
+Password: 
+Retype password: 
+$6$npM35T......PburyA/FFDbdeGvnUrWpWi.
+```
+
+**10.2 ks.cfg详解**
+
+**10.2.1 ks文件组成**
+
+1.命令段
+键盘类型，语言，安装方式等系统的配置，有必选项和可选项，如果缺少某项必选项，安装时会中断并提示用户选择此项的选项
+
+2.软件包段
+以%packages开头，以%end结束,在安装过程中默认安装的软件包，安装软件时会自动分析依赖关系。
+
+```
+@groupname：指定安装的包组
+package_name：指定安装的包
+-package_name：指定不安装的包
+```
+
+3.脚本段(可选)
+以%post开头，以%end结束，在安装完系统之后执行的相关Linux命令、脚本
+以%pre开头，以%end结束，在安装完系统之前执行的相关Linux命令、脚本
+
+**10.2.2 关键字含义说明**
+
+1.开始部分
+
+```
+# Kickstart Configurator for CentOS 7 by NOAH LUO
+install
+```
+
+告知安装程序，这是一次全新安装，而不是升级upgrade。
+2.安装源部分
+
+```
+url --url="http://10.0.0.7/CentOS-6.7/"
+url --url ftp://<username>:<password>@<server>/<dir>
+nfs --server=nfsserver.example.com --dir=/tmp/install-tree
+```
+
+通过FTP或HTTP或NFS从远程服务器上的安装树中安装。任选一即可
+3.模式语言键盘等
+
+```bash
+text		#使用文本模式安装。
+lang en_US.UTF-8		#设置在安装过程中使用的语言以及系统的缺省语言。
+keyboard us	#设置系统键盘类型。
+zerombr	#清除mbr引导信息。
+```
+
+4.bootloader 系统引导配置
+
+```bash
+bootloader --location=mbr --driveorder=sda --append="crashkernel=auto rhgb quiet"
+--location		#指定引导记录被写入的位置.有效的值如下:mbr(缺省),partition,none。
+--driveorder	#指定在BIOS引导顺序中居首的驱动器。
+--append=		#指定内核参数.要指定多个参数,使用空格分隔它们。
+```
+
+5.network网络配置[客户机]
+
+```bash
+network --bootproto=dhcp --device=eth0 --onboot=yes --noipv6 --hostname=CentOS7 --activate
+或者
+network --bootproto=static --device=eth0 --ip=10.0.0.201 --netmask=255.255.255.0 --gateway=10.0.0.201 --nameserver=10.0.0.202 --activate
+network  --hostname=CentOS7
+# static方法要求在kickstart文件里输入所有的网络信息。
+
+# 请注意所有配置信息都必须在一行上指定,或写两个newwork,不能使用反斜线来换行。
+--ip=			被安装的机器的IP地址.
+--gateway		IP地址格式的默认网关.
+--netmask		安装的系统的子网掩码.
+--hostname		安装的系统的主机名.
+--onboot		是否在引导时启用该设备.
+--noipv6		禁用此设备的IPv6.
+--nameserver	配置dns解析.
+```
+
+6.时区认证等
+
+```bash
+timezone --utc Asia/Shanghai
+authconfig --enableshadow --passalgo=sha512
+rootpw  --iscrypted $6$X20eRtuZhkHznTb4$dK0BJByOSA.....wJbAjVI5D6/
+```
+
+设置时区上海,设置认证方式,设置密码,密码非明文,用前文生成密码的方式生成
+7.分区相关
+
+```bash
+clearpart --all --initlabel
+--all 从系统中清除所有分区，--initlable 初始化磁盘标签
+part /boot --fstype xfs --size 1024
+part swap --size 1024
+part / --fstype xfs --size 1 --grow
+# 磁盘分区
+--fstype		为分区设置文件系统类型.有效的类型为ext2,ext3,swap, xfs和vfat。
+--asprimary	强迫把分区分配为主分区,否则提示分区失败。
+--size			以MB为单位的分区最小值.在此处指定一个整数值,如500.不加MB。
+--grow			告诉分区使用所有可用空间(若有),或使用设置的最大值。
+```
+
+8.其他信息
+
+```bash
+firstboot --disable
+selinux --disabled
+firewall --disabled
+logging --level=info
+reboot
+firstboot	负责协助配置redhat一些重要的信息。
+selinux		关闭selinux。
+firewall	关闭防火墙。
+logging		设置日志级别。
+reboot		设定安装完成后重启,也可以选择halt关机。
+```
+
+9.包选装
+
+```
+%packages
+@^minimal
+@compat-libraries
+@debugging
+@development
+tree
+nmap
+sysstat
+lrzsz
+dos2unix
+telnet 
+wget 
+vim 
+bash-completion
+%end
+```
+
+10.安装完成后操作
+
+```
+%post
+systemctl disable postfix.service
+%end
+```
+
+可以调用优化脚本,对装完后的服务器进行初始优化
+
+
+
+# 11 配置DHCP，以用于多VLAN环境
+
+
 
 
 

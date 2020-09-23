@@ -7,11 +7,6 @@
                 <interface sztype="Ethernet" interfacename="GE" count="2" />
             </slot>
         </dev>
-        <dev id="16F0C462-CE27-4aae-9E3A-842E7B4295B8" name="PC2" poe="0" model="PC" settings=" -simpc_ip 192.168.3.2  -simpc_mask 255.255.255.0  -simpc_gateway 192.168.3.1  -simpc_mac 54-89-98-11-0A-E2  -simpc_mc_dstip 0.0.0.0  -simpc_mc_dstmac 00-00-00-00-00-00  -simpc_dns1 0.0.0.0  -simpc_dns2 0.0.0.0  -simpc_ipv6 ::  -simpc_prefix 128  -simpc_gatewayv6 ::  -simpc_dhcp_state 0  -simpc_dhcpv6_state 0  -simpc_dns_auto_state 0  -simpc_igmp_version 1  -simpc_group_ip_start 0.0.0.0  -simpc_src_ip_start 0.0.0.0  -simpc_group_num 0  -simpc_group_step 0  -simpc_src_num 0  -simpc_src_step 0  -simpc_type MODE_IS_INCLUDE " system_mac="54-89-98-11-0A-E2" com_port="0" bootmode="0" cx="473.000000" cy="573.000000" edit_left="500" edit_top="627">
-            <slot number="slot17" isMainBoard="1">
-                <interface sztype="Ethernet" interfacename="Ethernet" count="1" />
-            </slot>
-        </dev>
         <dev id="CDAA314C-A31D-4d84-805B-B19380FC856E" name="LSW1" poe="0" model="S5700" settings="" system_mac="4C-1F-CC-E1-23-8C" com_port="2001" bootmode="0" cx="473.000000" cy="173.000000" edit_left="500" edit_top="227">
             <slot number="slot17" isMainBoard="1">
                 <interface sztype="Ethernet" interfacename="GE" count="24" />
@@ -36,6 +31,11 @@
             </slot>
         </dev>
         <dev id="B3B41535-1EA3-475c-B97A-900A8704E948" name="PC3" poe="0" model="PC" settings=" -simpc_ip 192.168.4.2  -simpc_mask 255.255.255.0  -simpc_gateway 192.168.4.1  -simpc_mac 54-89-98-57-2A-D3  -simpc_mc_dstip 0.0.0.0  -simpc_mc_dstmac 00-00-00-00-00-00  -simpc_dns1 0.0.0.0  -simpc_dns2 0.0.0.0  -simpc_ipv6 ::  -simpc_prefix 128  -simpc_gatewayv6 ::  -simpc_dhcp_state 0  -simpc_dhcpv6_state 0  -simpc_dns_auto_state 0  -simpc_igmp_version 1  -simpc_group_ip_start 0.0.0.0  -simpc_src_ip_start 0.0.0.0  -simpc_group_num 0  -simpc_group_step 0  -simpc_src_num 0  -simpc_src_step 0  -simpc_type MODE_IS_INCLUDE " system_mac="54-89-98-57-2A-D3" com_port="0" bootmode="0" cx="673.000000" cy="573.000000" edit_left="700" edit_top="627">
+            <slot number="slot17" isMainBoard="1">
+                <interface sztype="Ethernet" interfacename="Ethernet" count="1" />
+            </slot>
+        </dev>
+        <dev id="16F0C462-CE27-4aae-9E3A-842E7B4295B8" name="PC2" poe="0" model="PC" settings=" -simpc_ip 192.168.3.2  -simpc_mask 255.255.255.0  -simpc_gateway 192.168.3.1  -simpc_mac 54-89-98-11-0A-E2  -simpc_mc_dstip 0.0.0.0  -simpc_mc_dstmac 00-00-00-00-00-00  -simpc_dns1 0.0.0.0  -simpc_dns2 0.0.0.0  -simpc_ipv6 ::  -simpc_prefix 128  -simpc_gatewayv6 ::  -simpc_dhcp_state 0  -simpc_dhcpv6_state 0  -simpc_dns_auto_state 0  -simpc_igmp_version 1  -simpc_group_ip_start 0.0.0.0  -simpc_src_ip_start 0.0.0.0  -simpc_group_num 0  -simpc_group_step 0  -simpc_src_num 0  -simpc_src_step 0  -simpc_type MODE_IS_INCLUDE " system_mac="54-89-98-11-0A-E2" com_port="0" bootmode="0" cx="473.000000" cy="573.000000" edit_left="500" edit_top="627">
             <slot number="slot17" isMainBoard="1">
                 <interface sztype="Ethernet" interfacename="Ethernet" count="1" />
             </slot>
@@ -66,5 +66,6 @@
         <txttip left="159" top="657" right="372" bottom="715" content="PC1：vlan 2&#x0D;&#x0A;IP地址：192.168.2.2/24&#x0D;&#x0A;网关：192.168.2.1" fontname="Consolas" fontstyle="0" editsize="120" txtcolor="-16777216" txtbkcolor="-7278960" charset="1" />
         <txttip left="404" top="656" right="617" bottom="714" content="PC2：vlan 3&#x0D;&#x0A;IP地址：192.168.3.2/24&#x0D;&#x0A;网关：192.168.3.1" fontname="Consolas" fontstyle="0" editsize="120" txtcolor="-16777216" txtbkcolor="-7278960" charset="1" />
         <txttip left="650" top="656" right="863" bottom="714" content="PC3：vlan 4&#x0D;&#x0A;IP地址：192.168.4.2/24&#x0D;&#x0A;网关：192.168.4.1" fontname="Consolas" fontstyle="0" editsize="120" txtcolor="-16777216" txtbkcolor="-7278960" charset="1" />
+        <txttip left="466" top="391" right="543" bottom="411" content="PC端网关" fontname="Consolas" fontstyle="0" editsize="120" txtcolor="-16777216" txtbkcolor="-7278960" charset="1" />
     </txttips>
 </topo>

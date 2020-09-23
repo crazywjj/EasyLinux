@@ -178,11 +178,21 @@
         <td><a href="杂货铺/Windows计划任务添加.md">Windows计划任务添加</a></td>
          <td><a href="杂货铺/CwRsync实现windows下文件定时同步.md">CwRsync实现windows文件定时同步</a></td>
     </tr>
-         <tr>
+    <tr>
         <td><a href="杂货铺/Zabbix4.0 离线安装.md">Zabbix4.0 离线安装</a></td>
         <td><a href="杂货铺/CentOS7.4mini离线安装ansible.md">CentOS7.4mini离线安装ansible</a></td>
-    </tr>   
+        <td><a href="杂货铺/CentOS7挂载磁盘.md">CentOS7挂载磁盘</a></td>
+        <td><a href="杂货铺/CentOS7静默安装Oracle11.md">CentOS7静默安装Oracle11</a></td>
+    </tr>
+        <tr>
+        <td><a href="杂货铺/CentOS7配置VLAN标签或网卡子接口.md">CentOS7配置VLAN标签或网卡子接口</a></td>
+        <td><a href="杂货铺/IPMI远程安装系统.md">IPMI远程安装系统</a></td>
+        <td><a href="杂货铺/linux多网卡绑定(bond模式).md">linux多网卡绑定(bond模式)</a></td>
+    </tr>
 </table>
+
+
+
 
 
 
@@ -201,6 +211,8 @@
     </tr>
 </table>
 
+
+# 友情链接
 
 
 

@@ -548,6 +548,10 @@ raw创建多大磁盘，就占用多大空间直接分配，qcow2动态的用多
 
 ## 1.4.4 安装虚拟机
 
+安装方式有如下：
+
+<img src="assets/image-20200918165656462.png" alt="image-20200918165656462" style="zoom:67%;" />
+
 ```shell
 [root@ CentOS7-200 opt]# yum install -y virt-install
 
@@ -577,38 +581,165 @@ tcp        0      0 0.0.0.0:5900            0.0.0.0:*               LISTEN      
 **virt-install常用参数**
 
 ```shell
-1.-n --name= 客户端虚拟机名称
-2.-r --ram= 客户端虚拟机分配的内存
-3.-u --uuid= 客户端UUID 默认不写时，系统会自动生成
-4.--vcpus= 客户端的vcpu个数
-5.-v --hvm 全虚拟化
-6.-p --paravirt 半虚拟化
-7.-l --location=localdir 安装源，有本地、nfs、http、ftp几种，多用于ks网络安装
-8.--vnc 使用vnc ，另有--vnclient＝监听的IP  --vncport ＝VNC监听的端口
-9.-c --cdrom= 光驱 安装途径
-10.--disk= 使用不同选项作为磁盘使用安装介质
-11.-w NETWORK, --network=default  连接客户机到主机网络(默认的default没有网络)
-12.-s --file-size= 使用磁盘映像的大小 单位为GB
-13.-f --file= 作为磁盘映像使用的文件
-14.--cpuset=设置哪个物理CPU能够被虚拟机使用
-15.--os-type=OS_TYPE 针对一类操作系统优化虚拟机配置（例如：‘linux’，‘windows’）
-16.--os-variant=OS_VARIANT 针对特定操作系统变体（例如’rhel6’, ’winxp’,'win2k3'）进一步优化虚拟机配置
-17.--host-device=HOSTDEV 附加一个物理主机设备到客户机。HOSTDEV是随着libvirt使用的一个节点设备名（具体设备如’virsh nodedev-list’的显示的结果）
-18.--accelerate KVM或KQEMU内核加速,这个选项是推荐最好加上。如果KVM和KQEMU都支持，KVM加速器优先使用。
-19.-x EXTRA, --extra-args=EXTRA 当执行从"--location"选项指定位置的客户机安装时，附加内核命令行参数到安装程序
-20.--nographics "virt-install" 将默认使用--vnc选项，使用nographics指定没有控制台被分配给客户机
+[root@Dell ~]# virt-install --help
+usage: virt-install --name NAME --memory MB STORAGE INSTALL [options]
+
+从指定安装源创建新虚拟机。
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --connect URI         通过 libvirt URI 连接到虚拟机管理程序
+
+通用选项:
+  -n NAME, --name NAME  客户机实例名称
+  --memory MEMORY       Configure guest memory allocation. Ex:
+                        --memory 1024 (in MiB)
+                        --memory 512,maxmemory=1024
+                        --memory 512,maxmemory=1024,hotplugmemorymax=2048,hotplugmemoryslots=2
+  --vcpus VCPUS         配置客户机虚拟 CPU(vcpu) 数量。例如：
+                        --vcpus 5
+                        --vcpus 5,maxcpus=10,cpuset=1-4,6,8
+                        --vcpus sockets=2,cores=4,threads=2
+  --cpu CPU             CPU model and features. Ex:
+                        --cpu coreduo,+x2apic
+                        --cpu host-passthrough
+                        --cpu host
+  --metadata METADATA   配置客户机元数据。例如：
+                        --metadata name=foo,title="My pretty title",uuid=...
+                        --metadata description="My nice long description"
+
+安装方法选项:
+  --cdrom CDROM         光驱安装介质
+  -l LOCATION, --location LOCATION
+                        安装源 (例如：nfs:host:/path, http://host/path,
+                        ftp://host/path)
+  --pxe                 使用 PXE 协议从网络引导
+  --import              在已有的磁盘镜像中构建客户机
+  --livecd              将光驱介质视为 Live CD
+  -x EXTRA_ARGS, --extra-args EXTRA_ARGS
+                        将附加参数添加到由 --location
+                        引导的内核中
+  --initrd-inject INITRD_INJECT
+                        添加指定文件到由 --location 指定的 initrd
+                        根中
+  --os-variant DISTRO_VARIANT
+                        在客户机上安装的操作系统，例如：'fedor
+                        a18'、'rhel6'、'winxp' 等。
+  --boot BOOT           配置客户机引导设置。例如：
+                        --boot hd,cdrom,menu=on
+                        --boot init=/sbin/init (针对容器)
+  --idmap IDMAP         为 LXC 容器启用用户名称空间。例如：
+                        --idmap uid_start=0,uid_target=1000,uid_count=10
+
+设备选项:
+  --disk DISK           指定存储的各种选项。例如：
+                        --disk size=10 (在默认位置创建 10GiB 镜像)
+                        --disk /my/existing/disk,cache=none
+                        --disk device=cdrom,bus=scsi
+                        --disk=?
+  -w NETWORK, --network NETWORK
+                        配置客户机网络接口。例如：
+                        --network bridge=mybr0
+                        --network network=my_libvirt_virtual_net
+                        --network network=mynet,model=virtio,mac=00:11...
+                        --network none
+                        --network help
+  --graphics GRAPHICS   配置客户机显示设置。例如：
+                        --graphics vnc
+                        --graphics spice,port=5901,tlsport=5902
+                        --graphics none
+                        --graphics vnc,password=foobar,port=5910,keymap=ja
+  --controller CONTROLLER
+                        配置客户机控制器设备。例如：
+                        --controller type=usb,model=ich9-ehci1
+  --input INPUT         配置客户机输入设备。例如：
+                        --input tablet
+                        --input keyboard,bus=usb
+  --serial SERIAL       配置客户机串口设备
+  --parallel PARALLEL   配置客户机并口设备
+  --channel CHANNEL     配置客户机通信通道
+  --console CONSOLE     配置文本控制台连接主机与客户机
+  --hostdev HOSTDEV     配置物理 USB/PCI 等主机设备与客户机共享
+  --filesystem FILESYSTEM
+                        传递主机目录到客户机。例如：
+                        --filesystem /my/source/dir,/dir/in/guest
+                        --filesystem template_name,/,type=template
+  --sound [SOUND]       配置客户机声音设备仿真
+  --watchdog WATCHDOG   配置客户机 watchdog 设备
+  --video VIDEO         配置客户机视频硬件。
+  --smartcard SMARTCARD
+                        配置客户机智能卡设备。例如：
+                        --smartcard mode=passthrough
+  --redirdev REDIRDEV   配置客户机重定向设备。例如：
+                        --redirdev usb,type=tcp,server=192.168.1.1:4000
+  --memballoon MEMBALLOON
+                        配置客户机 memballoon 设备。例如：
+                        --memballoon model=virtio
+  --tpm TPM             配置客户机 TPM 设备。例如：
+                        --tpm /dev/tpm
+  --rng RNG             Configure a guest RNG device. Ex:
+                        --rng /dev/urandom
+  --panic PANIC         配置客户机 panic 设备。例如：
+                        --panic default
+  --memdev MEMDEV       Configure a guest memory device. Ex:
+                        --memdev dimm,target_size=1024
+
+客户机配置选项:
+  --security SECURITY   设置域安全驱动配置。
+  --cputune CPUTUNE     Tune CPU parameters for the domain process.
+  --numatune NUMATUNE   为域进程调整 NUMA 策略。
+  --memtune MEMTUNE     为域进程调整内存策略。
+  --blkiotune BLKIOTUNE
+                        为域进程调整 blkio 策略。
+  --memorybacking MEMORYBACKING
+                        为域进程设置内存后备策略。例如：
+                        --memorybacking hugepages=on
+  --features FEATURES   设置域 <features> XML。例如：
+                        --features acpi=off
+                        --features apic=on,eoi=on
+  --clock CLOCK         设置域 <clock> XML。例如：
+                        --clock offset=localtime,rtc_tickpolicy=catchup
+  --pm PM               配置 VM 电源管理功能
+  --events EVENTS       配置 VM 生命周期管理策略
+  --resource RESOURCE   配置 VM 资源分区(cgroups)
+  --sysinfo SYSINFO     Configure SMBIOS System Information. Ex:
+                        --sysinfo emulate
+                        --sysinfo host
+                        --sysinfo bios_vendor=Vendor_Inc.,bios_version=1.2.3-abc,...
+                        --sysinfo system_manufacturer=System_Corp.,system_product=Computer,...
+                        --sysinfo baseBoard_manufacturer=Baseboard_Corp.,baseBoard_product=Motherboard,...
+  --qemu-commandline QEMU_COMMANDLINE
+                        Pass arguments directly to the qemu emulator. Ex:
+                        --qemu-commandline='-display gtk,gl=on'
+                        --qemu-commandline env=DISPLAY=:0.1
+
+虚拟化平台选项:
+  -v, --hvm             这个客户机应该是一个全虚拟化客户机
+  -p, --paravirt        这个客户机应该是一个半虚拟化客户机
+  --container           这个客户机应该是一个容器客户机
+  --virt-type HV_TYPE   要使用的管理程序名称 (kvm, qemu, xen, ...)
+  --arch ARCH           模拟 CPU 架构
+  --machine MACHINE     机器类型为仿真类型
+
+其它选项:
+  --autostart           主机启动时自动启动域。
+  --transient           Create a transient domain.
+  --wait WAIT           请等待数分钟以便完成安装。
+  --noautoconsole       不要自动尝试连接到客户端控制台
+  --noreboot            安装完成后不启动客户机。
+  --print-xml [XMLONLY]
+                        打印生成的 XML 域，而不是创建客户机。
+  --dry-run             运行安装程序，但不创建设备或定义客户
+                        机。
+  --check CHECK         启用或禁用验证检查。例如：
+                        --check path_in_use=off
+                        --check all=off
+  -q, --quiet           抑制非错误输出
+  -d, --debug           输入故障排除信息
 ```
 
 **virt-install详细参数**
-
-一般选项：指定虚拟机的名称、内存大小、VCPU个数及特性等；  
-
-```bash
--n NAME, --name=NAME：虚拟机名称，需全局惟一； 
--r MEMORY, --ram=MEMORY：虚拟机内在大小，单位为MB； 
---vcpus=VCPUS[,maxvcpus=MAX][,sockets=#][,cores=#][,threads=#]：VCPU个数及相关配置； 
---cpu=CPU：CPU模式及特性，如coreduo等；可以使用qemu-kvm -cpu ?来获取支持的CPU模式；　　
-```
 
 安装方法：指定安装方法、GuestOS类型等；  
 
@@ -695,7 +826,7 @@ model：GuestOS中看到的网络设备型号，如e1000、rtl8139或virtio等�
 
 **示例：**
 
-创建一个名为rhel5的虚拟机，其hypervisor为KVM，内存大小为512MB，磁盘为8G的映像文件/var/lib/libvirt/p_w_picpaths/rhel5.8.img，通过boot.iso光盘镜像来引导启动安装过程。  
+1、创建一个名为rhel5的虚拟机，其hypervisor为KVM，内存大小为512MB，磁盘为8G的映像文件/var/lib/libvirt/p_w_picpaths/rhel5.8.img，通过boot.iso光盘镜像来引导启动安装过程。  
 
 ```bash
 virt-install \ 
@@ -709,7 +840,7 @@ virt-install \
 --os-variant rhel5
 ```
 
-创建一个名为rhel6的虚拟机，其有两个虚拟CPU，安装方法为FTP，并指定了ks文件的位置，磁盘映像文件为稀疏格式，连接至物理主机上的名为brnet0的桥接网络：  
+2、创建一个名为rhel6的虚拟机，其有两个虚拟CPU，安装方法为FTP，并指定了ks文件的位置，磁盘映像文件为稀疏格式，连接至物理主机上的名为brnet0的桥接网络：  
 
 ```bash
 virt-install \  
@@ -726,7 +857,7 @@ virt-install \
 --force  
 ```
 
-创建一个名为rhel5.8的虚拟机，磁盘映像文件为稀疏模式的格式为qcow2且总线类型为virtio，安装过程不启动图形界面（--nographics），但会启动一个串行终端将安装过程以字符形式显示在当前文本模式下，虚拟机显卡类型为cirrus：  
+3、创建一个名为rhel5.8的虚拟机，磁盘映像文件为稀疏模式的格式为qcow2且总线类型为virtio，安装过程不启动图形界面（--nographics），但会启动一个串行终端将安装过程以字符形式显示在当前文本模式下，虚拟机显卡类型为cirrus：  
 
 ```bash
 virt-install \ 
@@ -754,7 +885,7 @@ virt-install \
 --import 
 ```
 
-通过网络引导安装系统
+4、通过网络引导安装系统
 
 ```bash
 virt-install -n "centos6.5" \
@@ -766,17 +897,31 @@ virt-install -n "centos6.5" \
 --force
 ```
 
-通过网络引导且通过kickstart文件自动化安装系统
+5、通过网络引导且通过kickstart文件自动化安装系统
 
 ```bash
-virt-install -n "centos6.5" \
---vcpus 2 \
--r 512 \
--l http://192.168.8.42/cobbler/ks_mirror/centos6.5-x86_64/ \
---extra-args "ks=http://192.168.8.42/cobbler/centos6.5-x86_64.cfg" \
---disk path=/p_w_picpaths/vm3/centos65.qcow2,bus=virtio,size=120,sparse \
+virt-install -n "test" \
+--vcpus 4 \
+-r 8192 \
+-l http://10.159.237.1/cobbler/ks_mirror/CentOS-7.4-x86_64/ \
+--extra-args "ks=http://10.159.237.1/cobbler/CentOS-7.4.ks" \
+--disk path=/data0/test.qcow2,bus=virtio,size=120,sparse \
 --network bridge=br0,model=virtio \
 --force
+或者
+virt-install \
+--name=test \
+--virt-type=kvm \
+--vcpus=4 \
+--ram=8192 \
+--pxe \
+--network bridge=br0 \
+--disk path=/data0/test.qcow2,size=40,format=qcow2 \
+--graphics vnc,listen=0.0.0.0 \
+--noautoconsole \
+--force \
+--os-type=linux \
+--os-variant=rhel7
 ```
 
  每个虚拟机创建后，其配置信息保存在/etc/libvirt/qemu目录中，文件名与虚拟机相同，格式为XML  
@@ -866,7 +1011,7 @@ X11Forwarding yes
 libvirt是管理虚拟机的API库，不仅支持KVM虚拟机，也可以管理Xen等方案下的虚拟机。
 
 ```shell
-[root@ CentOS7-200 ~]# yum install virt-manager libvirt libvirt-client virt-viewer qemu-kvm mesa-libglapi  -y
+[root@ CentOS7-200 ~]# yum install virt-manager libvirt libvirt-client virt-viewer qemu-kvm mesa-libglapi -y
 [root@ CentOS7-200 ~]# systemctl restart libvirtd.service && systemctl enable libvirtd.service
 ```
 
@@ -929,6 +1074,19 @@ yum install dejavu-sans-mono-fonts -y
 ![1589627485320](assets/1589627485320.png)
 
 
+
+## 1.5.4 管理多台kvm宿主机
+
+![image-20200921103030880](assets/image-20200921103030880.png)
+
+
+
+如果出现提示you need to install openssh-askpass or similar to connect to this host
+解决办法两种
+（1）安装openssh-askpass
+（2）或者输入命令：virt-manager --no-fork 命令行输入密码
+
+<img src="assets/image-20200921181117955.png" alt="image-20200921181117955" style="zoom:67%;" />
 
 
 

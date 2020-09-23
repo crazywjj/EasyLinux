@@ -243,7 +243,7 @@ apiServer:
 apiVersion: kubeadm.k8s.io/v1beta2
 certificatesDir: /etc/kubernetes/pki
 clusterName: kubernetes
-#controlPlaneEndpoint: "10.0.0.88:6443"    #haproxy负载均衡ip和端口
+controlPlaneEndpoint: "10.0.0.88:6443"    #haproxy负载均衡ip和端口
 controllerManager: {}
 dns:
   type: CoreDNS
