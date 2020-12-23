@@ -168,7 +168,7 @@
 <table border="0">
 <tr>
         <td><a href="杂货铺/CentOS6克隆虚机前优化.md">CentOS6 克隆虚机前优化</a></td>
-    	<td><a href="杂货铺/CentOS7.4mini离线安装ansible.md">CentOS7.4mini离线安装ansible</a></td>
+    	<td><a href="杂货铺/CentOS7离线安装ansible.md">CentOS7离线安装ansible</a></td>
         <td><a href="杂货铺/CentOS7安装Gitlab.md">CentOS7安装Gitlab</a></td>
         <td><a href="杂货铺/CentOS7挂载磁盘.md">CentOS7挂载磁盘</a></td>
         </tr>
