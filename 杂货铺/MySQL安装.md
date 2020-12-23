@@ -89,7 +89,7 @@ chown -R mysql.mysql /data/mysql
 5、初始化
 
 ```bash
-mysqld --initialize-insecure --user=mysql --basedir=/usr/local/mysql --datadir=/data/mysql
+mysqld --initialize-insecure --user=mysql --basedir=/usr/local/mysql --datadir=/data/mysql/data
 ```
 
 - --initialize-insecure：此参数初始化数据库时为空密码

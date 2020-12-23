@@ -196,6 +196,22 @@ subnet 10.0.0.0 netmask 255.255.255.0 {   #这里改为分配的网段和掩码
 
 ```
 
+dhcp报错no free leases
+
+首先确认一下，dhcp网路段IP地址是否可用；其次查看
+
+```
+[root@localhost dhcpd]# pwd
+/var/lib/dhcpd
+[root@localhost dhcpd]# ll
+total 8
+-rw-r--r-- 1 dhcpd dhcpd   0 Apr  2  2020 dhcpd6.leases
+-rw-r--r-- 1 dhcpd dhcpd 500 Oct 28 16:13 dhcpd.leases
+-rw-r--r-- 1 dhcpd dhcpd 177 Oct 28 16:12 dhcpd.leases~
+```
+
+
+
 ## 5.5 同步Cobbler配置
 
 ```
@@ -717,9 +733,9 @@ sed -ri "/^GSSAPIAuthentication/c\GSSAPIAuthentication no" /etc/ssh/sshd_config
 
 ```bash
 #虚机名称
-vmname=vm01
+vmname=vm07
 virt-install \
---connect qemu+ssh://root@10.159.237.1/system \
+--connect qemu+ssh://root@10.159.232.1/system \
 --name=${vmname} \
 --virt-type=kvm \
 --vcpus=4 \
@@ -733,6 +749,22 @@ virt-install \
 --autostart \
 --os-type=linux \
 --os-variant=rhel7
+```
+
+**9.4 查看KVM宿主机上虚机的IP**
+
+通过`arp -a`获取所有地址（排除gateway地址即可）
+
+```
+[root@localhost ~]# arp -a
+? (10.159.232.233) at 52:54:00:4c:62:d5 [ether] on br0
+? (10.159.232.231) at 52:54:00:ce:bb:03 [ether] on br0
+? (10.159.232.229) at 52:54:00:2f:e1:a2 [ether] on br0
+? (10.159.232.234) at 52:54:00:c1:fc:9c [ether] on br0
+gateway (10.159.232.254) at e4:c2:d1:fc:f9:1a [ether] on br0
+? (10.159.232.232) at 52:54:00:c9:ce:65 [ether] on br0
+? (10.159.232.230) at 52:54:00:7f:a3:42 [ether] on br0
+
 ```
 
 

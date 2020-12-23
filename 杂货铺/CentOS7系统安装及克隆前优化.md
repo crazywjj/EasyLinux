@@ -37,7 +37,6 @@
 ```shell
 systemctl   stop   firewalld.service
 systemctl   disable firewalld.service
-
 setenforce 0
 sed -i  '/^SELINUX/s#enforcing#disabled#g' /etc/selinux/config
 ```

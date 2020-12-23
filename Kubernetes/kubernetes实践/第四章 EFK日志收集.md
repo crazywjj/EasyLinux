@@ -99,7 +99,7 @@ https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/fl
 https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/fluentd-elasticsearch/kibana-service.yaml
 https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/fluentd-elasticsearch/kibana-deployment.yaml
 EOF
-for i in `cat ekf.ini`;do wget -c $i;done
+for i in `cat efk.ini`;do wget -c $i;done
 ```
 
 由于是虚机测试资源不够；因此修改几个参数；以防ES无法启动。
@@ -245,6 +245,18 @@ cd /etc/kubernetes/efk/efk && for i in `ls`;do docker load -i $i;done
 cd /etc/kubernetes/efk
 kubectl apply -f .
 ```
+
+报错：
+
+```bash
+[root@ k8s-m01 efk]# kubectl apply -f .
+error validating "fluentd-es-ds.yaml": error validating data: ValidationError(DaemonSet.spec.template.spec.securityContext): unknown field "seccompProfile" in io.k8s.api.core.v1.PodSecurityContext; if you choose to ignore these errors, turn validation off with --validate=false
+error validating "kibana-deployment.yaml": error validating data: ValidationError(Deployment.spec.template.spec.securityContext): unknown field "seccompProfile" in io.k8s.api.core.v1.PodSecurityContext; if you choose to ignore these errors, turn validation off with --validate=false
+```
+
+
+
+
 
 ## 1.3.4 检查执行结果
 
