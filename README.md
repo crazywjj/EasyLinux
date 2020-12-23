@@ -166,30 +166,35 @@
 # 杂货铺
 
 <table border="0">
-    <tr>
+<tr>
         <td><a href="杂货铺/CentOS6克隆虚机前优化.md">CentOS6 克隆虚机前优化</a></td>
-		<td><a href="杂货铺/CentOS7系统安装及克隆前优化.md">CentOS7 系统安装及克隆前优化</a></td>
-        <td><a href="杂货铺/本地镜像YUM源.md">本地镜像YUM源</a></td>
-        <td><a href="杂货铺/MySQL安装.md">MySQL安装</a></td>
-    </tr>
-     <tr>
-        <td><a href="杂货铺/SSH代理穿透.md">SSH代理穿透</a></td>
-        <td><a href="杂货铺/Windows Server 2012配置NAT代理服务器.md">Windows Server 2012配置NAT代理服务器</a></td>
-        <td><a href="杂货铺/Windows计划任务添加.md">Windows计划任务添加</a></td>
-         <td><a href="杂货铺/CwRsync实现windows下文件定时同步.md">CwRsync实现windows文件定时同步</a></td>
-    </tr>
-    <tr>
-        <td><a href="杂货铺/Zabbix4.0 离线安装.md">Zabbix4.0 离线安装</a></td>
         <td><a href="杂货铺/CentOS7.4mini离线安装ansible.md">CentOS7.4mini离线安装ansible</a></td>
+        <td><a href="杂货铺/CentOS7安装Gitlab.md">CentOS7安装Gitlab</a></td>
         <td><a href="杂货铺/CentOS7挂载磁盘.md">CentOS7挂载磁盘</a></td>
-        <td><a href="杂货铺/CentOS7静默安装Oracle11.md">CentOS7静默安装Oracle11</a></td>
+        </tr>
+<tr> 
+    <td><a href="杂货铺/CentOS7静默安装Oracle11.md">CentOS7静默安装Oracle11</a></td>
+    <td><a href="杂货铺/CentOS7配置VLAN标签或网卡子接口.md">CentOS7配置VLAN标签或网卡子接口</a></td>
+    <td><a href="杂货铺/CentOS7系统安装及克隆前优化.md">CentOS7 系统安装及克隆前优化</a></td>
+    <td><a href="杂货铺/CwRsync实现windows下文件定时同步.md">CwRsync实现windows文件定时同步</a></td>   
+	</tr>
+<tr>
+    <td><a href="杂货铺/IPMI远程安装系统.md">IPMI远程安装系统</a></td>
+    <td><a href="杂货铺/linux多网卡绑定(bond模式).md">linux多网卡绑定(bond模式)</a></td>
+    <td><a href="杂货铺/MySQL安装.md">MySQL安装</a></td>
+    <td><a href="杂货铺/Zabbix4.0 离线安装.md">Zabbix4.0 离线安装</a></td>
+	</tr>
+<tr>
+    <td><a href="杂货铺/SSH代理穿透.md">SSH代理穿透</a></td>
+    <td><a href="杂货铺/Windows Server 2012配置NAT代理服务器.md">Windows Server 2012配置NAT代理服务器</a></td>
+    <td><a href="杂货铺/Windows计划任务添加.md">Windows计划任务添加</a></td>
+    <td><a href="杂货铺/Windows Server 2016 远程桌面解除多用户限制.md">Windows Server 2016 远程桌面解除多用户限制</a>	</td>  
     </tr>
-        <tr>
-        <td><a href="杂货铺/CentOS7配置VLAN标签或网卡子接口.md">CentOS7配置VLAN标签或网卡子接口</a></td>
-        <td><a href="杂货铺/IPMI远程安装系统.md">IPMI远程安装系统</a></td>
-        <td><a href="杂货铺/linux多网卡绑定(bond模式).md">linux多网卡绑定(bond模式)</a></td>
+<tr>
+	<td><a href="杂货铺/本地镜像YUM源.md">本地镜像YUM源</a></td>  
     </tr>
 </table>
+
 
 
 # 网络
