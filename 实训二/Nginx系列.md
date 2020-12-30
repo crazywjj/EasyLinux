@@ -455,6 +455,63 @@ make && make install
 --without-xxx：关闭所有其他功能，这样生成的动态链接二进制程序依赖最小；
 ```
 
+四层代理mysql和ftp：
+
+```
+
+user  nginx;
+worker_processes  4;
+
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+
+#pid        logs/nginx.pid;
+
+
+events {
+    worker_connections  65536;
+}
+
+
+
+stream {
+
+log_format tcp '$remote_addr [$time_local] '
+                 '$protocol $status $bytes_sent $bytes_received '
+                 '$session_time "$upstream_addr" '
+                 '"$upstream_bytes_sent" "$upstream_bytes_received" "$upstream_connect_time"';
+
+    upstream vsftp {
+        hash $remote_addr consistent;
+        server 10.18.22.101:22;
+    }
+    server {
+        listen 61022 so_keepalive=on;
+        proxy_connect_timeout 300s;
+        proxy_timeout 600s;
+        proxy_pass vsftp;
+	access_log logs/vsftp-access.log tcp;
+        error_log  logs/vsftp-error.log  error;
+    }
+
+
+    upstream mysql {
+        hash $remote_addr consistent;
+        server 10.18.22.154:3306;
+    }
+    server {
+        listen 61026 so_keepalive=on;
+        proxy_connect_timeout 300s;
+        proxy_timeout 600s;
+        proxy_pass vsftp;
+	access_log logs/mysql-access.log tcp;
+        error_log  logs/mysql-error.log  error;
+    }
+
+}
+```
+
 
 
 

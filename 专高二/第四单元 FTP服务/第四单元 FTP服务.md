@@ -407,10 +407,14 @@ lftp 是一个功能强大的下载工具，它支持访问文件的协议: ftp,
 
 2. lftp登录：
 
-lftp ftp://user:password@site:port 
-lftp user:password@site:port 
-lftp site -p port -u user,password 
-lftp site:port -u user,password
+#登录到ftp--法1
+lftp (ftp://)user:password@site:21  #ftp://可以省略，默认21端口可以省略
+#登录到ftp--法2
+lftp (ftp://)user@site:port   #这种方式回车后，系统提示输入密码
+#登录到sftp---法1
+lftp sftp://user:password@site:22  #如果是默认端口22，可以省略，如果不是就必须填写端口号
+#登录到sftp---法2
+lftp sftp://user@password:port
 
 3. lftp常用命令：
 ls  	显示远端文件列表(!ls 显示本地文件列表)。 
