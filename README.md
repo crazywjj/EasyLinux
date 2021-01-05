@@ -191,9 +191,11 @@
     <td><a href="杂货铺/Windows Server 2016 远程桌面解除多用户限制.md">Windows Server 2016 远程桌面解除多用户限制</a>	</td>  
     </tr>
 <tr>
-	<td><a href="杂货铺/本地镜像YUM源.md">本地镜像YUM源</a></td>  
+	<td><a href="杂货铺/本地镜像YUM源.md">本地镜像YUM源</a></td>
+    <td><a href="杂货铺/CentOS7安装PostgreSQL.md">CentOS7安装PostgreSQL</a></td> 
     </tr>
 </table>
+
 
 
 
