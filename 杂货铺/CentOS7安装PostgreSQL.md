@@ -12,8 +12,6 @@ PostgreSQL 是一种非常复杂的对象-关系型数据库管理系统（ORDBM
 
 
 
-
-
 # 2 PostgreSQL优点特性
 
 　    PostgreSQL 是世界上可以获得的最先进的开放源码的数据库系统， 它提供了多版本并行控制，支持几乎所有 SQL 构件(包括子查询，事务和用户定 义类型和函数)， 并且可以获得非常广阔范围的(开发)语言绑定 (包括 C，C++，Java，perl，tcl，和 python)。具体的优点特性如下：
@@ -90,13 +88,13 @@ https://ftp.postgresql.org/pub/source/v10.7/postgresql-10.7.tar.gz
 
 1. **安装依赖**
 
-```
+```bash
 yum install -y bison flex readline-devel zlib-devel gcc zlib readline openssl openssl-devel
 ```
 
 2. **下载软件并安装**
 
-```
+```bash
 wget https://ftp.postgresql.org/pub/source/v10.7/postgresql-10.7.tar.gz
 tar -zvvf postgresql-10.7.tar.gz
 ./configure --prefix=/usr/local/pgsql
@@ -118,7 +116,7 @@ chown -R postgres:postgres /usr/local/pgsql10
 
 4. **添加环境变量**
 
-```
+```bash
 cat >>/etc/profile<<\EOF
 #postgresql
 export PGHOME=/data/pgsql
@@ -128,7 +126,7 @@ EOF
 source /etc/profile
 ```
 
-5. **初始化数据**
+5. **初始化实例**
 
 ```shell
 [root@host-10-18-22-154 data]# su - postgres
@@ -216,11 +214,11 @@ server started
 9. **登录数据库并设置密码**
 
 ```sql
-[postgres@host-10-18-22-154 data]$ psql 
+[postgres@host-10-18-22-154 data]$ psql -p 5432
 psql (10.7)
 Type "help" for help.
 
-postgres=# ALTER USER postgres WITH PASSWORD 'zfhcxjsb@2021';
+postgres=# ALTER USER postgres WITH PASSWORD 'a*aDnw4YL$3t';
 ```
 
 
@@ -346,5 +344,20 @@ CREATE EXTENSION postgis_topology;
 ```
 
 ![image-20201231175944951](assets/image-20201231175944951.png)
+
+
+
+
+
+# 5 PostgreSQL多实例
+
+就是共用一套程序，然后在多创建一个实例，注意配置文件中的端口和特殊配置即可。
+
+
+
+
+
+
+
 
 

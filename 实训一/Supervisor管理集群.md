@@ -178,7 +178,7 @@ serverurl=unix:///var/run/supervisor/supervisor.sock ; use a unix:// URL  for a 
 ; eventlistener: sections to be able to handle event notifications
 ; sent by supervisor.
 
-;[eventlistener:theeventlistenername]
+;[eventlistener:theeventlistenername]    #事件订阅，可以理解为子进程监控
 ;command=/bin/eventlistener    ; the program (relative uses PATH, can take args)
 ;process_name=%(program_name)s ; process_name expr (default %(program_name)s)
 ;numprocs=1                    ; number of processes copies to start (def 1)

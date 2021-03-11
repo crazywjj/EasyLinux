@@ -83,7 +83,7 @@ Libvirt是一套开源的虚拟化管理工具，主要由3部分组成。
 
 libvirt作为中间适配层，让底层Hypervisor对上层用户空间的管理工具是可以做到完全透明的，因为libvirt屏蔽了底层各种Hypervisor的细节，为上层管理工具提供了一个统一的、较稳定的接口（API）。
 
-![u=851255748,3404846692&fm=173&app=25&f=JPEG](assets/u=851255748,3404846692&fm=173&app=25&f=JPEG.jpg)
+![kvm-api](assets/kvm-api.jpg)
 
 
 

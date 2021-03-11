@@ -62,7 +62,7 @@ wget http://nginx.org/download/nginx-1.18.0.tar.gz
 tar -zxvf nginx-1.18.0.tar.gz
 cd nginx-1.18.0
 ./configure \
---prefix=/usr/local/nginx \
+--prefix=/opt/nginx \
 --user=nginx \
 --group=nginx \
 --with-file-aio \
@@ -198,7 +198,7 @@ log_format logstash_json '{ "@timestamp": "$time_local", '
 }
 EOF
 
-cat >proxy.default.conf<<EOF
+cat >proxy.default.conf<<\EOF
 proxy_redirect    off;
 proxy_connect_timeout 900;
 proxy_send_timeout 1800;
@@ -457,7 +457,7 @@ make && make install
 
 四层代理mysql和ftp：
 
-```
+```bash
 
 user  nginx;
 worker_processes  4;
@@ -524,10 +524,32 @@ log_format tcp '$remote_addr [$time_local] '
 
 - <https://github.com/chobits/ngx_http_proxy_connect_module>
 
+
+
+nginx默认是支持http正向代理的，但是不支持https，需要使用第三方模块。如下：
+
+```bash
+server {
+        listen       8090;
+        server_name  10.0.0.90;
+        resolver 114.114.114.114;
+
+        location / {
+			proxy_pass http://$http_host$request_uri;
+		}
+    }
+```
+
+
+
+
+
 **1、安装Nginx和模块**
 
-```
+```bash
 yum -y install make zlib zlib-devel gcc-c++ libtool  openssl openssl-devel  wget pcre pcre-devel git
+
+#ngx_http_proxy_connect_module模块主要用于隧道SSL请求的代理服务器
 git clone https://github.com/chobits/ngx_http_proxy_connect_module.git
 wget http://nginx.org/download/nginx-1.14.2.tar.gz
 tar -xzvf nginx-1.14.2.tar.gz
@@ -539,14 +561,14 @@ make && make install
 
 **2、虚拟主机配置**
 
-```
+```bash
 [root@ docker ~]# mkdir -p /usr/local/nginx/conf/conf.d/
 
 [root@ docker ~]# vim /usr/local/nginx/conf/nginx.conf
 user  nobody;
 worker_processes  1;
 events {
-	worker_connections  1024;
+	worker_connections  65535;
 }
 http {
 	include       mime.types;
@@ -570,6 +592,12 @@ server {
 location / {
         proxy_pass http://$host;
         proxy_set_header Host $host;
+        proxy_buffers 256 4k;
+        proxy_max_temp_file_size 0;
+        proxy_connect_timeout 30;
+        proxy_send_timeout 60;
+        proxy_read_timeout 60;
+        proxy_next_upstream error timeout invalid_header http_502;
         }
 }
 ```

@@ -110,7 +110,7 @@ Info: Information center is disabled.
 
 ### 4.4 LSW1交换机操作
 
-```
+```bash
 <Huawei>sys
 [Huawei]sysname LSW1
 [LSW1]undo info-center enable
