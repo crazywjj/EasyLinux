@@ -250,7 +250,7 @@ dns:
 etcd:
   local:
     dataDir: /var/lib/etcd
-imageRepository: k8s.gcr.io #使用阿里的镜像地址，否则无法拉取镜像
+imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers #使用阿里的镜像地址，否则无法拉取镜像
 kind: ClusterConfiguration
 kubernetesVersion: v1.18.0
 networking:
@@ -536,6 +536,27 @@ kubeadm join 10.0.0.61:6443 --token abcdef.0123456789abcdef \
 $ kubeadm token create --print-join-command
 kubeadm join 10.0.0.61:6443 --token fb791y.q3ty2hta7dq1dw4p  --discovery-token-ca-cert-hash sha256:1bb69bed3841cad1e0b9cf4f7b04e595bc410614c41f9652ef4ef1cae9b17e41
 ```
+
+默认token的有效期为24小时，当过期之后，该token就不可用了。解决方法如下：
+
+重新生成新的token
+
+```bash
+[root@k8s-master40 ~]# kubeadm token create
+W0407 18:10:55.007640   20776 configset.go:202] WARNING: kubeadm cannot validate component configs for API groups [kubelet.config.k8s.io kubeproxy.config.k8s.io]
+y73dhn.yx380f2ufue3ophb
+```
+
+获取ca证书sha256编码hash值
+
+```bash
+[root@k8s-master40 ~]# openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+78b884a6cebf6d6c08b411ff77c062463654e2c7da00eb4afec242f60fa709e2
+```
+
+然后节点加入集群
+
+
 
 **3、检查node状态**
 

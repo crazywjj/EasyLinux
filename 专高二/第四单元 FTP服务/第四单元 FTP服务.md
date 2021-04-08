@@ -370,15 +370,37 @@ listen_ipv6=YES
 pam_service_name=vsftpd
 userlist_enable=YES
 tcp_wrappers=YES
-
 chroot_local_user=YES
 chroot_list_enable=YES
 chroot_list_file=/etc/vsftpd/chroot_list
 allow_writeable_chroot=YES
 
 
-echo "tom" >>/etc/vsftpd/chroot_list
+echo " " >>/etc/vsftpd/chroot_list
+#确保/etc/vsftpd/chroot_list为空，否则会有安全隐患。
 ```
+
+安全修复：
+
+1、vsftpd服务用户可使用其他方式登录操作系统
+
+风险描述
+默认情况下专用于ftp访问的用户没有登录操作系统的权限。如果专用于ftp访问的用户可使用其他方式登录操作系统，会导致攻击者利用ftp用户执行许多系统命令或使用系统的漏洞进行权限提升。当vsftp用户可使用其他方式登录系统会为攻击者提供极大便利，而且不易被管理员发现。
+
+如果vsftp使用操作系统帐号进行身份认证，则检查用于ftp认证的操作系统帐号中是否存在能够使用其他方式登录（如ssh）系统的帐号
+vsftpd账号允许登录操作系统的用户为：tom；
+
+修复建议
+设置用户ftp登录的操作系统帐号的bash为/sbin/nologin，或锁定该帐号。设置账号不可登录系统后，发现ftp无法登录，修改
+
+```bash
+ vim /etc/pam.d/vsftpd
+
+注释如下配置
+#auth       required	pam_shells.so
+```
+
+
 
 
 

@@ -1088,6 +1088,84 @@ yum install dejavu-sans-mono-fonts -y
 
 <img src="assets/image-20200921181117955.png" alt="image-20200921181117955" style="zoom:67%;" />
 
+# 1.6 虚机磁盘迁移
+
+关闭虚机，将磁盘文件转移至新位置
+
+```bash
+mv /var/lib/libvirt/images/xxx.qcow2 /data0/vmhosts/win7.img
+```
+
+编辑对应虚机配置文件，修改source file项为磁盘文件转移后的位置
+
+![image-20210319141456806](assets/image-20210319141456806.png)
+
+重新引用虚机配置文件，即可开启虚机
+
+```bash
+virsh define /etc/libvirt/qemu/xxx.xml
+```
+
+
+
+
+
+# 1.7 虚机克隆
+
+kvm虚拟机的克隆分为两种情况，第一种kvm宿主机上对虚拟机直接克隆（也可称为链接克隆）；第二种通过复制配置文件与磁盘文件的虚拟机复制克隆(也可称为完全克隆，适用于异机的静态迁移)。
+
+**克隆前提条件：**
+
+- 删除ifcfg-eth0网卡中的UUID
+- 清空/etc/udev/rules.d/70-persistent-net.rules
+
+
+
+方法一：kvm宿主机上对虚拟机直接克隆（需要在关机或暂停的状态下操作）
+
+查看所有的虚拟机、以及需要克隆的虚拟机的硬盘文件的位置
+
+```bash
+[root@localhost ~]# virsh list --all
+ Id    Name                           State
+----------------------------------------------------
+ 4     win7                           running
+ -     centos7.4mini                  shut off
+ -     centos7.4mini-clone-40         shut off
+
+[root@localhost ~]# virsh edit centos7.4mini
+<source file='/data0/vmhosts/centos7.qcow2'/>
+
+
+[root@localhost ~]# virt-clone -o centos7.4mini -n centos7.4mini-clone-41 -f /data0/vmhosts/centos7.4mini-clone-41.qcow2
+
+#清理虚机
+停止主机：virsh destroy linux65
+删除主机定义：virsh undefine linux65
+删除KVM虚拟机文件： rm -f /home/vps/linux65.img
+```
+
+
+
+方法二：复制配置文件与磁盘文件进行克隆（可以不用关闭源虚拟机）
+
+```bash
+[root@localhost vmhosts]# virsh list --all
+ Id    Name                           State
+----------------------------------------------------
+ 4     win7                           running
+ -     centos7.4mini                  shut off
+ -     centos7.4mini-clone-40         shut off
+ -     centos7.4mini-clone-41         shut off
+
+[root@localhost vmhosts]# virsh dumpxml centos7.4mini >/etc/libvirt/qemu/centos7.4mini-clone-42.xml
+[root@localhost vmhosts]# cp /data0/vmhosts/centos7.qcow2 /data0/vmhosts/centos7.4mini-clone-42.qcow2
+#直接编辑修改配置文件centos7.4mini-clone-42.xml，修改name,uuid,disk文件位置,mac地址，vnc端口
+
+```
+
+
+
 
 
 # 第二章 KVM虚拟化web管理平台
