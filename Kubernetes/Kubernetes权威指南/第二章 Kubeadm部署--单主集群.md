@@ -880,3 +880,183 @@ kubectl config use-context default --kubeconfig=dashboard.kubeconfig
 
 
 
+
+# 1.4 Kubernetes运行Java web应用
+
+Java Web应用的结构比较简单，是一个运行在Tomcat里的Web App，如图所示：JSP页面通过JDBC直接访问MySQL数据库并展示数据。出于演示和简化的目的，只要程序正确连接到了数据库，就会自动完成对应的Table的创建与初始化数据的准备工作。所以，当我们通过浏览器访问此应用时，就会显示一个表格的页面，数据则来自数据库。
+
+![](assets/Java_web.jpg)
+
+ 
+
+此应用需要启动两个容器：Web App容器和MySQL容器，并且Web App容器需要访问MySQL容器。在Docker时代，假设我们在一个宿主机上启动了这两个容器，就需要把MySQL容器的IP地址通过环境变量注入Web App容器里；同时，需要将Web App容器的8080端口映射到宿主机的8080端口，以便在外部访问。
+
+
+
+## 1.4.1 启动MySQL服务
+
+首先，为MySQL服务创建一个RC定义文件 [mysql-rc.yaml](assets\mysql-rc.yaml) ，下面给出了该文件的完整内容和解释： 
+
+```yml
+apiVersion: v1
+kind: ReplicationController        #副本控制器RC
+metadata:
+  name: mysql                      #RC的名称，全局唯一
+spec:
+  replicas: 1                      #Pod副本的期待数量
+  selector:
+    app: mysql                     #符合目标的Pod拥有此标签
+  template:
+    metadata:
+      labels:
+        app: mysql                 #Pod副本拥有此标签，对应RC的Selector
+    spec:
+      containers:                  #Pod内容器的定义部分
+      - name: mysql                #容器的名称
+        image: mysql               #容器对应的Docker image
+        ports:
+        - containerPort: 3306      #容器应监听的端口号
+        env:                       #注入容器的环境变量
+        - name: MYSQL_ROOT_PASSWORD
+          value: "123456"
+```
+
+在创建好mysql-rc.yaml文件后，为了将它发布到Kubernetes集群中，我们在Master上执行命令： 
+
+```yml
+# kubectl create -f mysql-rc.yaml
+replicationcontroller/mysql created
+```
+
+查看刚刚创建的RC：
+
+```bash
+# kubectl get rc
+NAME    DESIRED   CURRENT   READY   AGE
+mysql   1         1         0       12s
+```
+
+查看Pod：
+
+```bash
+# kubectl get pods
+NAME          READY   STATUS    RESTARTS   AGE
+mysql-5vcfm   1/1     Running   0          99s
+```
+
+最后，创建一个与之关联的Kubernetes Service—MySQL的定义文件（文件名为 [mysql-svc.yaml](assets\mysql-svc.yaml)），完整的内容和解释如下： 
+
+```yml
+apiVersion: v1
+kind: Service        #表明是   k8s service
+metadata:
+  name: mysql        #service的全局唯一名称
+spec:
+  ports:
+    - port: 3306     #service提供的服务端口号
+  selector:          #service对应的Pod拥有这里定义的标签
+    app: mysql
+
+```
+
+其中，metadata.name是Service的服务名（ServiceName）；port属性则定义了Service的虚端口；spec.selector确定了哪些Pod副本（实例）对应本服务。类似地，我们通过kubectl create 命令创建Service对象。
+
+运行kubectl命令，创建Service：
+
+```yml
+# kubectl create -f mysql-svc.yaml
+service/mysql created
+```
+
+查看service：
+
+```bash
+# kubectl get svc mysql
+NAME    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+mysql   ClusterIP   10.101.130.237   <none>        3306/TCP   43s
+
+```
+
+可以发现，MySQL服务被分配了一个值为10.101.130.237的Cluster IP地址。随后，Kubernetes集群中其他新创建的Pod就可以通过Service的Cluster IP+端口号3306来连接和访问它了。通常，Cluster IP是在Service创建后由Kubernetes系统自动分配的，其他Pod无法预先知道某个Service的Cluster IP地址，因此需要一 个服务发现机制来找到这个服务。为此，最初时，Kubernetes巧妙地使用了Linux环境变量（Environment Variable）来解决这个问题，后面会详细说明其机制。现在只需知道，根据Service的唯一名称，容器可以从环境变量中获取Service对应的Cluster IP地址和端口，从而发起TCP/IP连接请求。 
+
+
+
+## 1.4.2 启动Tomcat应用
+
+创建tomcat对应的RC文件 [myweb-rc.yaml](assets\myweb-rc.yaml) 内容如下：
+
+```yml
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: myweb
+spec:
+  replicas: 2
+  selector:
+    app: myweb
+  template:
+    metadata:
+      labels:
+        app: myweb
+    spec:
+      containers:
+      - name: myweb
+        image: kubeguide/tomcat-app:v1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MYSQL_SERVICE_HOST
+          value: 'mysql'
+        - name: MYSQL_SERVICE_PORT
+          value: '3306'
+
+```
+
+注意：在Tomcat容器内，应用将使用环境变量`MYSQL_SERVICE_HOST`的值连接MySQL服务。更安全可靠的用法是使用服务的名称mysql。
+
+```yml
+# kubectl create -f myweb-rc.yaml
+replicationcontroller/myweb created
+
+# kubectl get pods
+NAME          READY   STATUS    RESTARTS   AGE
+mysql-5vcfm   1/1     Running   0          19m
+myweb-49jxk   1/1     Running   0          107s
+myweb-qkfpc   1/1     Running   0          107s
+
+```
+
+最后，创建对应的Service。以下是完整的YAML定义文件 （ [myweb-svc.yaml](assets\myweb-svc.yaml)）： 
+
+```yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: myweb
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 30001
+  selector:
+    app: myweb
+
+```
+
+type=NodePort和nodePort=30001的两个属性表明此Service开启了NodePort方式的外网访问模式。在Kubernetes集群之外，比如在本机的浏览器里，可以通过30001这个端口访问myweb（对应到8080的虚端口上）。 
+
+```bash
+# kubectl create -f 1.3.3_myweb-svc.yaml
+service/myweb created
+
+# kubectl get svc myweb
+NAME    TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+myweb   NodePort   10.107.20.165   <none>        8080:30001/TCP   50s
+```
+
+
+
+## 1.4.3 通过浏览器访问网页
+
+浏览器，输入http://虚拟机IP:30001/demo/
+

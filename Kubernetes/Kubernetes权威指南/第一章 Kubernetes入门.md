@@ -2,9 +2,9 @@
 
 
 
-# 第一章 Kubernetes入门及实践
+# 第一章 Kubernetes入门
 
-# 1.1 Kebernets介绍
+# 1.1 Kubernets介绍
 Kubernetes(k8s)是Google2014年开源的容器集群管理系统（谷歌内部:Borg），它主要用于容器容器化应用程序的部署、扩展和管理。
 
 k8s提供了容器编排、资源调度、弹性伸缩、部署管理、服务发现等一系列功能。
@@ -34,7 +34,7 @@ k8s的目标是让部署容器化的应用简单并且高效，k8s提供了应�
 
 
 
-# 1.3 设计架构及核心组件
+# 1.3 Kubernetes架构
 
 ![1584154194567](assets/1584154194567.png)
 
@@ -52,48 +52,6 @@ k8s的目标是让部署容器化的应用简单并且高效，k8s提供了应�
 
 
 
-## 1.3.1 Master 节点组件
-
-master节点上主要运行四个组件：api-server、scheduler、controller-manager、etcd。
-
-![14791969222306](assets/14791969222306.png)
-
-| 组件               | 作用                                                         |
-| ------------------ | ------------------------------------------------------------ |
-| api-server         | 提供了资源操作的唯一入口，各组件协调者并提供认证、授权、访问控制、API注册和发现等机制； |
-| scheduler          | 负责资源的调度，按照预定的调度策略将Pod调度到相应的机器上，Kubernetes目前提供了调度算法，但是同样也保了接口，用户可以根据自己的需求定义自己的调度算法。； |
-| controller-manager | 如果说APIServer做的是“前台”的工作的话，那controller manager就是负责“后台”的。每个资源一般都对一个控制器，而controller manager就是负责管理这些控制器的。比如我们通过APIServer创建一个pod，当这个pod创建成功后，APIServer的任务就算完成了。而后面保证Pod的状态始终和我们预期的一样的重任就由controller manager去保证了。 |
-| etcd               | etcd是一个高可用的键值存储系统，Kubernetes使用它来存储各个资源的状态，从而实现了Restful的API。 |
-
-
-
-
-
-## 1.3.2 Node 节点组件
-
-每个Node节点主要由三个模块组成：kubelet、kube-proxy、Container runtime。
-
-![1583588234233](assets/1583588234233.png)
-
-| 组件              | 作用                                                         |
-| ----------------- | ------------------------------------------------------------ |
-| Container runtime | 负责镜像管理以及Pod和容器的真正运行（CRI）；指的是容器运行环境，目前Kubernetes支持docker和rkt两种容器。 |
-| kube-proxy        | 负责为Service提供cluster内部的服务发现和负载均衡；该模块实现了Kubernetes中的服务发现和反向代理功能。反向代理方面：kube-proxy支持TCP和UDP连接转发，默认基于Round Robin算法将客户端流量转发到与service对应的一组后端pod。服务发现方面，kube-proxy使用etcd的watch机制，监控集群中service和endpoint对象数据的动态变化，并且维护一个service到endpoint的映射关系，从而保证了后端pod的IP变化不会对访问者造成影响。另外kube-proxy还支持session affinity。 |
-| kubelet           | 负责维护容器的生命周期，同时也负责Volume（CVI）和网络（CNI）的管理；是Master在每个Node节点上面的agent，是Node节点上面最重要的模块，它负责维护和管理该Node上面的所有容器但是如果容器不是通过Kubernetes创建的，它并不会管理。本质上，它负责使Pod得运行状态与期望的状态一致。 |
-
-除了核心组件，还有一些推荐的Add-ons（插件）：
-
-- kube-dns负责为整个集群提供DNS服务
-- Ingress Controller为服务提供外网入口
-- Heapster提供资源监控
-- Dashboard提供GUI
-- Federation提供跨可用区的集群
-- Fluentd-elasticsearch提供集群日志采集、存储与查询
-
-**master与node关系：**
-
-![1584154026341](assets/1584154026341.png)
-
 ## 1.3.3 分层架构
 
 Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，如下图所示
@@ -107,6 +65,76 @@ Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，�
 - 生态系统：在接口层之上的庞大容器集群管理调度的生态系统，可以划分为两个范畴
   - Kubernetes外部：日志、监控、配置管理、CI、CD、Workflow、FaaS、OTS应用、ChatOps等
   - Kubernetes内部：CRI、CNI、CVI、镜像仓库、Cloud Provider、集群自身的配置和管理等
+
+
+
+# 1.4 Kubernetes的基本概念和术语
+
+Kubernetes中的大部分概念如Node、Pod、Replication Controller、Service等都可以被看作一种资源对象，几乎所有资源对象都可以通过Kubernetes提供的kubectl工具（或者API编程调用）执行增、删、改、查等操作并将其保存在etcd中持久化存储。从这个角度来看Kubernetes其实是一个高度自动化的资源控制系统，它通过跟踪对比etcd库里保存的“资源期望状态”与当前环境中的“实际资源状态”的差异来实现自动控制和自动纠错的高级功能。
+
+
+
+## 1.4.1 Master
+
+Kubernetes里的Master指的是集群控制节点，在每个Kubernetes集群里都需要有一个Master来负责整个集群的管理和控制，基本上 Kubernetes的所有控制命令都发给它，它负责具体的执行过程，我们后面执行的所有命令基本都是在Master上运行的。Master通常会占据一个独立的服务器（高可用部署建议用3台服务器），如果它宕机或者不可用，那么对集群内容器应用的管理都将失效。 
+
+master节点上主要运行四个组件：api-server、scheduler、controller-manager、etcd。
+
+![14791969222306](assets/14791969222306.png)
+
+| 组件               | 作用                                                         |
+| ------------------ | ------------------------------------------------------------ |
+| kube-apiserver     | 提供了HTTP Rest 接口的关键服务进程，是Kubernetes里所有资源的增、删、改、查等 操作的唯一入口；各组件协调者并提供认证、授权、访问控制、API注册和发现等机制。 |
+| scheduler          | 负责资源调度 （Pod调度）的进程，相当于公交公司的“调度室”。   |
+| controller-manager | Kubernetes里所有资源对象的自动化控制中心，可以将其理解为资源 对象的“大总管”。 |
+| etcd               | etcd是一个高可用的键值存储系统，Kubernetes使用它来存储所有资源对象的的状态和数据，从而实现了Restful的API。 |
+
+
+
+## 1.4.2 Node
+
+Node是Kubernetes集群中的工作负载节点，每个Node都会被Master分配一些工作负载（Docker容器），当某个Node宕机时，其上的工作负载会被Master自动转移到其他节点上。
+
+每个Node节点主要由三个模块组成：kubelet、kube-proxy、Container runtime。
+
+![1583588234233](assets/1583588234233.png)
+
+| 组件              | 作用                                                         |
+| ----------------- | ------------------------------------------------------------ |
+| Container runtime | 负责本机的容器创建和管理工作。                               |
+| kube-proxy        | 实现Kubernetes Service的通信与负载均衡机制的重要组件。       |
+| kubelet           | 负责Pod对应的容器的创建、启停等任务，同时与 Master密切协作，实现集群管理的基本功能。 |
+
+除了核心组件，还有一些推荐的Add-ons（插件）：
+
+- kube-dns负责为整个集群提供DNS服务
+- Ingress Controller为服务提供外网入口
+- Heapster提供资源监控
+- Dashboard提供GUI
+- Federation提供跨可用区的集群
+- Fluentd-elasticsearch提供集群日志采集、存储与查询
+
+
+
+**master与node关系：**
+
+![1584154026341](assets/1584154026341.png)
+
+
+
+## 1.4.3 Pod
+
+Pod是Kubernetes最重要的基本概念，容器组Pod是最小部署单元，一个Pod有一个或多个容器组成， Pod中容器共享存储和网络，在同一台Docker主机上运行。
+
+![pod组成](assets/pod%E7%BB%84%E6%88%90.jpg)
+
+Kubernetes会设计出一个全新的Pod的概念并且有这样特殊的组成结构？ 
+
+1、更好的判断业务的存活状态；
+
+2、解决多个容器网络通信和文件共享问题；
+
+
 
 
 
