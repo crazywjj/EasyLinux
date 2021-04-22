@@ -282,6 +282,8 @@ Pod的生命周期是Replication Controller进行管理的。一个Pod的生命�
 
 ## 1.4.3 Pod的创建过程
 
+![img](assets/1465170-20190403102521028-1937176408.png)
+
 Pod是Kubernetes的基础单元，了解其创建的过程，更有助于理解系统的运作。
 
 ①用户通过kubectl或其他API客户端提交Pod Spec给API Server。
