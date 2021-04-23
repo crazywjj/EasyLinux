@@ -128,9 +128,9 @@
 
 <table border="0">
 <tr>
-   <td><a href="Kubernetes/Kubernetes权威指南/第一章 Kubernetes入门.md">第一章 Kubernetes入门</a></td>
-   <td><a href="Kubernetes/Kubernetes权威指南/第二章 Kubeadm部署--单主集群.md">第二章 Kubeadm部署--单主集群</a></td>
-   <td><a href="Kubernetes/Kubernetes权威指南/第三章 Kube-prometheus监控.md">第三章 Kube-prometheus监控</a></td>
+   <td><a href="Kubernetes/Kubernetes权威指南/第一章 kubernetes入门.md">第一章 kubernetes入门</a></td>
+   <td><a href="Kubernetes/Kubernetes权威指南/第二章 kubeadm部署--单主集群.md">第二章 kubeadm部署--单主集群</a></td>
+   <td><a href="Kubernetes/Kubernetes权威指南/第三章 kube-prometheus监控.md">第三章 kube-prometheus监控</a></td>
    <td><a href="Kubernetes/Kubernetes权威指南/第四章 EFK日志收集.md">第四章 EFK日志收集</a></td>
 </tr>
 <tr>
