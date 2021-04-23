@@ -4,7 +4,7 @@
 
 # 第三章 Kube-prometheus监控
 
-# 1.1 介绍
+# 1 介绍
 
 很多地方提到Prometheus Operator是kubernetes集群监控的终极解决方案，但是目前Prometheus Operator已经不包含完整功能，完整的解决方案已经变为kube-prometheus。项目地址为：
 
@@ -24,9 +24,9 @@ kube-prometheus 是一整套监控解决方案，它使用 Prometheus 采集集�
 
 其中 k8s-prometheus-adapter 使用 Prometheus 实现了 metrics.k8s.io 和 custom.metrics.k8s.io API，所以**不需要再部署** metrics-server（ metrics-server 通过 kube-apiserver 发现所有节点，然后调用 kubelet APIs（通过 https 接口）获得各节点（Node）和 Pod 的 CPU、Memory 等资源使用情况。 从 Kubernetes 1.12 开始，kubernetes 的安装脚本移除了 Heapster，从 1.13 开始完全移除了对 Heapster 的支持，Heapster 不再被维护）。
 
-# 1.2 部署
+# 2 部署
 
-## 1.2.1 下载源码
+## 2.1 下载源码
 
 ```bash
 cd /etc/kubernetes
@@ -35,7 +35,7 @@ git clone https://github.com/coreos/kube-prometheus.git
 
 
 
-## 1.2.2 执行安装
+## 2.2 执行安装
 
 ```bash
 # 导入或者下载所需要的镜像
@@ -48,7 +48,7 @@ kubectl apply -f manifests/
 
 
 
-## 1.2.3 查看资源
+## 2.3 查看资源
 
 ```bash
 $ kubectl get pod,svc,ep -n monitoring
@@ -158,7 +158,7 @@ kube-scheduler-k8s-m01            3m           24Mi
 
 
 
-## 1.2.4 清除资源
+## 2.4 清除资源
 
 ```bash
 kubectl delete --ignore-not-found=true -f manifests/ -f manifests/setup
@@ -177,9 +177,9 @@ kubectl delete pod prometheus-k8s-1 -n monitoring --force --grace-period=0
 
 
 
-# 1.3 访问方式
+# 3 访问方式
 
-## 1.3.1 kubectl port-forward
+## 3.1 kubectl port-forward
 
 **kubectl port-forward**：通过端口转发映射本地端口到指定的应用端口，从而访问集群中的应用程序(Pod)。注意：此方式依赖 socat。 
 
@@ -203,7 +203,7 @@ nohup kubectl port-forward --address 0.0.0.0 svc/alertmanager-main -n monitoring
 
 
 
-## 1.3.2 nodeport方式
+## 3.2 nodeport方式
 
 Kubernetes 服务的 NodePort 默认端口范围是 30000-32767，在某些场合下，这个限制不太适用，我们可以自定义它的端口范围，操作步骤如下：
 
@@ -311,7 +311,7 @@ kubectl apply -f manifests/alertmanager-service.yaml
 
 
 
-# 1.4 Prometheus监控页面展示
+# 4 Prometheus监控页面展示
 
 ==访问Prometheus web页面：== http://10.0.0.61:9090/ 
 
@@ -425,13 +425,13 @@ kubectl apply -f manifests/prometheus-kubeControllerManagerService.yaml
 
 
 
-# 1.5 访问alertmanager
+# 5 访问alertmanager
 
 ==**访问alertmanager web页面：**== http://10.0.0.61:9093/ 
 
 ![1588817114155](assets/1588817114155.png)
 
-# 1.6 访问grafana 
+# 6 访问grafana 
 
 http://10.0.0.61:3000/ 
 

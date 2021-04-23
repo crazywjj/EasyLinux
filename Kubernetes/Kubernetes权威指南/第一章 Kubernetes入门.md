@@ -4,7 +4,7 @@
 
 # 第一章 Kubernetes入门
 
-# 1.1 Kubernets介绍
+# 1  Kubernets介绍
 Kubernetes(k8s)是Google2014年开源的容器集群管理系统（谷歌内部:Borg），它主要用于容器容器化应用程序的部署、扩展和管理。
 
 k8s提供了容器编排、资源调度、弹性伸缩、部署管理、服务发现等一系列功能。
@@ -15,7 +15,7 @@ k8s的目标是让部署容器化的应用简单并且高效，k8s提供了应�
 
 
 
-# 1.2 Kubernetes主要功能
+# 2 Kubernetes主要功能
 
 | 名词             | 解释                                                         |
 | ---------------- | ------------------------------------------------------------ |
@@ -34,7 +34,7 @@ k8s的目标是让部署容器化的应用简单并且高效，k8s提供了应�
 
 
 
-# 1.3 Kubernetes架构
+# 3 Kubernetes架构
 
 ![1584154194567](assets/1584154194567.png)
 
@@ -52,7 +52,7 @@ k8s的目标是让部署容器化的应用简单并且高效，k8s提供了应�
 
 
 
-## 1.3.1 分层架构
+## 3.1 分层架构
 
 Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，如下图所示
 
@@ -68,13 +68,13 @@ Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，�
 
 
 
-# 1.4 Kubernetes的基本概念和术语
+# 4 Kubernetes的基本概念和术语
 
 ​		Kubernetes中的大部分概念如Node、Pod、Replication Controller、Service等都可以被看作一种资源对象，几乎所有资源对象都可以通过Kubernetes提供的kubectl工具（或者API编程调用）执行增、删、改、查等操作并将其保存在etcd中持久化存储。从这个角度来看Kubernetes其实是一个高度自动化的资源控制系统，它通过跟踪对比etcd库里保存的“资源期望状态”与当前环境中的“实际资源状态”的差异来实现自动控制和自动纠错的高级功能。
 
 
 
-## 1.4.1 Master
+## 4.1 Master
 
 ​		Kubernetes里的Master指的是集群控制节点，在每个Kubernetes集群里都需要有一个Master来负责整个集群的管理和控制，基本上 Kubernetes的所有控制命令都发给它，它负责具体的执行过程，我们后面执行的所有命令基本都是在Master上运行的。Master通常会占据一个独立的服务器（高可用部署建议用3台服务器），如果它宕机或者不可用，那么对集群内容器应用的管理都将失效。 
 
@@ -91,7 +91,7 @@ master节点上主要运行四个组件：api-server、scheduler、controller-ma
 
 
 
-## 1.4.2 Node
+## 4.2 Node
 
 ​		Node是Kubernetes集群中的工作负载节点，每个Node都会被Master分配一些工作负载（Docker容器），当某个Node宕机时，其上的工作负载会被Master自动转移到其他节点上。
 
@@ -122,7 +122,7 @@ master节点上主要运行四个组件：api-server、scheduler、controller-ma
 
 
 
-## 1.4.3 Pod
+## 4.3 Pod
 
 ​		**Pod是Kubernetes最重要的基本概念，容器组Pod是最小部署单元，一个Pod有一个或多个容器组成， Pod中容器共享存储和网络，在同一台Docker主机上运行。**
 
@@ -171,7 +171,7 @@ spec:
 
 
 
-## 1.4.4 Event
+## 4.4 Event
 
 Event是一个事件的记录，记录了事件的最早产生时间、最后重现时间、重复次数、发起者、类型，以及导致此事件的原因等众多信息。Event通常会被关联到某个具体的资源对象上，是排查故障的重要参考信息，之前我们看到Node的描述信息包括了Event，而Pod同样有Event记录，当我们发 现某个Pod迟迟无法创建时，可以用`kubectl describe pod xxxx`来查看它的描述信息，以定位问题的成因，比如下面这个Event记录信息表明Pod里的一个容器被探针检测为失败一次： 
 
@@ -179,7 +179,7 @@ Event是一个事件的记录，记录了事件的最早产生时间、最后重
 
 
 
-## 1.4.5 **Label** 
+## 4.5 **Label** 
 
 Label（标签）是Kubernetes系统中另外一个核心概念。**一个Label是一个key=value的键值对**，其中key与value由用户自己指定。
 
@@ -224,7 +224,7 @@ matchLabels用于定义一组Label，与直接写在Selector中的作用相同�
 
 
 
-## 1.4.6 Replication Controller
+## 4.6 Replication Controller
 
 Replication Controller（简称RC）,是Kubernetes系统中的核心概念之一，即声明某种Pod的副本数量在任意时刻都符合某个预期值，所以RC的定义包括如下几个部分。 
 
@@ -285,7 +285,7 @@ Replica Set与RC当前的唯一区别是，**Replica Sets支持基于集合的La
 
 
 
-## 1.4.7 Deployment
+## 4.7 Deployment
 
 Deployment是Kubernetes在1.2版本中引入的新概念，用于更好地解决Pod的编排问题。是一个更高层次的API对象，它管理ReplicaSets和Pod，并提供声明式更新等功能。官方建议使用Deployment管理ReplicaSets，而不是直接使用ReplicaSets。
 
@@ -385,7 +385,7 @@ frontend-797f47d685-q5zc6   1/1     Running   0          53m
 
 
 
-## 1.4.8 Horizontal Pod Autoscaler
+## 4.8 Horizontal Pod Autoscaler
 
 通过手工执行kubectl scale命令，我们可以实现Pod扩容或缩容。 显然不符合谷歌对Kubernetes的定位目标—自动化、智能化。
 
@@ -491,9 +491,7 @@ NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AG
 php-apache   Deployment/php-apache   0%/50%    1         10        1          16m
 
 # 增加负载,需要一段时间
-$ kubectl run -i --tty load-generator --image=busybox /bin/sh
-Hit enter for command prompt
-$ while true; do wget -q -O- http://php-apache.default.svc.cluster.local; done
+$ kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
 
 # 查看hpa负载
 $ kubectl get hpa
@@ -536,7 +534,9 @@ php-apache   1/1     1            1           23m
 - 触发条件：avg(CurrentPodsConsumption) / Target >1.1 或 <0.9
   
 
- 2、根据自定义指标进行HPA伸缩
+ 2、基于多项度量指标和自定义度量指标进行HPA伸缩
+
+*custom metrics*（自定义度量指标）： 即 Pod 度量指标和 Object 度量指标。 这些度量指标可能具有特定于集群的名称，并且需要更高级的集群监控设置。
 
 使用方法
 
@@ -549,14 +549,13 @@ php-apache   1/1     1            1           23m
 比如 HorizontalPodAutoscaler 保证每个 Pod 占用 50% CPU、1000pps 以及 10000 请求 / s：
 
 ```yml
-apiVersion: autoscaling/v1
+apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: php-apache
-  namespace: default
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1beta1
+    apiVersion: apps/v1
     kind: Deployment
     name: php-apache
   minReplicas: 1
@@ -565,19 +564,27 @@ spec:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: 50
+      target:
+        type: AverageUtilization
+        averageUtilization: 50
   - type: Pods
     pods:
-      metricName: packets-per-second
-      targetAverageValue: 1k
+      metric:
+        name: packets-per-second
+      target:
+        type: AverageValue
+        averageValue: 1k
   - type: Object
     object:
-      metricName: requests-per-second
-      target:
-        apiVersion: extensions/v1beta1
+      metric:
+        name: requests-per-second
+      describedObject:
+        apiVersion: networking.k8s.io/v1beta1
         kind: Ingress
         name: main-route
-      targetValue: 10k
+      target:
+        kind: Value
+        value: 10k
 status:
   observedGeneration: 1
   lastScaleTime: <some-time>
@@ -587,15 +594,147 @@ status:
   - type: Resource
     resource:
       name: cpu
-      currentAverageUtilization: 0
-      currentAverageValue: 0
+    current:
+      averageUtilization: 0
+      averageValue: 0
+  - type: Object
+    object:
+      metric:
+        name: requests-per-second
+      describedObject:
+        apiVersion: networking.k8s.io/v1beta1
+        kind: Ingress
+        name: main-route
+      current:
+        value: 10k
+```
+
+https://kubernetes.io/zh/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
+
+
+
+## 4.9 Volume
+
+Volume（存储卷）是Pod中能够被多个容器访问的共享目录。首先，Kubernetes中的Volume被定义在Pod上，被一个Pod里的多个容器挂载到具体的文件目录下；其次，Kubernetes中的Volume与Pod的生命周期相同，但与容器的生命周期无关，当容器终止或者重启时，Volume中的数据也不会丢失。
+
+Volume的使用前，需要Pod指定volume的类型和内容（spec.volume）和挂载点（spec.containers.volumeMounts）两个信息。
+
+**常用的数据卷：**
+• 本地（hostPath，emptyDir）
+• 网络（NFS，Ceph，GlusterFS）
+• 公有云（AWS EBS）
+• K8S资源（configmap，secret）
+
+1、emptyDir（临时存储卷）
+
+一个emptyDir Volume是在Pod分配到Node时创建的。初始内容为空，并且无须指定宿主机上对应的目录文件，pod创建时创建，pod移除时移除。
+
+```yml
+apiVersion: v1
+kind: Pod        #类型是Pod
+metadata:
+  labels:
+    name: redis
+    role: master        #定义为主redis
+  name: redis-master
+spec:
+  containers:
+    - name: master
+      image: redis:latest
+      env:        #定义环境变量
+        - name: MASTER
+          value: "true"
+      ports:        #容器内端口
+        - containerPort: 6379
+      volumeMounts:        #容器内挂载点
+        - mountPath: /data
+          name: redis-data        #必须有名称
+  volumes:
+    - name: redis-data        #跟上面的名称对应
+      emptyDir: {}        #宿主机挂载点
+```
+
+Emptydir创建后，在宿主机上的访问路径为`/var/lib/kubelet/pods/<pod uid>/volumes/kubernetes.io~empty-dir/redis-data`,如果在此目录中创建删除文件，都将对容器中的/data目录有影响。
+
+
+
+2、hostPath（节点存储卷）
+
+hostPath允许挂载Node上的文件系统到Pod里面去。如果Pod需要使用Node上的文件，可以使用hostPath。
+
+挂载宿主机的/tmp目录到Pod容器的/data目录：
+
+```yml
+apiVersion: v1
+kind: Pod        #类型是Pod
+metadata:
+  labels:
+    name: redis
+    role: master        #定义为主redis
+  name: redis-master
+spec:
+  containers:
+    - name: master
+      image: redis:latest
+      env:        #定义环境变量
+        - name: MASTER
+          value: "true"
+      ports:        #容器内端口
+        - containerPort: 6379
+      volumeMounts:        #容器内挂载点
+        - mountPath: /data
+          name: redis-data        #必须有名称
+  volumes:
+    - name: redis-data        #跟上面的名称对应
+      hostPath: 
+        path: /data      #宿主机挂载点
+```
+
+
+
+3、NFS（网络存储卷）
+
+使用NFS网络文件系统提供的共享目录存储数据时，需要在系统中部署一个NFS Server（建议直接部署到服务器）。
+
+```yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nfs-web
+spec:
+  containers:
+    - name: web
+      image: nginx
+      imagePullPolicy: Never        #如果已经有镜像，就不需要再拉取镜像
+      ports:
+        - name: web
+          containerPort: 80
+          hostPort: 80        #将容器的80端口映射到宿主机的80端口
+      volumeMounts:
+        - name : nfs        #指定名称必须与下面一致
+          mountPath: "/usr/share/nginx/html"        #容器内的挂载点
+  volumes:
+    - name: nfs            #指定名称必须与上面一致
+      nfs:            #nfs存储
+        server: 192.168.66.50        #nfs服务器ip或是域名
+        path: "/test"                #nfs服务器共享的目录
 ```
 
 
 
 
 
-https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-custom-metrics
+## 4.10 PV/PVC/StorageClass
+
+PV/PVC/StorageClass关系图：
+
+![20200412104048595](assets/20200412104048595.png)
+
+PersistentVolume（PV）是集群中由管理员配置的一段网络存储。 与普通的Volume不同，PV是Kubernetes中的一个资源对象，创建一个PV相当于创建了一个存储资源对象，这个资源的使用要通过PVC来请求。**主要包括存储能力、访问模式、存储类型、回收策略、后端存储类型等关键信息的设置。**
+
+PersistentVolumeClaim（PVC）是用户对存储资源PV的请求。根据PVC中指定的条件Kubernetes动态的寻找系统中的PV资源并进行绑定。目前PVC与PV匹配可以通过StorageClassName、matchLabels或者matchExpressions三种方式。权限要求可以请求特定的大小和访问模式。**主要包括存储空间请求、访问模式、PV选择条件和存储类别等信息的设置。**
+
+StorageClass为管理员提供了一种描述他们提供的存储的“类”的方法。 不同的类可能映射到服务质量级别，或备份策略，或者由群集管理员确定的任意策略。 每个 StorageClass 都包含 provisioner、parameters 和 reclaimPolicy 字段， 这些字段会在 StorageClass 需要动态分配 PersistentVolume 时会使用到。
 
 
 
@@ -615,34 +754,83 @@ https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#suppo
 
 
 
+## 4.11 StatefulSet
+
+在Kubernetes系统中，Pod的管理对象RC、Deployment、DaemonSet和Job都面向无状态的服务。但现实中有很多服务是有状态的，statefulset是为了解决**有状态服务**的问题，而产生的一种资源类型（deployment和replicaSets是解决无状态服务而设计的）。特别是一些复杂的中间件集群，例如MySQL集群、MongoDB 集群、Akka集群、ZooKeeper集群等，这些应用集群有4个共同点。
+
+（1）每个节点都有固定的身份ID，通过这个ID，集群中的成员可以相互发现并通信。 
+
+（2）集群的规模是比较固定的，集群规模不能随意变动。 
+
+（3）集群中的每个节点都是有状态的，通常会持久化数据到永久存储中。 
+
+（4）如果磁盘损坏，则集群里的某个节点无法正常运行，集群功能受损
+
+
+
+**应用场景：**
+
+- 稳定的、唯一的网络标识：即pod重新调度后其PodName和HostName不变，基于Headless Service来实现的。
+- 稳定的、持久的存储：即每个pod的存储资源是不共享的，且pod重新调度后还是能访问到相同的持久化数据，基于pvc实现。
+- 有序的、优雅的部署和伸缩：即pod是有顺序的，在部署或者扩展的时候是根据定义的顺序依次依序部署的（即从0到N-1,在下一个Pod运行之前所有之前的pod必都是Running状态或者Ready状态），是基于init containers来实现的。
+- 有序的、优雅的删除和停止：在pod删除时是从最后一个依次往前删除，即从N-1到0。
+- 有序的、自动的滚动更新。
+
+从上面的应用场景可以发现，StatefulSet由以下几个部分组成：
+
+- 用于定义网络标志（DNS domain）的Headless Service
+- 用于创建pvc的volumeClaimTemplates
+- 定义具体应用的StatefulSet
+
+StatefulSet中每个Pod的DNS格式为`statefulSetName-{0..N-1}.serviceName.namespace.svc.cluster.local`，其中
+
+- `serviceName`为Headless Service的名字；
+- `0..N-1`为Pod所在的序号，从0开始到N-1；
+- `statefulSetName`为StatefulSet的名字；
+- `namespace`为服务所在的namespace，Headless Servic和StatefulSet必须在相同的namespace；
+- `.cluster.local`为Cluster Domain；
 
 
 
 
 
 
-# 1.4 基本对象概念
-
-**基本对象：**
-
-|   名称    | 概念                                                         |
-| :-------: | :----------------------------------------------------------- |
-|    Pod    | 容器组Pod是最小部署单元，一个Pod有一个或多个容器组成， Pod中容器共享存储和网络，在同一台Docker主机上运行。 |
-|  Service  | Service一个应用服务抽象，定义了Pod逻辑集合和访问这个Pod集合的策略。<br/>Service代理Pod集合对外表现是为一个访问入口，分配一个集群IP地址，来自这个IP的请求将负载均衡转发后端Pod中的容器。<br/>Service通过Lable Selector选择一组Pod提供服务。 |
-|  Volume   | 数据卷，共享Pod中容器使用的数据。分为临时卷、本地卷和网络卷，临时卷和本地卷位于Node本地，常用于数据缓存 |
-| Namespace | 命名空间将对象逻辑上分配到不同Namespace，可以是不同的项目、用户等区分管理，并设定控制策略，从而实现多租户。命名空间也称为虚拟集群。同一类型资源对象的Name必须唯一，逻辑分组，默认名称空间是default |
-|   Lable   | 标签用于区分对象（比如Pod、 Service），是key/values数据；每个对象可以有多个标签，通过标签关联对象。标签可以在创建一个对象的时候直接给与，也可以在后期随时修改，每一个对象可以拥有多个标签，但是，key值必须是唯一的。 |
 
 
 
-**基于基本对象更高层次抽象：**
 
-| 名称        | 概念                                                         |
-| ----------- | ------------------------------------------------------------ |
-| ReplicaSet  | 下一代Replication Controller。确保任何给定时间指定的Pod副本数量，并提供声明式更新等功能。RC与RS唯一区别就是lable selector支持不同， RS支持新的基于集合的标签， RC仅支持基于等式的标签。 |
-| Deployment  | Deployment是一个更高层次的API对象，它管理ReplicaSets和Pod，并提供声明式更新等功能。官方建议使用Deployment管理ReplicaSets，而不是直接使用ReplicaSets，这就意味着可能永远不需要直接操作。 |
-| StatefulSet | StatefulSet适合持久性的应用程序，有唯一的网络标识符（IP），持久存储，有序的部署、扩展、删除和滚动更新。 |
-| DaemonSet   | DaemonSet确保所有（或一些）节点运行同一个Pod。当节点加入Kubernetes集群中， Pod会被调度到该节点上运行，当节点从集群中。移除时， DaemonSet的Pod会被删除。删除DaemonSet会清理它所有创建的Pod。 |
-| Job         | 一次性任务，运行完成后Pod销毁，不再重新启动新容器。还可以任务定时运行。 |
+
+
+
+
+
+**总结**
+
+使用statefulset资源类型的服务通常有以下几点特点
+
+- 有状态服务
+- 多节点部署，集群部署
+- 节点有主从(备)之分。集群通常是主节点先运行，从节点后续运行并加入集群，这里就用**statefulset资源的有序部署的特性**
+- 节点之间数据分片存储，**这里使用到了statefulSet资源的存储隔离的特性，以及保证pod重新调度后还是能访问到相同的持久化数据**
+
+https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -10,7 +10,7 @@
 
 
 
-# 1.1 Pod概念
+# 1 Pod概念
 
 Pod是Kubernetes创建或部署的最小/最简单的基本单位，一个Pod代表集群上正在运行的一个进程。
 
@@ -24,7 +24,7 @@ Pod运行于节点Node环境中，节点可以是物理机或者云或者虚拟�
 
 
 
-# 1.2 Pod、容器和Node之间的关系
+# 2 Pod、容器和Node之间的关系
 
 ![pod和node关系](assets/pod%E5%92%8Cnode%E5%85%B3%E7%B3%BB.jpg)
 
@@ -41,7 +41,7 @@ Pod运行于节点Node环境中，节点可以是物理机或者云或者虚拟�
 
 
 
-# 1.3 Pod的定义和基本用法
+# 3 Pod的定义和基本用法
 
 通过yaml文件或者json描述Pod和其内容器的运行环境和期望状态，例如一个最简单的运行nginx应用的pod，定义如下：
 
@@ -142,7 +142,7 @@ Events:          <none>
 
 
 
-# 1.4 静态Pod
+# 4 静态Pod
 
 静态Pod是由kubelet进行创建和管理，并且仅存在于特定Node上的Pod。
 
@@ -156,7 +156,7 @@ kubelet 监视每个静态 Pod（在它崩溃之后重新启动）。
 
 创建静态Pod有两种方式：配置文件方式和HTTP方式。 
 
-## 1.4.1 配置文件方式 
+## 4.1 配置文件方式 
 
 以配置文件方式部署静态Pod，需要开启kubelet组件的 `--pod-manifest-path=` 参数（kubeadm部署）或`-- config=/etc/kubelet.d/`参数（二进制部署），来配置静态Pod的配置文件目录。配置文件是以标准的JSON 或 YAML 格式定义的Pod。**kubelet会定期扫描静态配置文件目录，根据这个目录添加和移除的JSON或YAML文件来启动和删除静态Pod。**
 
@@ -186,19 +186,19 @@ spec:
 
 由于静态Pod无法通过API Server直接管理，所以在Master上尝试删除这个Pod时，会使其变成Pending状态，且不会被删除。删除静态Pod只要删除`--pod-manifest-path`目录下的文件即可。
 
-## 1.4.3 HTTP方式
+## 4.3 HTTP方式
 
 kubelet 周期地从`–manifest-url=`参数指定的地址下载文件，并且把它翻译成 JSON/YAML 格式的 pod 定义。此后的操作方式与`–pod-manifest-path=`相同，kubelet 会不时地重新下载该文件，当文件变化时对应地终止或启动静态 pod。
 
 
 
-## 1.4.4 静态Pod的作用
+## 4.4 静态Pod的作用
 
 由于静态Pod只受所在节点的kubelet控制，可以有效预防通过kubectl、或管理工具操作的误删除，可以用来部署核心组件应用。保障应用服务总是运行稳定数量和提供稳定服务。
 
 
 
-# 1.5 Pod容器共享Volume
+# 5 Pod容器共享Volume
 
 同一个Pod中的多个容器能够共享Pod级别的存储卷Volume。Volume可以被定义为各种类型，多个容器各自进行挂载操作，将一个Volume挂载为容器内部需要的目录，如图所示。
 
