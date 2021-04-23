@@ -135,12 +135,14 @@
 </tr>
 <tr>
    <td><a href="Kubernetes/Kubernetes权威指南/第五章 kubeadm部署--多主集群.md">第五章 kubeadm部署--多主集群</a></td>
-   <td><a href="Kubernetes/Kubernetes权威指南/第六章 深入掌握Pod.md">第六章 深入掌握Pod.md</a></td>
+   <td><a href="Kubernetes/Kubernetes权威指南/第六章 深入掌握Pod.md">第六章 深入掌握Pod</a></td>
 </tr>
 <tr>
-   <td><a href="Kubernetes/Kubernetes权威指南/01-kubectl命令.md">01-kubectl命令.md</a></td></tr>
+   <td><a href="Kubernetes/Kubernetes权威指南/01-kubectl命令.md">01-kubectl命令</a></td>
+   <td><a href="Kubernetes/Kubernetes权威指南/02-kubernetes的基本概念.md">02-kubernetes的基本概念</a></td>
 </tr>
 </table>
+
 
 
 
