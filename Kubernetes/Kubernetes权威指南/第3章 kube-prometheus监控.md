@@ -2,7 +2,7 @@
 
 
 
-# 第三章 Kube-prometheus监控
+# 第3章 Kube-prometheus监控
 
 # 1 介绍
 

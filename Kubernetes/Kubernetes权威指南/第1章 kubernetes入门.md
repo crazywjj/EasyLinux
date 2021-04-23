@@ -2,7 +2,7 @@
 
 
 
-# 第一章 kubernetes入门
+# 第1章 kubernetes入门
 
 # 1  kubernets介绍
 Kubernetes(k8s)是Google2014年开源的容器集群管理系统（谷歌内部:Borg），它主要用于容器容器化应用程序的部署、扩展和管理。
