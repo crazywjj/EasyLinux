@@ -38,28 +38,26 @@ GlusterFS是Scale-Out存储解决方案Gluster的核心，它是一个开源的�
 
 
 
-
-
 ## 1.1 GlusterFS概述
 
  GlusterFS系统是一个可扩展的网络文件系统，相比其他分布式文件系统，GlusterFS具有高扩展性、高可用性、高性能、可横向扩展等特点，并且其没有元数据服务器的设计，让整个服务没有单点故障的隐患。
 
 **术语：**
 
-- **Brick:**GFS中的存储单元，通过是一个受信存储池中的服务器的一个导出目录。可以通过主机名和目录名来标识，如'SERVER:EXPORT'
-- **Client:**挂载了GFS卷的设备
-- **Extended Attributes:**xattr是一个文件系统的特性，其支持用户或程序关联文件/目录和元数据。
-- **FUSE:**Filesystem Userspace是一个可加载的内核模块，其支持非特权用户创建自己的文件系统而不需要修改内核代码。通过在用户空间运行文件系统的代码通过FUSE代码与内核进行桥接。
+- **Brick:** GFS中的存储单元，通过是一个受信存储池中的服务器的一个导出目录。可以通过主机名和目录名来标识，如'SERVER:EXPORT'
+- **Client:** 挂载了GFS卷的设备
+- **Extended Attributes:** xattr是一个文件系统的特性，其支持用户或程序关联文件/目录和元数据。
+- **FUSE:** Filesystem Userspace是一个可加载的内核模块，其支持非特权用户创建自己的文件系统而不需要修改内核代码。通过在用户空间运行文件系统的代码通过FUSE代码与内核进行桥接。
 - **Geo-Replication**
-- **GFID:**GFS卷中的每个文件或目录都有一个唯一的128位的数据相关联，其用于模拟inode
-- **Namespace:**每个Gluster卷都导出单个ns作为POSIX的挂载点
-- **Node:**一个拥有若干brick的设备
-- **RDMA:**远程直接内存访问，支持不通过双方的OS进行直接内存访问。
-- **RRDNS:**round robin DNS是一种通过DNS轮转返回不同的设备以进行负载均衡的方法
-- **Self-heal:**用于后台运行检测复本卷中文件和目录的不一致性并解决这些不一致。
-- **Split-brain:**脑裂
+- **GFID:** GFS卷中的每个文件或目录都有一个唯一的128位的数据相关联，其用于模拟inode。
+- **Namespace:** 每个Gluster卷都导出单个ns作为POSIX的挂载点。
+- **Node: ** 一个拥有若干brick的设备。
+- **RDMA:** 远程直接内存访问，支持不通过双方的OS进行直接内存访问。
+- **RRDNS:** round robin DNS是一种通过DNS轮转返回不同的设备以进行负载均衡的方法。
+- **Self-heal:** 用于后台运行检测复本卷中文件和目录的不一致性并解决这些不一致。
+- **Split-brain:** 脑裂。
 - **Translator:**
-- **Volfile:**glusterfs进程的配置文件
+- **Volfile:** glusterfs进程的配置文件。
 
 
 
