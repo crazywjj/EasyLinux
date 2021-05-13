@@ -118,9 +118,11 @@
 <table border="0">
     <tr>
         <td><a href="实训三/Mysql高可用之MHA+Atlas读写分离.md">Mysql高可用之MHA+Atlas读写分离</a></td>
+        <td><a href="实训三/GlusterFS集群实战.md">GlusterFS集群实战</a></td>
         <td><a href="实训三/Linux运维面试精华.md">Linux运维面试精华</a></td>
     </tr>
 </table>
+
 
 
 
