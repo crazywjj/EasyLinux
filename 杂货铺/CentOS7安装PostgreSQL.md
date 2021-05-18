@@ -97,7 +97,8 @@ yum install -y bison flex readline-devel zlib-devel gcc zlib readline openssl op
 ```bash
 wget https://ftp.postgresql.org/pub/source/v10.7/postgresql-10.7.tar.gz
 tar -zvvf postgresql-10.7.tar.gz
-./configure --prefix=/usr/local/pgsql
+cd postgresql-10.7
+./configure --prefix=/usr/local/pgsql10
 make
 make install
 ```
@@ -120,7 +121,7 @@ chown -R postgres:postgres /usr/local/pgsql10
 cat >>/etc/profile<<\EOF
 #postgresql
 export PGHOME=/data/pgsql
-export PGBASE=/usr/local/pgsql
+export PGBASE=/usr/local/pgsql10
 export PATH=$PATH:$PGBASE/bin
 EOF
 source /etc/profile
@@ -130,6 +131,7 @@ source /etc/profile
 
 ```shell
 [root@host-10-18-22-154 data]# su - postgres
+[root@host-10-18-22-154 data]# cd /usr/local/pgsql10/bin
 [postgres@host-10-18-22-154 bin]$ ./initdb -D /data/pgsql/data
 The files belonging to this database system will be owned by user "postgres".
 This user must also own the server process.
@@ -228,6 +230,7 @@ postgres=# ALTER USER postgres WITH PASSWORD 'a*aDnw4YL$3t';
 ```shell
 vi /etc/rc.local
 su - postgres -c "/usr/local/pgsql10/bin/pg_ctl -D /data/pgsql/data -l /data/pgsql/log/pgsql.log   start"
+chmod +x /etc/rc.d/rc.local
 ```
 
 
@@ -287,10 +290,43 @@ ldconfig
 wget https://download.osgeo.org/postgis/source/postgis-2.5.2.tar.gz
 tar -xvzf postgis-2.5.2.tar.gz
 cd postgis-2.5.2
-./configure --prefix=/usr/local/pgsql10/plugin/postgis --with-pgconfig=/usr/local/pgsql10/bin/pg_config --with-geosconfig=/usr/local/pgsql10/plugin/geos/bin/geos-config --with-gdalconfig=/usr/local/pgsql10/plugin/gdal/bin/gdal-config --with-projdir=/usr/local/pgsql10/plugin/proj
+./configure --prefix=/usr/local/pgsql10/plugin/postgis \
+--with-pgconfig=/usr/local/pgsql10/bin/pg_config \
+--with-geosconfig=/usr/local/pgsql10/plugin/geos/bin/geos-config \
+--with-gdalconfig=/usr/local/pgsql10/plugin/gdal/bin/gdal-config \
+--with-projdir=/usr/local/pgsql10/plugin/projdir
 make
 make install
 ```
+
+常见报错：
+
+```bash
+在postgis中执行./configure时，遇到 checking for library containing GDALAllRegister... no 的错误信息
+checking for library containing GDALAllRegister... no
+configure: error: could not find GDAL
+
+解决办法：将PostgreSQL的lib目录（/postgresql/lib）和GDAL的lib文件目录（/usr/local/lib）添加到系统的库文件目录中
+
+echo '/usr/local/pgsql/lib/' >>/etc/ld.so.conf
+echo '/usr/local/pgsql/plugin/gdal/lib/' >>/etc/ld.so.conf
+
+ldconfig
+
+检查是否生效
+[root@test postgis-2.1.1]# ldconfig -p | grep libpq
+    libpqwalreceiver.so (libc6,x86-64) => /postgresql/lib/libpqwalreceiver.so
+    libpq.so.5 (libc6,x86-64) => /postgresql/lib/libpq.so.5
+    libpq.so (libc6,x86-64) => /postgresql/lib/libpq.so
+
+[root@test postgis-2.1.1]# ldconfig -p | grep gdal
+    libgdal.so.1 (libc6,x86-64) => /usr/local/lib/libgdal.so.1
+    libgdal.so (libc6,x86-64) => /usr/local/lib/libgdal.so
+
+再执行./configure就正常了。
+```
+
+
 
 **安装fuzzystrmatch**
 
