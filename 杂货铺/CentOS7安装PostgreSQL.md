@@ -223,6 +223,12 @@ Type "help" for help.
 postgres=# ALTER USER postgres WITH PASSWORD 'a*aDnw4YL$3t';
 ```
 
+远程连接命令：
+
+```bash
+psql -U postgres -p 5432 -h 10.18.22.154
+```
+
 
 
 10. **设置开机自启**
@@ -383,17 +389,9 @@ CREATE EXTENSION postgis_topology;
 
 
 
-
-
 # 5 PostgreSQL多实例
 
 就是共用一套程序，然后在多创建一个实例，注意配置文件中的端口和特殊配置即可。
-
-
-
-
-
-
 
 
 
