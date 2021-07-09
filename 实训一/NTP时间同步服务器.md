@@ -66,7 +66,7 @@ systemctl enable ntpd
  6 Nov 18:36:39 ntpdate[2151]: adjust time server 10.0.0.41 offset -0.019067 sec
 ```
 
-注意：此处需要等待服务端几分钟。
+注意：此处需要等待服务端几分钟；如下报错 `22 Sep 11:54:25 ntpdate[70350]: the NTP socket is in use, exiting`；ntpd服务运行的情况下会导致ntpdate错误。
 
 添加到定时任务
 

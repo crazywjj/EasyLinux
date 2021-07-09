@@ -96,7 +96,7 @@ yum install -y bison flex readline-devel zlib-devel gcc zlib readline openssl op
 
 ```bash
 wget https://ftp.postgresql.org/pub/source/v10.7/postgresql-10.7.tar.gz
-tar -zvvf postgresql-10.7.tar.gz
+tar -zxvf postgresql-10.7.tar.gz
 cd postgresql-10.7
 ./configure --prefix=/usr/local/pgsql10
 make
@@ -111,7 +111,7 @@ echo "DtDream@0209"|passwd --stdin postgres
 mkdir -p /data/pgsql/data
 mkdir -p /data/pgsql/log
 touch /data/pgsql/log/pgsql.log
-chown -R postgres:postgres /data/pgsql
+chown -R postgres:postgres /data
 chown -R postgres:postgres /usr/local/pgsql10
 ```
 
@@ -131,7 +131,7 @@ source /etc/profile
 
 ```shell
 [root@host-10-18-22-154 data]# su - postgres
-[root@host-10-18-22-154 data]# cd /usr/local/pgsql10/bin
+[postgres@host-10-18-22-154 data]# cd /usr/local/pgsql10/bin
 [postgres@host-10-18-22-154 bin]$ ./initdb -D /data/pgsql/data
 The files belonging to this database system will be owned by user "postgres".
 This user must also own the server process.
@@ -268,7 +268,7 @@ ldconfig
 
 ```bash
 wget http://download.osgeo.org/geos/geos-3.6.2.tar.bz2
-tar -jxf geos-3.6.2.tar.bz2
+tar -jxf geos-3.6.2.tar.bz2    #解压tar.bz2类型的包，依赖bzip2包
 cd geos-3.6.2
 ./configure --prefix=/usr/local/pgsql10/plugin/geos
 make
@@ -300,7 +300,7 @@ cd postgis-2.5.2
 --with-pgconfig=/usr/local/pgsql10/bin/pg_config \
 --with-geosconfig=/usr/local/pgsql10/plugin/geos/bin/geos-config \
 --with-gdalconfig=/usr/local/pgsql10/plugin/gdal/bin/gdal-config \
---with-projdir=/usr/local/pgsql10/plugin/projdir
+--with-projdir=/usr/local/pgsql10/plugin/proj
 make
 make install
 ```
@@ -312,14 +312,13 @@ make install
 checking for library containing GDALAllRegister... no
 configure: error: could not find GDAL
 
-解决办法：将PostgreSQL的lib目录（/postgresql/lib）和GDAL的lib文件目录（/usr/local/lib）添加到系统的库文件目录中
+解决办法：将PostgreSQL的lib目录（/usr/local/pgsql10/lib/）和GDAL的lib文件目录（/usr/local/pgsql10/plugin/gdal/lib/）添加到系统的库文件目录中
 
-echo '/usr/local/pgsql/lib/' >>/etc/ld.so.conf
-echo '/usr/local/pgsql/plugin/gdal/lib/' >>/etc/ld.so.conf
-
+echo '/usr/local/pgsql10/lib/' >>/etc/ld.so.conf
+echo '/usr/local/pgsql10/plugin/gdal/lib/' >>/etc/ld.so.conf
 ldconfig
 
-检查是否生效
+# 检查是否生效
 [root@test postgis-2.1.1]# ldconfig -p | grep libpq
     libpqwalreceiver.so (libc6,x86-64) => /postgresql/lib/libpqwalreceiver.so
     libpq.so.5 (libc6,x86-64) => /postgresql/lib/libpq.so.5
@@ -347,12 +346,10 @@ make && make install
 添加环境变量
 
 ```bash
-#postgresql
-export PGHOME=/data/pgsql
-export PGBASE=/usr/local/pgsql10
-export PATH=$PATH:$PGBASE/bin
-
+cat >>/etc/profile<<\EOF
 export LD_LIBRARY_PATH=/usr/local/pgsql10/plugin/geos/lib:/usr/local/pgsql10/plugin/proj/lib:/usr/local/pgsql10/plugin/gdal/lib::$PGHOME/lib:/lib64:/usr/lib64:/usr/local/lib64:/lib:/usr/lib:/usr/local/lib:$LD_LIBRARY_PATH
+EOF
+source /etc/profile
 ```
 
 

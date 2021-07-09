@@ -64,15 +64,24 @@ no_magic_root：连root用户也在限制范围，不给root特殊权限。
 2、针对不同服务来限制不同登陆方式
 
 在远程telnet、ssh登陆上做限制，可以编辑如下文件，添加的内容和上方也一样。
+
+```
 vim /etc/pam.d/remote
+```
 
 3、手动解除锁定：
 
 查看某一用户错误登陆次数：
+
+```
 pam_tally –user username
+```
 
 清空某一用户错误登陆次数：
+
+```
 pam_tally –user username –reset
+```
 
 faillog -r 命令亦可。
 
