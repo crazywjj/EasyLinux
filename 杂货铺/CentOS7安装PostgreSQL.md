@@ -48,9 +48,37 @@ PostgreSQL 是一种非常复杂的对象-关系型数据库管理系统（ORDBM
 
 ## 3.1 Yum安装
 
-在https://www.postgresql.org/download/linux/redhat/选择对应的版本进行yum安装。
+在  https://www.postgresql.org/download/linux/redhat/   选择对应的版本进行yum安装。
 
 ![image-20201230184257170](assets/image-20201230184257170.png)
+
+注意：需要服务器时间同步互联网。
+
+
+
+PostGIS是PostgreSQL的一个插件，需要注意其版本匹配关系，详细的版本匹配关系可以在官网（https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS）上找到。
+
+1、安装epel
+
+```
+yum -y install epel-release
+```
+
+2、安装PostGIS（空间数据处理插件）
+
+版本号格式为：_前为postgis版本，后面为postgresql版本。
+
+```
+yum install postgis25_10 -y
+```
+
+
+
+
+
+
+
+
 
 
 

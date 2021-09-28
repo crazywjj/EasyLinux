@@ -107,11 +107,47 @@ vsftpd的核心文件和目录：
 /etc/vsftpd/vsftpd_conf_migrate.sh 	#是vsftpd操作的一些变量和设置脚本
 ```
 
-vsftp传输方式默认是PORT模式
+vsftp默认传输方式默认是PORT模式（主动模式）
 
 ```
 port_enable=YES|NO
 ```
+
+被动模式常用配置：
+
+```bash
+anonymous_enable=NO
+listen_port=61022
+local_enable=YES
+write_enable=YES
+local_umask=022
+dirmessage_enable=YES
+connect_from_port_20=YES
+accept_timeout=60
+connect_timeout=60
+idle_session_timeout=300
+xferlog_enable=YES
+xferlog_std_format=YES
+pam_service_name=vsftpd
+userlist_enable=YES
+xferlog_file=/var/log/xferlog
+vsftpd_log_file=/var/log/vsftpd.log
+tcp_wrappers=YES
+listen=YES
+listen_ipv6=NO
+chroot_local_user=YES
+chroot_list_enable=YES
+chroot_list_file=/etc/vsftpd/chroot_list
+allow_writeable_chroot=YES
+seccomp_sandbox=NO
+pasv_enable=YES
+pasv_min_port=61030
+pasv_max_port=61033
+max_per_ip=2
+#pasv_address=59.255.61.34
+```
+
+
 
 
 
