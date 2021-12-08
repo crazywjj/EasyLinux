@@ -1166,6 +1166,56 @@ kvm虚拟机的克隆分为两种情况，第一种kvm宿主机上对虚拟机�
 
 
 
+# 1.8 虚机开机自启
+
+在kvm图形化管理工具里面可以设置，让kvm虚拟机随着宿主虚拟机一起启动。
+
+必须在关机状态下做。
+
+![20d184db3a2c4a8a8a72a7bb7992ec26](assets/20d184db3a2c4a8a8a72a7bb7992ec26.jpg)
+
+![de9ea692692f49d1a9a2a96fbfe52017](assets/de9ea692692f49d1a9a2a96fbfe52017.jpg)
+
+设置好以后会像Windows一样创建一个快捷方式
+
+```
+[root@CentOS2 ~]# cd /etc/libvirt/qemu/autostart/
+[root@CentOS2 autostart]# ls
+centos7.0.xml
+```
+
+如果取消开机自动启动那个勾选，这个xml就不会被创建。
+
+以上是使用图形界面方式设置kvm虚拟机开机自动启动。下面演示命令行方式
+
+```bash
+[root@CentOS2 autostart]# virsh list --all
+ Id    Name                           State
+----------------------------------------------------
+ -     centos7.0                      shut off
+ -     winxp                          shut off
+
+[root@CentOS2 autostart]# virsh autostart --disable centos7.0
+Domain centos7.0 unmarked as autostarted
+
+[root@CentOS2 autostart]# ls /etc/libvirt/qemu/autostart/
+[root@CentOS2 autostart]# virsh autostart  centos7.0
+Domain centos7.0 marked as autostarted
+
+[root@CentOS2 autostart]# ls /etc/libvirt/qemu/autostart/
+centos7.0.xml
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 # 第二章 KVM虚拟化web管理平台

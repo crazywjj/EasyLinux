@@ -430,3 +430,52 @@ pid-file=/home/mysql/tmp/mysql.pid
 
 
 
+# 1.3 login-path本地快捷登陆
+
+login-path是MySQL5.6开始支持的新特性。通过借助mysql_config_editor工具将登陆MySQL服务的认证信息加密存在.mylogin.cnf文件（默认位于用户主目录） 。之后，MySQL客户端工具可通过读取该加密文件连接MySQL，避免重复输入登录信息，避免敏感信息暴露。可用于数据库备份时，脚本中出现明文密码，暴露安全问题。
+
+
+
+## 1.3.1 配置快捷登陆
+
+```bash
+mysql_config_editor set --login-path=mysql --user=root  --host=127.0.0.1 --port=3306 --password
+#参数  说明  set 设置
+-G  --login-path      # 登陆路径名
+-u  --user            # 登陆的数据库用户名
+-p  --password        # 登陆的数据库用户密码
+-h  --host            # 登陆数据库主机名或IP地址
+-P  --port            # 登陆数据库的对外服务端口
+
+# 回车后提示输入 'mysql'@'127.0.0.1' 用户的密码，这里密码不会验证是否正确，只会保存密码
+# --login-path  不可重复
+# 重复配置会出现以下提示，是否覆盖以前配置
+# 配置后会在当前用户家目录下生成一个.mylogin.cnf的加密隐藏文件
+```
+
+## 1.3.2 查看所有快捷登陆
+
+```bash
+# 查询全部快捷登陆
+mysql_config_editor print --all
+
+# 查询指定的快捷登陆方式(不存在的话没有任何显示)
+mysql_config_editor print --loginpath=test
+```
+
+## 1.3.3 使用快捷方式登陆数据库
+
+```bash
+mysql --login-path=mysql
+#使用快捷登录备份数据库
+mysqldump --login-path=mysql --single-transaction --databases pcdzk >/data/sql_bak/pcdzk-$(date +%F).sql
+find /data/sql_bak/ -type f -mtime +15 -name '*.sql' -delete
+```
+
+## 1.3.4 删除快捷登陆
+
+```bash
+mysql_config_editor revome  --login-path=test
+# login-path 不存在的话删除也不会报错
+```
+

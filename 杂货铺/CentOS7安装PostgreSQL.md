@@ -76,12 +76,6 @@ yum install postgis25_10 -y
 
 
 
-
-
-
-
-
-
 ## 3.2 RPM包安装
 
 在https://yum.postgresql.org/rpmchart/，选择对应版本的RPM包进行安装。
@@ -389,9 +383,21 @@ source /etc/profile
 ```bash
 su - postgres
 psql
+
+#查看详细信息
+select version();
+#查看版本信息：
+show server_version;
+
 create database gistest;  # 创建普通数据库
 \c gistest  # 切换到该数据库
 \dx  # 显示扩展模块
+```
+
+查看当前PG库所有安装的插件名称：
+
+```
+select name from pg_available_extensions;
 ```
 
 查看已安装扩展：
@@ -406,15 +412,43 @@ SELECT name, default_version,installed_version FROM pg_available_extensions WHER
 CREATE EXTENSION postgis;
 CREATE EXTENSION fuzzystrmatch;
 CREATE EXTENSION postgis_tiger_geocoder;
-CREATE EXTENSION address_standardizer;
 CREATE EXTENSION postgis_topology;
+CREATE EXTENSION postgis_sfcgal;
+CREATE EXTENSION address_standardizer;
+CREATE EXTENSION address_standardizer_data_us;
 ```
 
 ![image-20201231175944951](assets/image-20201231175944951.png)
 
 
 
-# 5 PostgreSQL多实例
+# 5 PostgreSQL使用
+
+```sql
+psql -h 192.158.70.85 -p 5432 -U syjjpgsql -d template1 #连接数据库
+postgres=# CREATE DATABASE dbname;		# 创建数据库
+postgres=# \l		#查看已经存在的数据库
+postgres=# \c dbname    #进入数据库
+postgres=# DROP DATABASE [ IF EXISTS ] name  # 删除数据库
+
+#以下创建了一个表，表名为 COMPANY 表格，主键为 ID，NOT NULL 表示字段不允许包含 NULL 值：
+CREATE TABLE COMPANY(
+   ID INT PRIMARY KEY     NOT NULL,
+   NAME           TEXT    NOT NULL,
+   AGE            INT     NOT NULL,
+   ADDRESS        CHAR(50),
+   SALARY         REAL
+);
+ 
+postgres=# \d    # 查看表格是否创建成功
+postgres=# \d company  # 查看表格信息
+```
+
+
+
+
+
+# 6 PostgreSQL多实例
 
 就是共用一套程序，然后在多创建一个实例，注意配置文件中的端口和特殊配置即可。
 

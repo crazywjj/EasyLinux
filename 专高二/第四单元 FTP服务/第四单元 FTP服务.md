@@ -241,8 +241,11 @@ ascii_download_enable=YES  # 是否启用ASCII模式下载数据
 listen_port=21              # 设置ftp服务工作的端口
 connect_from_port_20=YES    # 主动模式数据传输的端口
 pasv_enable=YES             # YES为被动模式工作，NO则是主动模式，默认YES
+pasv_addr_resolve=yes       # 允许vsftpd去欺骗客户 
+pasv_address=10.10.10.20    # 让vsftpd以这个地址去欺骗客户
 pasv_max_port=0             # PASV模式下，最大传输数据端口号，0为任意无限制
 pasv_min_port=0             # PASV模式下，最小传输数据端口号
+pasv_promiscuous=YES        # 代表关闭PASV模式的安全检查
 ```
 
 **超时时间设置**
@@ -298,6 +301,260 @@ user_config_dir=/etc/vsftpd/virtual_user_conf/  # 指定虚拟用户配置文件
 download_enable=YES   # 如果设置为NO，所有下载请求被拒绝
 ls_recurse_enable=NO  # 启用后，允许使用ls -R命令，此命令可能会消耗大量资源
 ```
+
+
+
+
+
+```
+1.查看日志
+/var/log/
+2.限制用户活动目录
+change root,简称chroot
+3.FTP使用到的端口
+命令通道：21，数据传输:20
+
+ 
+
+ 
+
+文件
+1./etc/vsftpd/vsftpd.conf
+配置FTP
+man vsftpd.conf/man 5 vsftpd.conf
+查看详细配置
+2./etc/pam.d/vsftpd
+使用PAM模块相关配置
+3./etc/vsftpd/ftpusers
+设置无法登录FTP的用户，/etc/pam.d/vsftpd中设定的就是这个文件
+4./etc/vsftpd/user_list
+设置用户是否可以访问FTP，可以访问或不可以访问由userlist_deny={YES/NO}设定
+userlist_enable设置开关
+5./etc/vsftpd/chroot_list
+文件默认不存在。设置用户chroot在某目录下。
+通过chroot_list_enable/chroot_list_file两个参数设置
+6./usr/sbin/vsftpd
+vsftpd的执行文件
+7.anon_root=/home/ftp
+修改匿名用户登录目录，默认/var/ftp
+8.ocal_root=/home/ftp
+修改本地用户登录目录，默认/root
+
+ 
+
+ 
+
+服务器环境相关设置
+1.connect_from_port_20=YES(NO)
+ftp数据传输端口
+Default: NO
+2.listen_port=21
+ftp命令通道端口
+Default: 21
+3.dirmessage_enable=YES(NO)
+显示用户进入的目录要注意的内容，可以通过message_file修改
+Default: NO
+4.message_file=.message
+当dirmessage_enable=YES时可以让vsftpd显示该档案讯息
+Default: .message
+5.listen=YES(NO)
+设定为YES表示vsftpd以standalone的方式启动
+Default: NO
+6.pasv_enable=YES(NO)
+是否支持数据流的被动式联机模式
+Default: YES
+7.use_localtime=YES(NO)
+是否使用本地时间
+Default: NO
+8.write_enable=YES(NO)
+是否允许用户上传数据
+Default: NO
+9.connect_timeout=60
+单位是秒，主动式联机模式下，发出连接信号60秒内没有响应则断线
+Default: 60
+10.accept_timeout=60
+被动式联机模式下，服务器启用端口等待60无回应则断线
+Default: 60
+11.data_connection_timeout=300
+成功建立连接，300秒内容无法顺利完成数据传送，客户端联机会被vsftpd强制剔除
+Default: 300
+12.idle_session_timeout=300
+300秒内无命令动作，强制脱机
+Default: 300
+13.max_clients=0
+如果vsftpd以standalone方式启动，设定同一时间内的最大连接数
+Default: 0 (unlimited)
+14.max_per_ip=0
+如果vsftpd以standalone方式启动，设定同一IP在同一时间内的最大连接数
+Default: 0 (unlimited)
+15.pasv_min_port=0/pasv_max_port=0
+被动模式下，如想使用65400到65410这11个端口，设置pasv_min_port=65400/pasv_max_port=65410
+Default: 0 (use any port)
+16.ftpd_banner=说明文字
+连接FTP时，在客户端软件上显示的说明文字。可以使用banner_file设定值来取代
+Default: (none - default vsftpd banner is displayed)
+17.banner_file=/path/file
+同16
+
+ 
+
+ 
+
+本地用户相关设置
+1.guest_enable=YES(NO)
+值为YES时，任何用户都被认为是guest
+Default: NO
+2.guest_username=ftp
+guest_enable=YES时生效，指定访客身份
+Default: ftp
+3.local_enable=YES(NO)
+值为YES时，/etc/passwd内的账号才能以本地用户的方式登录FTP服务器
+Default: NO
+4.local_max_rate=0
+本地用户的传输速度限制，单位为bytes/second，0为不限制
+Default: 0 (unlimited)
+5.chroot_local_user=YES(NO)
+是否将用户限制在特定目录之内
+Default: NO
+6.chroot_list_enable=YES(NO)
+是否启用chroot写入列表的功能
+Default: NO
+7.chroot_list_file=/etc/vsftpd/chroot_list
+如果chroot_list_enable=YES，此文件生效
+Default: /etc/vsftpd.chroot_list
+8.userlist_enable=YES(NO)
+阻止用户登录
+Default: NO
+9.userlist_deny=YES(NO)
+当userlist_enable=YES时才会生效，或值为YES，则当使用者账号被列入userlist_file时，无法登入FTP
+Default: YES
+10.userlist_file=/etc/vsftpd/user_list
+阻止登录FTP的用户列表
+Default: /etc/vsftpd/user_list
+
+ 
+
+ 
+
+匿名用户相关设置
+1.anonymous_enable=YES(NO)
+是否允许匿名用户登入FTP，其他相关设置必须在此设置为YES时才会生效
+Default: YES
+2.anon_world_readable_only=YES(NO)
+匿名用户只能下载可读
+Default: YES
+3.anon_other_write_enable=YES(NO)
+是否允许匿名用户除了写入之外的权限。包括删除、修改服务器上的文件及文件名等。
+Default: NO
+4.anon_mkdir_write_enable=YES(NO)
+匿名用户是否可以建立目录，如果为YES，anon_other_write_enable必须为YES
+Default: NO
+5.anon_upload_enable=YES(NO)
+匿名用户是否可以上传数据，如果为YES，anon_other_write_enable必须为YES
+Default: NO
+6.deny_email_enable=YES(NO)
+匿名用户使用Email登录时，可以设置某此Email无法登入，与banned_email_file一起使用
+Default: NO
+7.banned_email_file=/etc/vsftpd/banned_emails
+配合6，输入email地址
+Default: /etc/vsftpd/banned_emails
+8.no_anon_password=YES(NO)
+当设置为YES时，匿名用户将会略过Email检验
+Default: NO
+9.anon_max_rate=0
+匿名用户的传输速度，单位bytes/second，0为不限制
+Default: 0 (unlimited)
+10.anon_umask=077
+匿名用户上传的文件的权限，如果是077，上传文件的权限是-rw-------
+Default: 077
+
+ 
+
+ 
+
+系统安全相关设置
+1.ascii_download_enable=YES(NO)
+设置为YES，客户端优先使用ASCII格式下载文件
+Default: NO
+2.ascii_upload_enable=YES(NO)
+设置为YES，客户端优先使用ASCII格式上传文件
+Default: NO
+3.one_process_model=YES(NO)
+设置为YES，每个连接都会拥有一个Process
+Default: NO
+4.tcp_wrappers=YES(NO)
+支持TCP Wrappers的防火墙机制，利用/etc/hosts.[allow|deny]作为基础防火墙
+Default: NO
+5.xferlog_enable=YES(NO)
+设置为YES，会记录上传下载日志到xferlog_file设置的文件中
+Default: NO (but the sample config file enables it)
+6.xferlog_file=/var/log/xferlog
+如果xferlog_enable为YES，记录上传下载日志
+Default: /var/log/xferlog
+7.xferlog_std_format=YES(NO)
+是否设置为wu-ftp的登录格式
+Default: NO
+8.dual_log_enable=YES(NO)
+除了/var/log/xferlog的wu-ftp格式登录日志，还可以设置具有vsftpd的独特登录日志格式
+Default: NO
+9.vsftpd_log_file=/var/log/vsftpd.log
+具有vsftpd的独特登录日志格式
+Default: /var/log/vsftpd.log
+10.nopriv_user=nobody
+vsftpd预设以nobody为服务执行者的权限
+Default: nobody
+11.pam_service_name=vsftpd
+pam模块的名称，放置在/etc/pam.d/vsftpd中
+Default: ftp
+
+ 
+
+vsftpd默认值
+1.anonymous_enable=YES
+支持匿名者登入FTP
+2.local_enable=YES
+支持本地本地用户登入
+3.write_enable=YES
+允许用户上传数据
+4.local_umask=022
+建立新目录(755)和文件(644)的权限
+5.#anon_upload_enable=YES
+6.#anon_mkdir_write_enable=YES
+7.dirmessage_enable=YES
+若目录下有.message则会显示该文件的内容
+8.xferlog_enable=YES
+记录登录日志到xferlog_file参数中，默认为/var/log/xferlog
+9.connect_from_port_20=YES
+支持主动式联机功能
+10.chown_uploads=YES
+11.#chown_username=whoever
+12.xferlog_file=/var/log/vsftpd.log
+13.xferlog_std_format=YES
+14.#idle_session_timeout=600
+15.#data_connection_timeout=120
+16.#nopriv_user=ftpsecure
+17.#async_abor_enable=YES
+18.ascii_upload_enable=YES
+19.ascii_download_enable=YES
+20.#ftpd_banner=Welcome to blah FTP service.
+21.#deny_email_enable=YES
+22.#banned_email_file=/etc/vsftpd/banned_emails
+23.#chroot_local_user=YES
+24.#chroot_list_enable=YES
+25.#chroot_list_file=/etc/vsftpd/chroot_list
+26.#ls_recurse_enable=YES
+27.listen=YES
+28.#listen_ipv6=YES
+29.pam_service_name=vsftpd
+30.userlist_enable=NO
+31.#tcp_wrappers=YES
+32.userlist_deny=NO
+33.local_root=/var/ftp
+34.use_localtime=yes
+增加该设置
+```
+
+
 
 
 

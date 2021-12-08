@@ -157,8 +157,14 @@
 	<td><a href="杂货铺/本地镜像YUM源.md">本地镜像YUM源</a></td>
     <td><a href="杂货铺/CentOS7安装PostgreSQL.md">CentOS7安装PostgreSQL</a></td>
     <td><a href="杂货铺/CentOS7制作RPM包.md">CentOS7制作RPM包</a></td>
+    <td><a href="杂货铺/LVM磁盘逻辑卷管理.md">LVM磁盘逻辑卷管理</a></td>
+    </tr>
+<tr>
+	<td><a href="杂货铺/华为FusionInsight HD客户端安装.md">华为FusionInsight HD客户端安装</a></td>
     </tr>
 </table>
+
+
 
 
 
