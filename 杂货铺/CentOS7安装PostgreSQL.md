@@ -111,7 +111,7 @@ https://ftp.postgresql.org/pub/source/v10.7/postgresql-10.7.tar.gz
 1. **安装依赖**
 
 ```bash
-yum install -y bison flex readline-devel zlib-devel gcc zlib readline openssl openssl-devel
+yum install -y bison flex readline-devel zlib-devel gcc zlib readline openssl openssl-devel systemtap-sdt-devel.x86_64 perl perl-ExtUtils-Embed pam pam-devel libxml2 libxml2-devel libxslt libxslt-devel tcl tcl-devel openldap openldap-devel  python python-devel
 ```
 
 2. **下载软件并安装**
@@ -120,16 +120,17 @@ yum install -y bison flex readline-devel zlib-devel gcc zlib readline openssl op
 wget https://ftp.postgresql.org/pub/source/v10.7/postgresql-10.7.tar.gz
 tar -zxvf postgresql-10.7.tar.gz
 cd postgresql-10.7
-./configure --prefix=/usr/local/pgsql10
-make
-make install
+./configure --prefix=/usr/local/pgsql10 --with-perl --with-tcl --with-python --with-openssl --with-pam --without-ldap --with-libxml --with-libxslt --enable-thread-safety --with-wal-blocksize=16 --with-blocksize=16 --enable-dtrace --enable-debug
+make world
+make install-world
+
 ```
 
 3. **添加用户并更改权限**
 
 ```shell
 useradd postgres
-echo "DtDream@0209"|passwd --stdin postgres
+echo "postgres"|passwd --stdin postgres
 mkdir -p /data/pgsql/data
 mkdir -p /data/pgsql/log
 touch /data/pgsql/log/pgsql.log
@@ -396,7 +397,7 @@ create database gistest;  # 创建普通数据库
 
 查看当前PG库所有安装的插件名称：
 
-```
+```sql
 select name from pg_available_extensions;
 ```
 

@@ -734,6 +734,18 @@ systemctl start nginx
 
 
 
+## 虚拟机模板创建
+
+进入cloudstack管理平台，关闭刚才创建好的虚机。
+
+![image-20211213174105609](assets/image-20211213174105609.png)
+
+
+
+
+
+
+
 # 文档
 
 http://docs.cloudstack.apache.org/en/latest/index.html
