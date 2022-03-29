@@ -54,23 +54,11 @@ PostgreSQL 是一种非常复杂的对象-关系型数据库管理系统（ORDBM
 
 注意：需要服务器时间同步互联网。
 
-
-
-PostGIS是PostgreSQL的一个插件，需要注意其版本匹配关系，详细的版本匹配关系可以在官网（https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS）上找到。
-
-1、安装epel
-
 ```
-yum -y install epel-release
+yum install postgresql10-server postgresql10-client postgresql10-libs postgresql10-contrib postgresql10-devel
 ```
 
-2、安装PostGIS（空间数据处理插件）
 
-版本号格式为：_前为postgis版本，后面为postgresql版本。
-
-```
-yum install postgis25_10 -y
-```
 
 
 
@@ -266,9 +254,46 @@ chmod +x /etc/rc.d/rc.local
 
 # 4 安装PostGIS
 
+## 4.1 yum安装
+
+repo源地址：
+
+https://yum.postgresql.org/repopackages/
+
+以下为centos7的源
+
+```
+https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+```
+
+
+
+
+
+```shell
+PostGIS是PostgreSQL的一个插件，需要注意其版本匹配关系，详细的版本匹配关系可以在官网（https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS）上找到。
+
+1、安装epel
+yum -y install epel-release
+
+2、安装PostGIS（空间数据处理插件）
+版本号格式为：_前为postgis版本，后面为postgresql版本。
+sudo yum install postgis32_14 postgis32_14-devel postgis32_14-client postgis32_14-utils -y
+#安装ogr_fdw_14扩展
+yum install ogr_fdw_14  pgrouting_14
+
+
+```
+
+
+
 PostGIS离线安装较为麻烦，安装之前需要准备相应的编译环境。安装之前最好查看一下[编译环境要求](https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS)和[相关说明](http://postgis.net/docs/postgis_installation.html#install_requirements)，并包含相应下载地址。
 
-## 4.1 安装依赖
+
+
+
+
+## 4.2 编译安装
 
 ```bash
 yum install -y libtool libxml2 libxml2-devel libxslt libxslt-devel json-c json-c-devel cmake gmp gmp-devel mpfr mpfr-devel boost-devel pcre-devel
@@ -377,7 +402,7 @@ source /etc/profile
 
 
 
-## 4.2 检查PostGIS是否安装成功
+## 4.3 检查PostGIS是否安装成功
 
 进入数据库终端，测试空间数据库是否能够创建成功。
 

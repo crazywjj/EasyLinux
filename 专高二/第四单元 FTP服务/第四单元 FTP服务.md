@@ -1222,14 +1222,92 @@ exit 		退出ftp
 注意点：
 
 1. ftp只能上传和下载文件，不能对文件夹进行操作，如果想上传/下载文件夹需要进行压缩/解压缩操作
-
 2. ftp服务器登录通常使用匿名登录方式(用户名：`anonymous`或者`ftp`，匿名用户只能在指定目录范围内登录)
-
 3. lftp第三方ftp客户端，可以进行目录操作
 
 
 
+# 4.5 SFTP
 
 
 
+SFTP是SSH File Transfer Protocol的缩写，安全文件传送协议。SFTP与FTP有着几乎一样的语法和功能。SFTP为SSH的其中一部分，是一种传输档案至 Blogger 伺服器的安全方式。其实在SSH软件包中，已经包含了一个叫作SFTP的安全文件信息传输子系统，SFTP本身没有单独的守护进程，它必须使用sshd守护进程(端口号默认是22)来完成相应的连接和答复操作，所以从某种意义上来说，SFTP并不像一个服务器程序，而更像是一个客户端程序。
 
+sftp是ssh内含协议，也就是说只要sshd服务器启动了，sftp就可使用，不需要额外安装，它的默认端口和SSH一样为22。
+
+**sftp如何配置**
+
+1.sftp版本需要大于4.8
+
+```sh
+rpm -qa|grep opensshd  | ssh -V  都可以查看版本信息
+```
+
+2.创建用户组与用户
+
+```shell
+groupadd sftp #创建用户组
+useradd -g sftp -M -d /data/sftp/aaa -s /sbin/nologin aaa  #创建sftp用户，用户组为sftp。
+echo '123456'|passwd --stdin aaa #创建密码
+```
+
+3.修改配置文件，启用sftp
+
+```bash
+vim /etc/ssh/sshd_config
+# 注释掉这行
+#Subsystem      sftp    /usr/libexec/openssh/sftp-server
+
+添加以下配置：
+Subsystem       sftp    internal-sftp
+
+Match Group sftp
+        X11Forwarding no
+        AllowTcpForwarding no
+        PermitTTY no
+        ForceCommand internal-sftp
+        ChrootDirectory %h
+        
+
+#注意：以上配置必须放在/etc/ssh/sshd_config最后。
+
+#说明:
+Match Group sftp #匹配sftp组的用户，若要匹配多个组，组之间逗号分割，也可以匹配用户，用户名之间也是用逗号分割。
+ChrootDirectory %h  #只能访问默认的用户目录(自己的目录), 例如 /home/test
+ChrootDirectory /data/sftp/%u   #用chroot将用户的根目录指定到/data/sftp/%u，%u代表用户名，这样用户就只能在/data/sftp/%u下活动
+ForceCommand   internal-sftp        #指定用系统sftp
+# 多个用户，每个用户需要设置不同目录，可用以下方法或者直接用用户组：
+Match User bbb
+        X11Forwarding no
+        AllowTcpForwarding no
+        PermitTTY no
+        ForceCommand internal-sftp
+        ChrootDirectory %h
+Match User aaa
+        X11Forwarding no
+        AllowTcpForwarding no
+        PermitTTY no
+        ForceCommand internal-sftp
+        ChrootDirectory /data/sftp/%u
+
+
+
+#修改用户目录权限：
+mkdir -p /data/sftp/aaa
+chmod 755 -R /data/sftp/aaa
+chown  -R root:sftp /data/sftp/aaa
+
+#添加用户上传目录权限
+mkdir -p /data/sftp/aaa/upload
+chmod 755 -R /data/sftp/aaa/upload
+chown  -R aaa:sftp /data/sftp/aaa/upload
+
+#重启sshd服务：
+systemctl restart sshd
+```
+
+现在sftp就配置成功了，可以使用下面命令登录尝试：
+
+```shell
+sftp -P22 aaa@127.0.0.1
+```

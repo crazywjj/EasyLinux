@@ -150,17 +150,17 @@ server 10.200.63.134  #指定内网时间同步ip
 设置开机自启动
 
 ```bash
-#chkconfig --list|grep ntpd
+$ chkconfig --list|grep ntpd
 ntpd            0:off   1:off   2:off   3:off   4:off   5:off   6:off
-#chkconfig ntpd on
-#chkconfig --list|grep ntpd
+$ chkconfig ntpd on
+$ chkconfig --list|grep ntpd
 ntpd            0:off   1:off   2:on    3:on    4:on    5:on    6:off
 ```
 
 查看是否连通指定ip
 
 ```bash
-#ntpq -p
+ntpq -p
 ```
 
 
