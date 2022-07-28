@@ -16,7 +16,7 @@ Docker 最初是 dotCloud 公司创始人 Solomon Hykes 在法国期间发起的
 
 Docker 自开源后受到广泛的关注和讨论，至今其 GitHub 项目 已经超过 5 万 4 千个星标和一万多个 fork。甚至由于 Docker 项目的火爆，在 2013 年底，dotCloud 公司决定改名为 Docker。Docker 最初是在 Ubuntu 12.04 上开发实现的；Red Hat 则从 RHEL 6.5 开始对 Docker 进行支持；Google 也在其 PaaS 产品中广泛应用 Docker。
 
-Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Linux 内核的 cgroup，namespace，以及 AUFS 类的 Union FS 等技术，对进程进行封装隔离，属于 操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。最初实现是基于 LXC，从 0.7 版本以后开始去除 LXC，转而使用自行开发的 libcontainer，从 1.11 开始，则进一步演进为使用 runC 和 containerd。
+Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Linux 内核的 cgroup，namespace，以及 AUFS 类的 Union FS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。最初实现是基于 LXC，从 0.7 版本以后开始去除 LXC，转而使用自行开发的 libcontainer，从 1.11 开始，则进一步演进为使用 runC 和 containerd。
 
 ![docker-on-linux](assets/docker-on-linux.png)
 
@@ -151,7 +151,7 @@ sudo systemctl start docker
 sudo groupadd docker
 ```
 
-将当前用户加入 docker 组：s
+将当前用户加入 docker 组：
 
 ```shell
 sudo usermod -aG docker $USER
@@ -418,7 +418,7 @@ CMD
 
 EXPOSE
 格式为 EXPOSE <port> [<port>...]。
-告诉 Docker 服务端容器暴露的端口号，供互联系统使用。在启动容器时需要通过 -P，Docker 主机会自动分配一个端口转发到指定的端口。
+告诉 Docker 服务端容器暴露的端口号，供互联系统使用。在启动容器时需要通过 -p，Docker 主机会自动分配一个端口转发到指定的端口。
 
 ENV
 格式为 ENV <key> <value>。 指定一个环境变量，会被后续 RUN 指令使用，并在容器运行时保持。
@@ -484,7 +484,11 @@ FROM image-A #Automatically run the followingADD . /app/srcRUN /usr/local/bin/py
 使用 ONBUILD 指令的镜像，推荐在标签中注明，例如 ruby:1.9-onbuild。
 ```
 
-![img](assets/clipboard.png)
+
+
+![](assets/clipboard.png)
+
+
 
 **4. 编写dockerfile**
 
@@ -1001,8 +1005,8 @@ Usage: docker run [OPTIONS] IMAGE [COMMAND] [ARG...]    
   -c, --cpu-shares=0        设置容器CPU权重，在CPU共享场景使用    
   -e, --env=[]               指定环境变量，容器中可以使用该环境变量    
   -m, --memory=""            指定容器的内存上限    
-  -P, --publish-all=false    指定容器暴露的端口    
-  -p, --publish=[]           指定容器暴露的端口   
+  -P, --publish-all=false    指定容器暴露的端口(宿主机映射的为随机端口)   
+  -p, --publish=[]           指定容器暴露的端口(可以指定宿主机映射的端口) 
   -h, --hostname=""          指定容器的主机名    
   -v, --volume=[]            给容器挂载存储卷，挂载到容器的某个目录    
   --volumes-from=[]          给容器挂载其他容器上的卷，挂载到容器的某个目录  

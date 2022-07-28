@@ -42,7 +42,7 @@ LVM最大的特点就是可以对磁盘进行动态管理，因为逻辑卷的�
 
 1. 在从卷组中移除一个磁盘的时候必须使用reducevg命令（这个命令要求root权限，并且不允许在快照卷组中使用）。
 
-2. 当卷组中的一个磁盘损坏时，整个卷组都会受到影响。
+2. 当卷组中的一个磁盘损坏时，整个卷组都会受到影响。**解决办法：用RAID+LVM=既有冗余又有动态扩展。**
 
 3. 因为加入了额外的操作，存贮性能受到影响。
 
@@ -75,6 +75,14 @@ LV：也就是从VG中划分的逻辑分区
 
 ![201208221004465079](assets/201208221004465079.jpg)
 
+<img src="assets/image-20220727175850590.png" alt="image-20220727175850590" style="zoom:67%;" />
+
+
+
+**创建LV逻辑卷流程图**
+
+<img src="assets/pv.png" alt="pv" style="zoom:67%;" />
+
 
 
 
@@ -97,111 +105,346 @@ yum install lvm2 -y
 
 
 
+## 2.1 常用的命令
+
+**管理PV有几个命令**：pvscan、pvdisplay、pvcreate、pvremove和pvmove。
+
+| 功能               | 命令      |
+| :----------------- | :-------- |
+| 创建PV             | pvcreate  |
+| 扫描并列出所有的pv | pvscan    |
+| 列出pv属性信息     | pvdisplay |
+| 移除pv             | pvremove  |
+| 移动pv中的数据     | pvmove    |
+
+其中pvscan搜索目前有哪些pv，扫描之后将结果放在缓存中；pvdisplay会显示每个pv的详细信息，如PV name和pv size以及所属的VG等。
+
+**管理VG也有几个命令：**
+
+| 功能               | 命令      |
+| :----------------- | :-------- |
+| 创建VG             | vgcreate  |
+| 扫描并列出所有的vg | vgscan    |
+| 列出vg属性信息     | vgdisplay |
+| 移除vg，即删除vg   | vgremove  |
+| 从vg中移除pv       | vgreduce  |
+| 将pv添加到vg中     | vgextend  |
+| 修改vg属性         | vgchange  |
+
+同样，vgscan搜寻有几个vg并显示vg的基本属性，vgcreate是创建vg，vgdisplay是列出vg的详细信息，vgremove是删除整个vg，vgextend用于扩展vg即将pv添加到vg中，vgreduce是将pv移除出vg。除此之外还有一个命令vgchange，用于改变vg的属性，如修改vg的状态为激活状态或未激活状态。
+
+
+
+**管理LV：**
+
+有了vg之后就可以根据vg进行分区，即创建LV。管理lv也有类似的一些命令。
+
+| 功能               | 命令               |
+| :----------------- | :----------------- |
+| 创建LV             | lvcreate           |
+| 扫描并列出所有的lv | lvscan             |
+| 列出lv属性信息     | lvdisplay          |
+| 移除lv，即删除lv   | lvremove           |
+| 缩小lv容量         | lvreduce(lvresize) |
+| 增大lv容量         | lvextend(lvresize) |
+| 改变lv容量         | lvresize           |
+
+对于lvcreate命令有几个选项：
+
+```javascript
+lvcreate {-L size(M/G) | -l PEnum} -n lv_name vg_name
+选项说明：
+-L：根据大小来创建lv，即分配多大空间给此lv
+-l：根据PE的数量来创建lv，即分配多少个pe给此lv
+-n：指定lv的名称
+```
+
+
+
+
+
 # 3 创建和管理LVM
 
-lvm常用的命令
 
 
+## 3.1 创建物理卷(PV)
 
-| 功能         | PV管理命令 | VG管理命令 | LV管理命令 |
-| ------------ | ---------- | ---------- | ---------- |
-| scan 扫描    | pvscan     | vgscan     | lvscan     |
-| create 创建  | pvcreate   | vgcreate   | lvcreate   |
-| display 显示 | pvdisplay  | vgdisplay  | lvdisplay  |
-| remove 移除  | pvremove   | vgremove   | lvremove   |
-| extend 扩展  |            | vgextend   | lvextend   |
-| reduce 减少  |            | vgreduce   | lvreduce   |
+创建PV有两种方式：基于磁盘创建、 基于分区创建。
+1、基于磁盘的 ，就不需要划分分区 ，直接通过 pvcreate 来创建物理卷即可；
+2、基于分区的 ，需要事先通过fdisk划分分区 ，并将分区格式转化为8e(8e表示的就是Linux lvm)，分区不要mkfs格式化 ，然后再进行 pvcreate 来创建物理卷即可 。
 
-
-
-## 3.1 磁盘分区
+将磁盘转换为物理卷（PV）：
 
 ```
-[root@localhost ~]# fdisk /dev/vdb
-Welcome to fdisk (util-linux 2.23.2).
+1.将磁盘转换为物理卷（PV）
+[root@localhost ~]# pvcreate /dev/sdb
+  Physical volume "/dev/sdc" successfully created.
 
-Changes will remain in memory only, until you decide to write them.
-Be careful before using the write command.
-
-Device does not contain a recognized partition table
-Building a new DOS disklabel with disk identifier 0x97ad1447.
-
-Command (m for help): n
-Partition type:
-   p   primary (0 primary, 0 extended, 4 free)
-   e   extended
-Select (default p): p
-Partition number (1-4, default 1):
-First sector (2048-209715199, default 2048):
-Using default value 2048
-Last sector, +sectors or +size{K,M,G} (2048-209715199, default 209715199): 100000
-Partition 1 of type Linux and of size 47.8 MiB is set
-
-Command (m for help): w
-The partition table has been altered!
-
-```
-
-
-
-创建pv
-
-```
-[root@localhost ~]# pvcreate /dev/vdb{1,2,3}
-WARNING: xfs signature detected on /dev/vdb1 at offset 0. Wipe it? [y/n]: y
-  Wiping xfs signature on /dev/vdb1.
-  Physical volume "/dev/vdb1" successfully created.
-  Physical volume "/dev/vdb2" successfully created.
-  Physical volume "/dev/vdb3" successfully created.
-[root@localhost ~]# lsblk -af
-NAME   FSTYPE      LABEL UUID                                   MOUNTPOINT
-sr0
-vda
-├─vda1 xfs               f0e8b174-489d-4cd4-8945-475ecfc4e3a3   /boot
-├─vda2 swap              8d3d48e0-a31b-47dc-9873-86901c715647   [SWAP]
-└─vda3 xfs               c4406e41-8ca0-4a2e-92fd-9b6442d5c0eb   /
-vdb
-├─vdb1 LVM2_member       p9bdfl-Ysf0-eHkN-1fAd-Vko3-1Wl5-catYVx
-├─vdb2 LVM2_member       dNLSIk-GUWw-2j3H-maOb-JIcy-JC7I-Ulgb9l
-└─vdb3 LVM2_member       4iPV5l-0e4a-yYA5-2HeO-1YY9-NyWM-fBQGkb
+2.检查PV创建情况
 [root@localhost ~]# pvs
-  PV         VG Fmt  Attr PSize   PFree
-  /dev/vdb1     lvm2 ---  <47.83m <47.83m
-  /dev/vdb2     lvm2 ---   95.23g  95.23g
-  /dev/vdb3     lvm2 ---    4.72g   4.72g
-
+  PV         VG     Fmt  Attr PSize   PFree
+  /dev/sda2  centos lvm2 a--  <19.00g     0
+  /dev/sdb          lvm2 ---   20.00g 20.00g
 ```
 
 
 
-创建vg
+## 3.2 创建卷组(VG)
 
-```
-[root@localhost ~]# vgcreate vg_test /dev/vdb{1,2,3}
-  Volume group "vg_test" successfully created
+```bash
+1.创建名为datavg的卷组，然后将物理卷加入卷组
+[root@localhost ~]# vgcreate datavg /dev/sdb
+  Volume group "datavg" successfully created
+
+2.检查卷组（发现存在一个PV卷）
 [root@localhost ~]# vgs
-  VG      #PV #LV #SN Attr   VSize  VFree
-  vg_test   3   0   0 wz--n- 99.99g 99.99g
-
+  VG     #PV #LV #SN Attr   VSize   VFree
+  centos   1   2   0 wz--n- <19.00g      0
+  datavg   1   0   0 wz--n- <20.00g <20.00g
+[root@localhost ~]# pvs
+  PV         VG     Fmt  Attr PSize   PFree  
+  /dev/sdb   datavg lvm2 a--  <30.00g <30.00g
 ```
 
 激活vg
 
 ```
-[root@localhost ~]# vgchange -a y vg_test   # 我们上面就是激活状态的，如果我们重启系统，或者vgchange -y n命令关闭了，就需要这个命令启动下
-  0 logical volume(s) in volume group "vg_test" now active
+[root@localhost ~]# vgchange -a y datavg
+  0 logical volume(s) in volume group "datavg" now active
 ```
 
-移除vg
+
+
+
+
+## 3.3 创建逻辑卷(LV)
+
+```bash
+1.分配datavg逻辑卷，-n指定逻辑卷名称，-L指定逻辑卷大小
+[root@localhost ~]# lvcreate -L 1000M -n lv1 datavg
+  Logical volume "lv1" created.
+
+2.检查逻辑卷
+[root@localhost ~]# lvscan 
+ ACTIVE            '/dev/datavg/lv1' [1000.00 MiB] inherit
+```
+
+
+
+## 3.4 挂载使用
+
+```bash
+1.格式化逻辑卷
+[root@localhost ~]# mkfs.xfs /dev/datavg/lv1
+
+2.创建目录并挂载
+[root@localhost ~]# mkdir /lv1
+[root@localhost ~]# mount /dev/datavg/lv1 /lv1
+[root@localhost ~]# df -h /lv1/
+Filesystem              Size  Used Avail Use% Mounted on
+/dev/mapper/datavg-lv1  997M   33M  965M   4% /lv1
 
 ```
-[root@localhost ~]# vgchange -a n vg_test  # 要想移除vg，需要先关闭vg才能移除，这里先关闭
-  0 logical volume(s) in volume group "vg_test" now active
-[root@localhost ~]# vgremove vg_test
-  Volume group "vg_test" successfully removed
+
+
+
+# 4 LVM卷组管理
+
+## 4.1 扩大卷组
+
+```bash
+1.准备新的磁盘加入至PV，然后检查卷组当前的大小
+[root@localhost ~]# pvcreate /dev/sdc
+[root@localhost ~]# vgs
+  VG     #PV #LV #SN Attr   VSize   VFree
+  centos   1   2   0 wz--n- <19.00g      0
+  datavg   1   1   0 wz--n- <20.00g <19.90g
+
+
+2.使用vgextend扩展卷组
+[root@localhost ~]# vgextend datavg /dev/sdc 
+  Volume group "datavg" successfully extended
+
+3.再次检查，发现datavg已经扩大
+[root@localhost ~]# vgs
+  VG     #PV #LV #SN Attr   VSize   VFree
+  centos   1   2   0 wz--n- <19.00g     0
+  datavg   2   1   0 wz--n-  39.99g 39.89g
+
 ```
 
-vg添加成员
+
+
+## 4.2 迁移卷组
+
+pvmove命令搬移PV中的资料(只限于同一VG中)。
+
+```bash
+[root@localhost lv1]# dd if=/dev/zero of=/lv1/test count=200 bs=1M
+200+0 records in
+200+0 records out
+209715200 bytes (210 MB) copied, 0.198245 s, 1.1 GB/s
+[root@localhost lv1]# ll
+total 204800
+-rw-r--r-- 1 root root 209715200 Jul 28 15:54 test
+# 迁移前查看lv1还在sdb磁盘
+[root@localhost lv1]# lsblk -af
+NAME            FSTYPE      LABEL           UUID                                   MOUNTPOINT
+sda
+├─sda1          xfs                         15f6621f-85a2-4dc9-9331-76de48237d42   /boot
+└─sda2          LVM2_member                 iEV8xZ-9QLg-tgpR-OSE6-LSZS-bn3S-0DUcav
+  ├─centos-root xfs                         034d24ed-d9cd-40f1-8adc-d8200302fb1e   /
+  └─centos-swap swap                        76443ce9-84b1-4d6a-968b-7fbaa2434fd5   [SWAP]
+sdb             LVM2_member                 r5vP1O-95MJ-rIJ5-dRHV-RbDc-EbTt-bEt8JG
+└─datavg-lv1    xfs                         b40eaf2b-90db-45a4-b76d-250bffc3dff0   /lv1
+sdc             LVM2_member                 XyeQMv-xcUO-dJJf-Ck2c-w62Z-8JWx-Sc7gdv
+
+[root@localhost lv1]# pvmove /dev/sdb /dev/sdc
+  /dev/sdb: Moved: 20.00%
+  /dev/sdb: Moved: 100.00%
+
+# 迁移后查看lv1已经到了sdc磁盘
+[root@localhost lv1]# lsblk -af
+NAME            FSTYPE      LABEL           UUID                                   MOUNTPOINT
+sda
+├─sda1          xfs                         15f6621f-85a2-4dc9-9331-76de48237d42   /boot
+└─sda2          LVM2_member                 iEV8xZ-9QLg-tgpR-OSE6-LSZS-bn3S-0DUcav
+  ├─centos-root xfs                         034d24ed-d9cd-40f1-8adc-d8200302fb1e   /
+  └─centos-swap swap                        76443ce9-84b1-4d6a-968b-7fbaa2434fd5   [SWAP]
+sdb             LVM2_member                 r5vP1O-95MJ-rIJ5-dRHV-RbDc-EbTt-bEt8JG
+sdc             LVM2_member                 XyeQMv-xcUO-dJJf-Ck2c-w62Z-8JWx-Sc7gdv
+└─datavg-lv1    xfs                         b40eaf2b-90db-45a4-b76d-250bffc3dff0   /lv1
+
+
+# 报错：目的端可用空间小于源端
+[root@localhost ~]#  pvmove /dev/sdb /dev/sdc
+  Insufficient free space: 5119 extents needed, but only 5093 available
+  Unable to allocate mirror extents for datavg/pvmove0.
+  Failed to convert pvmove LV to mirrored
+```
+
+
+
+## 4.3 缩减卷组
+
+假设想移除/dev/sdb磁盘，建议先将sdb磁盘数据迁移到sdc磁盘，然后在移除。
+注意：同一卷组的磁盘才可以进行在线迁移
+
+```bash
+1.检查当前逻辑卷VG中PV使用情况
+[root@localhost ~]# pvs
+  PV         VG     Fmt  Attr PSize   PFree  
+  /dev/sdc   datavg lvm2 a--  <30.00g <29.90g
+  /dev/sdd   datavg lvm2 a--  <30.00g <30.00g
+
+2.pvmove在线数据迁移，将sdb的数据迁移至sdc
+[root@localhost ~]# pvmove /dev/sdb /dev/sdc
+  /dev/sdc: Moved: 48.00%
+
+
+3.检查是否将sdb数据迁移至sdc
+[root@localhost lv1]#  pvs
+  PV         VG     Fmt  Attr PSize   PFree
+  /dev/sda2  centos lvm2 a--  <19.00g      0
+  /dev/sdb   datavg lvm2 a--  <20.00g <20.00g
+  /dev/sdc   datavg lvm2 a--  <20.00g <19.02g
+
+4.从卷组中移除sdc
+[root@localhost ~]# vgreduce datavg /dev/sdb
+  Removed "/dev/sdb" from volume group "datavg"
+```
+
+
+
+## 4.4 删除卷组
+
+```bash
+[root@localhost ~]# vgchange -a n datavg  # 要想删除vg，需要先关闭vg才能移除，这里先关闭
+  0 logical volume(s) in volume group "datavg" now active
+[root@localhost ~]# vgremove datavg
+  Volume group "datavg" successfully removed
+```
+
+
+
+
+
+# 5 LVM逻辑卷管理
+
+## 5.1 检查lv映射的块设备
+
+```bash
+[root@localhost ~]# lvs -o+devices
+  LV   VG     Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert Devices
+  root centos -wi-ao---- <17.00g                                                     /dev/sda2(512)
+  swap centos -wi-ao----   2.00g                                                     /dev/sda2(0)
+  lv1  datavg -wi-ao---- <20.10g                                                     /dev/sdb(0)
+  lv1  datavg -wi-ao---- <20.10g                                                     /dev/sdc(0)
+```
+
+
+
+## 5.2 扩展逻辑卷
+
+lvextend命令的作用是在线扩展逻辑卷的空间大小，而不中断应用程序对逻辑卷的访问。
+
+使用lvextend命令动态在线扩展磁盘空间，整个空间扩展过程对于应用程序来说是完全透明的。
+
+**语法格式 :** lvextend [参数] [逻辑卷]
+
+常用参数：
+
+| -L   | 指定逻辑卷的大小，单位为“kKmMgGtT”字节 |
+| ---- | -------------------------------------- |
+| -l   | 指定逻辑卷的大小（LE数）               |
+
+**扩展逻辑卷：取决于vg卷中是否还有剩余的容量，lvextend可以在线扩容逻辑卷，不需要关闭，也不需要停服务。**
+**注意：扩展逻辑卷不能超过卷组VG的总大小**
+
+```bash
+xfs系统：
+情况一、vg足够拉伸
+[root@localhost lv1]# vgs
+  VG     #PV #LV #SN Attr   VSize   VFree  
+  datavg   1   1   0 wz--n- <30.00g <29.90g
+1.扩张lv逻辑卷，增加800M分配给逻辑卷
+[root@localhost lv1]# lvextend -L +800M /dev/datavg/lv1
+[root@localhost lv1]# lvextend -l +50%FREE /dev/datavg/lv1
+
+2.扩展逻辑卷后需要更新xfs文件系统
+[root@localhost lv1]# xfs_growfs /dev/datavg/lv1	#xfs文件格式扩张
+[root@localhost lv1]# resize2fs /dev/datavg/lv1	    #ext文件格式扩张
+
+
+情况二、vg不够拉伸，得先扩大设备，在扩大系统。
+[root@localhost ~]# pvcreate /dev/vdb2
+  Physical volume "/dev/vdb2" successfully created
+[root@localhost ~]# vgextend vg0 /dev/vdb2               ##添加物理卷到物理卷组
+  Volume group "vg0" successfully extended
+[root@localhost ~]# lvextend -L 1500M /dev/vg0/lv0       ##划分物理卷 & 扩展逻辑卷大小
+  Extending logical volume lv0 to 1.46 GiB
+  Logical volume lv0 successfully resized
+
+```
+
+
+
+## **5.3 删除逻辑卷**
+
+```bash
+1.先卸载挂载点，然后在移除逻辑卷
+[root@localhost lv1]# umount /dev/datavg/lv1 
+[root@localhost lv1]# lvremove /dev/datavg/lv1
+
+2.删除vg
+[root@localhost lv1]# vgremove datavg
+
+3.删除pv
+[root@localhost lv1]# pvremove /dev/sdc
+[root@localhost lv1]# pvremove /dev/sdd
+```
+
+
 
 
 

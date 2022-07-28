@@ -67,12 +67,19 @@ echo "*/5 * * * * /usr/sbin/ntpdate ntp1.aliyun.com >/dev/null 2>&1">>/var/spool
 
 ## 2.4 关闭图形化网卡管理
 
-不关闭会出现，ip无法出现的问题。
+不关闭会出现ip无法获取的问题。
 
 ```shell
 systemctl stop NetworkManager
 systemctl disable NetworkManager
 ```
 
+## 2.5 删除mac和uuid
 
+```bash
+sed -i '/UUID/d' /etc/sysconfig/network-scripts/ifcfg-eth0
+sed -i '/HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth0
+>/etc/udev/rules.d/70-persistent-net.rules 
+reboot
+```
 

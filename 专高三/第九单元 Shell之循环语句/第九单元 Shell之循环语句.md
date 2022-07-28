@@ -463,6 +463,34 @@ ${nums[@]}
 
 两者都可以得到 nums 数组的所有元素。
 
+shell脚本数组中@跟\*的区别：
+
+- `"${数组变量[\*]}"`：加上双引号，bash会当成是一串字符串处理
+- `${数组变量[*]}`：不加上双引号，bash会当成是数组处理。
+- `${数组变量[@]}`：加不加双引号bash都是当成数组处理。
+
+定义数组a=(1 2 3)，下面是用三种情况在命令行写个for循环一一输出对比一下：
+
+```bash
+[root@hecs-88473 ~]# a=(1 2 3)
+[root@hecs-88473 ~]# for i in "${a[*]}";do echo $i;done
+1 2 3  #此处只有一行
+[root@hecs-88473 ~]# for i in "${a[@]}";do echo $i;done
+1
+2
+3
+[root@hecs-88473 ~]# for i in ${a[@]};do echo $i;done
+1
+2
+3
+[root@hecs-88473 ~]# for i in ${a[*]};do echo $i;done
+1
+2
+3
+```
+
+
+
 
 
 示例一：

@@ -458,7 +458,6 @@ make && make install
 四层代理mysql和ftp：
 
 ```bash
-
 user  nginx;
 worker_processes  4;
 
@@ -491,7 +490,7 @@ log_format tcp '$remote_addr [$time_local] '
         proxy_connect_timeout 300s;
         proxy_timeout 600s;
         proxy_pass vsftp;
-	access_log logs/vsftp-access.log tcp;
+	    access_log logs/vsftp-access.log tcp;
         error_log  logs/vsftp-error.log  error;
     }
 
@@ -505,7 +504,7 @@ log_format tcp '$remote_addr [$time_local] '
         proxy_connect_timeout 300s;
         proxy_timeout 600s;
         proxy_pass vsftp;
-	access_log logs/mysql-access.log tcp;
+	    access_log logs/mysql-access.log tcp;
         error_log  logs/mysql-error.log  error;
     }
 

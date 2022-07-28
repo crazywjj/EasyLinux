@@ -467,6 +467,45 @@ Susie 76.5
 
 
 
+
+
+```
+cat score.txt
+zhaosan 85 92 78
+lisheng 89 90 75
+zhaoyun 84 88 80
+guanyu 83 78 90
+liubei 86 88 79
+```
+
+第二列求和：
+
+```
+cat score.txt|awk '{sum+=$2} END {print "Sum = ", sum}'
+```
+
+第二列求平均：
+
+```
+cat score.txt|awk '{sum+=$2} END {print "Average = ", sum/NR}'
+```
+
+求第二列最大值
+
+```
+cat score.txt|awk 'BEGIN {max = 0} {if ($2>max) max=$2 fi} END {print "Max=", max}'
+```
+
+求第二列最小值（min的初始值设置一个超大数即可）
+
+```
+awk 'BEGIN {min = 1999999} {if ($2<min) min=$2 fi} END {print "Min=", min}'
+```
+
+
+
+
+
 #### 5. 打印行号
 
 Awk提供了另一个内建变量, 叫做 NR, 它会存储当前已经读取了多少行的计数. 我们可以使用 NR 和 $0 给 emp.data 的每一行加上行号:
@@ -496,6 +535,8 @@ total pay for Mark is 100
 total pay for Mary is 121
 total pay for Susie is 76.5
 ```
+
+
 
 
 
