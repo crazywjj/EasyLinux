@@ -126,48 +126,59 @@
 
 <table border="0">
 <tr>
-        <td><a href="杂货铺/CentOS6克隆虚机前优化.md">CentOS6 克隆虚机前优化</a></td>
-    	<td><a href="杂货铺/CentOS7离线安装ansible.md">CentOS7离线安装ansible</a></td>
-        <td><a href="杂货铺/CentOS7安装Gitlab.md">CentOS7安装Gitlab</a></td>
-        <td><a href="杂货铺/CentOS7挂载磁盘.md">CentOS7挂载磁盘</a></td>
+        <td><a href="杂货铺/1.CentOS6克隆虚机前优化.md">1.CentOS6 克隆虚机前优化</a></td>
+        <td><a href="杂货铺/2.CentOS7安装Gitlab.md">2.CentOS7安装Gitlab</a></td>
+    	<td><a href="杂货铺/3.CentOS7安装PostgreSQL.md">3.CentOS7安装PostgreSQL</a></td>
+        <td><a href="杂货铺/4.CentOS7磁盘无法删除分区.md">4.CentOS7磁盘无法删除分区</a></td>
         </tr>
 <tr> 
-    <td><a href="杂货铺/CentOS7静默安装Oracle11.md">CentOS7静默安装Oracle11</a></td>
-    <td><a href="杂货铺/CentOS7配置VLAN标签或网卡子接口.md">CentOS7配置VLAN标签或网卡子接口</a></td>
-    <td><a href="杂货铺/CentOS7系统安装及克隆前优化.md">CentOS7 系统安装及克隆前优化</a></td>
-    <td><a href="杂货铺/CwRsync实现windows下文件定时同步.md">CwRsync实现windows文件定时同步</a></td>   
+    <td><a href="杂货铺/5.CentOS7防火墙firewalld配置.md">5.CentOS7防火墙firewalld配置</a></td>
+    <td><a href="杂货铺/6.CentOS7挂载磁盘.md">6.CentOS7挂载磁盘</a></td>
+    <td><a href="杂货铺/7.CentOS7静默安装Oracle11.md">7.CentOS7静默安装Oracle11</a></td>
+    <td><a href="杂货铺/8.CentOS7离线安装ansible.md">8.CentOS7离线安装ansible</a></td>   
 	</tr>
 <tr>
-    <td><a href="杂货铺/CentOS7安装PostgreSQL.md">CentOS7安装PostgreSQL</a></td>
-    <td><a href="杂货铺/CentOS7制作RPM包.md">CentOS7制作RPM包</a></td>
-    <td><a href="杂货铺/CentOS7防火墙firewalld配置.md">CentOS7防火墙firewalld配置</a></td>
-    <td><a href="杂货铺/Linux多网卡绑定bond模式.md">Linux多网卡绑定bond模式</a></td>
+    <td><a href="杂货铺/9.CentOS7配置Shadowsocks代理上网.md">9.CentOS7配置Shadowsocks代理上网</a></td>
+    <td><a href="杂货铺/10.CentOS7配置VLAN标签或网卡子接口.md">10.CentOS7配置VLAN标签或网卡子接口</a></td>
+    <td><a href="杂货铺/11.CentOS7系统安装及克隆前优化.md">11.CentOS7系统安装及克隆前优化</a></td>
+    <td><a href="杂货铺/12.CentOS7制作RPM包.md">12.CentOS7制作RPM包</a></td>
 	</tr>
 <tr>
-    <td><a href="杂货铺/SSH隧道-端口转发.md">SSH隧道-端口转发</a></td>
-    <td><a href="杂货铺/Windows Server 2012配置NAT代理服务器.md">Windows Server 2012配置NAT代理服务器</a></td>
-    <td><a href="杂货铺/Windows计划任务添加.md">Windows计划任务添加</a></td>
-    <td><a href="杂货铺/Windows Server 2016 远程桌面解除多用户限制.md">Windows Server 2016 远程桌面解除多用户限制</a></td>  
+    <td><a href="杂货铺/13.CwRsync实现windows下文件定时同步.md">13.CwRsync实现windows下文件定时同步</a></td>
+    <td><a href="杂货铺/14.EXT4文件系统损坏修复.md">14.EXT4文件系统损坏修复</a></td>
+    <td><a href="杂货铺/15.Linux安全相关.md">15.Linux安全相关</a></td>
+    <td><a href="杂货铺/16.Linux查看服务器信息.md">16.Linux查看服务器信息</a></td>  
     </tr>
 <tr>
-	<td><a href="杂货铺/YUM本地镜像源.md">YUM本地镜像源</a></td>
-    <td><a href="杂货铺/MySQL安装.md">MySQL安装</a></td>
-    <td><a href="杂货铺/Zabbix4.0 离线安装.md">Zabbix4.0离线安装</a></td>
-    <td><a href="杂货铺/IPMI远程安装系统.md">IPMI远程安装系统</a></td>
+	<td><a href="杂货铺/17.Linux多网卡绑定bond模式.md">17.Linux多网卡绑定bond模式</a></td>
+    <td><a href="杂货铺/18.Linux开启和关闭core dump.md">18.Linux开启和关闭core dump.md</a></td>
+    <td><a href="杂货铺/19.Linux系统性能分析之sysstat.md">19.Linux系统性能分析之sysstat</a></td>
+    <td><a href="杂货铺/20.Linux修改系统日志保存周期.md">20.Linux修改系统日志保存周期</a></td>
     </tr>
 <tr>
-	<td><a href="杂货铺/华为FusionInsight HD客户端安装.md">华为FusionInsight HD客户端安装</a></td>
-    <td><a href="杂货铺/OwnCloud云存储.md">OwnCloud云存储</a></td>
-    <td><a href="杂货铺/Linux查看服务器信息.md">Linux查看服务器信息</a></td>
-    <td><a href="杂货铺/OpenLDAP账号统一管理.md">OpenLDAP账号统一管理</a></td>
+	<td><a href="杂货铺/21.LVM磁盘逻辑卷管理.md">21.LVM磁盘逻辑卷管理</a></td>
+    <td><a href="杂货铺/22.MySQL安装.md">22.MySQL安装</a></td>
+    <td><a href="杂货铺/23.OpenLDAP账号统一管理.md">23.OpenLDAP账号统一管理</a></td>
+    <td><a href="杂货铺/24.OwnCloud云存储.md">24.OwnCloud云存储</a></td>
     </tr>
 <tr>
-	<td><a href="杂货铺/Linux安全相关.md">Linux安全相关</a></td>
-    <td><a href="杂货铺/EXT4文件系统损坏修复.md">EXT4文件系统损坏修复</a></td>
-    <td><a href="杂货铺/Linux系统性能分析之sysstat.md">Linux系统性能分析之sysstat</a></td>
-    <td><a href="杂货铺/LVM磁盘逻辑卷管理.md">LVM磁盘逻辑卷管理</a></td>
+	<td><a href="杂货铺/25.Shell获取Linux服务器CPU、内存、网络等基础项监控node.md">25.Shell获取Linux服务器CPU、内存、网络等基础项监控node</a></td>
+    <td><a href="杂货铺/26.Shell脚本进阶.md">26.Shell脚本进阶</a></td>
+    <td><a href="杂货铺/27.SSH隧道-端口转发.md">27.SSH隧道-端口转发</a></td>
+    <td><a href="杂货铺/28.Windows Server 2012配置NAT代理服务器.md">28.Windows Server 2012配置NAT代理服务器</a></td>
+    </tr>
+<tr>
+	<td><a href="杂货铺/29.Windows Server 2016 远程桌面解除多用户限制.md">29.Windows Server 2016 远程桌面解除多用户限制</a></td>
+    <td><a href="杂货铺/30.Windows计划任务添加.md">30.Windows计划任务添加</a></td>
+    <td><a href="杂货铺/31.YUM本地镜像源.md">31.YUM本地镜像源</a></td>
+    <td><a href="杂货铺/32.Zabbix4.0 离线安装.md">32.Zabbix4.0 离线安装</a></td>
+    </tr>
+<tr>
+	<td><a href="杂货铺/33.华为FusionInsight HD客户端安装.md">33.华为FusionInsight HD客户端安装</a></td>
+    <td><a href="杂货铺/34.密码破解.md">34.密码破解</a></td>
     </tr>
 </table>
+
 
 
 

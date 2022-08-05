@@ -238,6 +238,44 @@ $ export DOCKER_CLI_EXPERIMENTAL=enabled
 }
 ```
 
+## 版本升级
+
+检查当前版本
+
+```
+docker --version
+```
+
+查询当前安装的docker相关包
+
+```
+rpm -qa | grep docker
+```
+
+卸载掉当前的相关程序包
+
+```
+yum remove -y docker*
+```
+
+使用curl升级到最新版本
+
+```javascript
+curl -fsSL https://get.docker.com/ | sh
+# 重新启动，设置为开机启动docker，查看docker版本信息
+```
+
+指定升级到固定docker版本，查看可指定docker-ce版本安装
+
+```bash
+yum list docker-ce --showduplicates | sort -r
+yum install docker-ce-<VERSION_STRING> docker-ce-cli-<VERSION_STRING> containerd.io
+```
+
+
+
+
+
 
 
 # 使用 Docker 镜像
