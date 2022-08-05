@@ -146,36 +146,37 @@
 <tr>
     <td><a href="杂货铺/13.CwRsync实现windows下文件定时同步.md">13.CwRsync实现windows下文件定时同步</a></td>
     <td><a href="杂货铺/14.EXT4文件系统损坏修复.md">14.EXT4文件系统损坏修复</a></td>
-    <td><a href="杂货铺/15.Linux安全相关.md">15.Linux安全相关</a></td>
-    <td><a href="杂货铺/16.Linux查看服务器信息.md">16.Linux查看服务器信息</a></td>  
+    <td><a href="杂货铺/15.IPMI远程安装系统.md">15.IPMI远程安装系统</a></td>
+    <td><a href="杂货铺/16.Linux安全相关.md">16.Linux安全相关</a></td>  
     </tr>
 <tr>
-	<td><a href="杂货铺/17.Linux多网卡绑定bond模式.md">17.Linux多网卡绑定bond模式</a></td>
-    <td><a href="杂货铺/18.Linux开启和关闭core dump.md">18.Linux开启和关闭core dump.md</a></td>
-    <td><a href="杂货铺/19.Linux系统性能分析之sysstat.md">19.Linux系统性能分析之sysstat</a></td>
-    <td><a href="杂货铺/20.Linux修改系统日志保存周期.md">20.Linux修改系统日志保存周期</a></td>
+	<td><a href="杂货铺/17.Linux查看服务器信息.md">17.Linux查看服务器信息</a></td>
+    <td><a href="杂货铺/18.Linux多网卡绑定bond模式.md">18.Linux多网卡绑定bond模式</a></td>
+    <td><a href="杂货铺/19.Linux开启和关闭core dump.md">19.Linux开启和关闭core dump</a></td>
+    <td><a href="杂货铺/20.Linux系统性能分析之sysstat.md">20.Linux系统性能分析之sysstat</a></td>
     </tr>
 <tr>
-	<td><a href="杂货铺/21.LVM磁盘逻辑卷管理.md">21.LVM磁盘逻辑卷管理</a></td>
-    <td><a href="杂货铺/22.MySQL安装.md">22.MySQL安装</a></td>
-    <td><a href="杂货铺/23.OpenLDAP账号统一管理.md">23.OpenLDAP账号统一管理</a></td>
-    <td><a href="杂货铺/24.OwnCloud云存储.md">24.OwnCloud云存储</a></td>
+	<td><a href="杂货铺/21.Linux修改系统日志保存周期.md">21.Linux修改系统日志保存周期</a></td>
+    <td><a href="杂货铺/22.LVM磁盘逻辑卷管理.md">22.LVM磁盘逻辑卷管理</a></td>
+    <td><a href="杂货铺/23.MySQL安装.md">23.MySQL安装</a></td>
+    <td><a href="杂货铺/24.OpenLDAP账号统一管理.md">24.OpenLDAP账号统一管理</a></td>
     </tr>
 <tr>
-	<td><a href="杂货铺/25.Shell获取Linux服务器CPU、内存、网络等基础项监控node.md">25.Shell获取Linux服务器CPU、内存、网络等基础项监控node</a></td>
-    <td><a href="杂货铺/26.Shell脚本进阶.md">26.Shell脚本进阶</a></td>
-    <td><a href="杂货铺/27.SSH隧道-端口转发.md">27.SSH隧道-端口转发</a></td>
-    <td><a href="杂货铺/28.Windows Server 2012配置NAT代理服务器.md">28.Windows Server 2012配置NAT代理服务器</a></td>
+	<td><a href="杂货铺/25.OwnCloud云存储.md">25.OwnCloud云存储</a></td>
+    <td><a href="杂货铺/26.Shell获取Linux服务器CPU、内存、网络等基础项监控node.md">26.Shell获取Linux服务器CPU、内存、网络等基础项监控node</a></td>
+    <td><a href="杂货铺/27.Shell脚本进阶.md">27.Shell脚本进阶</a></td>
+    <td><a href="杂货铺/28.SSH隧道-端口转发.md">28.SSH隧道-端口转发</a></td>
     </tr>
 <tr>
-	<td><a href="杂货铺/29.Windows Server 2016 远程桌面解除多用户限制.md">29.Windows Server 2016 远程桌面解除多用户限制</a></td>
-    <td><a href="杂货铺/30.Windows计划任务添加.md">30.Windows计划任务添加</a></td>
-    <td><a href="杂货铺/31.YUM本地镜像源.md">31.YUM本地镜像源</a></td>
-    <td><a href="杂货铺/32.Zabbix4.0 离线安装.md">32.Zabbix4.0 离线安装</a></td>
+	<td><a href="杂货铺/29.Windows Server 2012配置NAT代理服务器.md">29.Windows Server 2012配置NAT代理服务器</a></td>
+    <td><a href="杂货铺/30.Windows Server 2016 远程桌面解除多用户限制.md">30.Windows Server 2016 远程桌面解除多用户限制</a></td>
+    <td><a href="杂货铺/31.Windows计划任务添加.md">31.Windows计划任务添加</a></td>
+    <td><a href="杂货铺/32.YUM本地镜像源.md">32.YUM本地镜像源</a></td>
     </tr>
 <tr>
-	<td><a href="杂货铺/33.华为FusionInsight HD客户端安装.md">33.华为FusionInsight HD客户端安装</a></td>
-    <td><a href="杂货铺/34.密码破解.md">34.密码破解</a></td>
+	<td><a href="杂货铺/33.Zabbix4.0 离线安装.md">33.Zabbix4.0 离线安装</a></td>
+    <td><a href="杂货铺/34.华为FusionInsight HD客户端安装.md">34.华为FusionInsight HD客户端安装</a></td>
+    <td><a href="杂货铺/35.密码破解.md">35.密码破解</a></td>
     </tr>
 </table>
 
