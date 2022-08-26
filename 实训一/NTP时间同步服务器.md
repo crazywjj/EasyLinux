@@ -98,6 +98,19 @@ date -s '20200629 08:44:00'
 ```
 clock -w
 hwclock --systohc
+
+# 编辑两节点的ntpd参数
+
+vi /etc/sysconfig/ntpd
+
+#The following item added by Robinson
+#Set to 'yes' to sycn hw clock after successful ntpdate
+SYNC_HWCLOCK=yes      #此选项用于自动校准系统时钟与硬件时钟
+OPTIONS="-x -u ntp:ntp -p /var/run/ntpd.pid"
+
+#注意理解Linux的时钟类型。在Linux系统中分为系统时钟和硬件时钟.
+#系统时钟指当前Linux kernel中的时钟，而硬件时钟指的是BIOS时钟，由主板电池供电的那个时钟
+#当Linux启动时，硬件时钟会读取系统时钟的设置，之后系统时钟就独立于硬件时钟运作
 ```
 
 3、修改ntp配置文件
@@ -160,7 +173,13 @@ ntpd            0:off   1:off   2:on    3:on    4:on    5:on    6:off
 查看是否连通指定ip
 
 ```bash
-ntpq -p
+[root@localhost ~]# ntpq -p
+     remote           refid      st t when poll reach   delay   offset  jitter
+==============================================================================
+*LOCAL(0)        .LOCL.           2 l    2   16  177    0.000    0.000   0.000
+
+
+* 号表示正在使用的上游NTP服务器，+ 号表示已经连接上的备用的NTP服务器
 ```
 
 

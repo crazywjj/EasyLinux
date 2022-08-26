@@ -441,11 +441,9 @@ http {
 # nginx 实现四层代理
 
 ```bash
-wget http://nginx.org/download/nginx-1.18.0.tar.gz
-#编译
-yum install gcc gcc-c++ pcre pcre-devel zlib zlib-devel openssl openssl-devel -y 
-tar -xzvf nginx-1.18.0.tar.gz
-cd nginx-1.18.0
+wget http://nginx.org/download/nginx-1.22.0.tar.gz
+tar -xzvf nginx-1.22.0.tar.gz
+cd nginx-1.22.0
 ./configure --with-stream --without-http --prefix=/usr/local/nginx --without-http_uwsgi_module 
 make && make install
 
@@ -453,6 +451,27 @@ make && make install
 --without-http_scgi_module --without-http_fastcgi_module
 --with-stream：开启 4 层透明转发(TCP Proxy)功能；
 --without-xxx：关闭所有其他功能，这样生成的动态链接二进制程序依赖最小；
+
+# 配置文件
+
+worker_processes 1;
+events {
+    worker_connections  1024;
+}
+stream {
+    upstream backend {
+        hash $remote_addr consistent;
+        server 10.0.0.61:6443        max_fails=3 fail_timeout=30s;
+        server 10.0.0.62:6443        max_fails=3 fail_timeout=30s;
+        server 10.0.0.63:6443        max_fails=3 fail_timeout=30s;
+    }
+    server {
+        listen *:8443;
+        proxy_connect_timeout 1s;
+        proxy_pass backend;
+    }
+}	
+
 ```
 
 四层代理mysql和ftp：
