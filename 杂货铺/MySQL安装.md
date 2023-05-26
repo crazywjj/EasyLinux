@@ -29,9 +29,16 @@ yum安装比较简单，适合对数据库要求不太高的场合，例如并�
 mysql5.7
 
 ```bash
-wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
-rpm -ivh mysql-community-release-el7-5.noarch.rpm
-yum install mysql-server mysql -y
+# 更新yum源
+yum update
+yum -y remove mysql*
+wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm
+yum -y install mysql57-community-release-el7-10.noarch.rpm
+yum -y install mysql-community-server
+# 安装失败
+
+vi /etc/yum.repos.d/mysql-community.repo
+找到[mysql57-community] 并修改：gpgcheck 改为 0 ，即不校验gpg
 ```
 
 注意：在新版本的CentOS7中，默认的数据库已更新为了Mariadb，而非 MySQL，所以执行 yum install mysql 命令只是更新Mariadb数据库，并不会安装 MySQL 。
@@ -280,7 +287,7 @@ autocommit = 1
 #utf8mb4编码是utf8编码的超集，兼容utf8，并且能存储4字节的表情字符。 
 #采用utf8mb4编码的好处是：存储与获取数据的时候，不用再考虑表情字符的编码与解码问题
 character_set_server=utf8mb4
-basedir = /home/mysql 
+basedir = /home/mysql
 datadir = /home/mysql/data
 pid-file = /home/mysql/tmp/mysql.pid
 socket = /home/mysql/tmp/mysql.sock

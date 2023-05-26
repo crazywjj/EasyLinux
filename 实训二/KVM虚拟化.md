@@ -556,13 +556,13 @@ raw创建多大磁盘，就占用多大空间直接分配，qcow2动态的用多
 [root@ CentOS7-200 opt]# yum install -y virt-install
 
 [root@ CentOS7-200 opt]# virt-install \
---name=c73 \
+--name=k8s-01 \
 --virt-type=kvm \
---vcpus=1 \
---ram=1024 \
---cdrom=/var/lib/libvirt/images/CentOS-7-x86_64-DVD-1908.iso \
+--vcpus=4 \
+--ram=16384 \
+--cdrom=/home/iso/CentOS-7-x86_64-Minimal-1810.iso \
 --network bridge=br0 \
---disk path=/opt/c73.qcow2,size=6,format=qcow2 \
+--disk path=/data0/k8s-01.qcow2,size=1,format=qcow2 \
 --graphics vnc,listen=0.0.0.0 \
 --noautoconsole \
 --os-type=linux \

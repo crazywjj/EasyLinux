@@ -1,4 +1,4 @@
-
+[TOC]
 
 
 
@@ -6,9 +6,9 @@
 
 # 1 环境介绍
 
-| 主机名 | IP地址         | 配置   |      |
-| ------ | -------------- | ------ | ---- |
-| oracle | 10.165.177.173 | 8核16G |      |
+| 主机名 | IP地址         | 系统           | 配置   |      |
+| ------ | -------------- | -------------- | ------ | ---- |
+| oracle | 10.165.177.173 | CentOS7.4 mini | 8核16G |      |
 
 
 
@@ -20,7 +20,32 @@ oracle下载
 
 <img src="assets/image-20200913111748183.png" alt="image-20200913111748183" style="zoom: 67%;" />
 
+归纳的下载链接，如下：
 
+Oracle11GR2
+
+Oracle Database 11g Release 2 (11.2.0.1.0) for Microsoft Windows (64-bit)
+http://download.oracle.com/otn/nt/oracle11g/112010/win64_11gR2_database_1of2.zip
+http://download.oracle.com/otn/nt/oracle11g/112010/win64_11gR2_database_2of2.zip
+http://download.oracle.com/otn/nt/oracle11g/112010/win64_11gR2_client.zip
+http://download.oracle.com/otn/nt/oracle11g/112010/win64_11gR2_grid.zip
+
+Oracle Database 11g Release 2 (11.2.0.1.0) for Microsoft Windows (32-bit)
+http://download.oracle.com/otn/nt/oracle11g/112010/win32_11gR2_database_1of2.zip
+http://download.oracle.com/otn/nt/oracle11g/112010/win32_11gR2_database_2of2.zip
+http://download.oracle.com/otn/nt/oracle11g/112010/win32_11gR2_client.zip
+
+Oracle Database 11g Release 2 (11.2.0.1.0) for Linux x86
+http://download.oracle.com/otn/linux/oracle11g/R2/linux_11gR2_database_1of2.zip
+http://download.oracle.com/otn/linux/oracle11g/R2/linux_11gR2_database_2of2.zip
+http://download.oracle.com/otn/linux/oracle11g/R2/linux_11gR2_client.zip
+http://download.oracle.com/otn/linux/oracle11g/R2/linux_11gR2_grid.zip
+
+Oracle Database 11g Release 2 (11.2.0.1.0) for Linux x86-64
+http://download.oracle.com/otn/linux/oracle11g/R2/linux.x64_11gR2_database_1of2.zip
+http://download.oracle.com/otn/linux/oracle11g/R2/linux.x64_11gR2_database_2of2.zip
+http://download.oracle.com/otn/linux/oracle11g/R2/linux.x64_11gR2_client.zip
+http://download.oracle.com/otn/linux/oracle11g/R2/linux.x64_11gR2_grid.zip
 
 ## 2.1 关闭防火墙和selinux
 
@@ -86,9 +111,25 @@ Swap:           511           0         511
 
 需要安装的依赖包参考官方文档[必须安装的依赖包-官方文档](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/ladbi/supported-red-hat-enterprise-linux-7-distributions-for-x86-64.html#GUID-2E11B561-6587-4789-A583-2E33D705E498)
 
+安装 oracle-rdbms-server-11gR2-preinstall 会自动安装Oracle需要的依赖包
+
+```
+yum -y install oracle-rdbms-server-11gR2-preinstall
+```
+
+
+
 ```bash
 yum -y install binutils compat-libcap1 compat-libstdc++-33 compat-libstdc++-33*.i686 bc elfutils-libelf-devel gcc gcc-c++ glibc*.i686 glibc glibc-devel glibc-devel*.i686 ksh libgcc*.i686 libgcc libstdc++ libstdc++*.i686 libstdc++-devel libstdc++-devel*.i686 libaio libaio*.i686 libaio-devel libaio-devel*.i686 make sysstat unixODBC unixODBC*.i686 unixODBC-devel unixODBC-devel*.i686 libXp unzip rlwrap
 ```
+
+
+
+```
+yum  install  -y  binutils  compat-libcap1  compat-libstdc++  gcc  gcc-c++  glibc  yum install -y glibc-devel ksh libgcc libstdc++ libstdc++-devel ibaio ibaio-devel libXext yum install -y libXtst libX11 libXau libxcb libXi make sysstat unixODBC unixODBC-devel
+```
+
+
 
 
 
