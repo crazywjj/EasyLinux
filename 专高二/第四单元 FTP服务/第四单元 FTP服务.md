@@ -1308,6 +1308,37 @@ systemctl restart sshd
 
 现在sftp就配置成功了，可以使用下面命令登录尝试：
 
-```shell
+```
 sftp -P22 aaa@127.0.0.1
 ```
+
+**常见连接失败问题：**
+
+遇到错误：connection closed
+
+**情况1：**密码过期。可通过命令：  chage -l 用户名 查看  
+
+如果过期  通过命令：chage -M 99999  sftp账号(用户名)  //改为永远不过期
+
+**情况2：**vim /etc/passwd   
+
+把自己的用户名 这一行    :/bin/false   改为:/bin/bash
+
+**情况3：**SFTP上传出错之: com.jcraft.jsch.JSchException: connection is closed by foreign host
+
+默认情况下，SSH连接的数量是 这种配置：
+
+MaxStartups 默认设置是 10:30:100  表示的意思是：从第10个连接开始以30%的概率（递增）拒绝新连接，直到连接数达到100为止。
+
+所以当连接数变大之后，失败率就会变的很高。
+
+1)修改/etc/ssh/sshd_config中的MaxStartups，将其改为MaxStartups 100:30:500
+
+
+
+
+
+
+
+
+

@@ -225,11 +225,10 @@ firewall-cmd --complete-reload
 # 两者的区别就是第一个无需断开连接，就是firewalld特性之一动态添加规则，第二个需要断开连接，类似重启服务
 ```
 
+Firewalld配置文件
 
-
-
-
-
+`/etc/firewalld/{services,zones}/*.xml`    优先级最高，permanent模式生效的策略会放到这里
+`/lib/firewalld/{services,zones}/*.xml`    优先级要低些，是一些默认配置，可以当做模板使用
 
 
 
@@ -294,6 +293,12 @@ firewall-cmd --reload
 FirewallD 可以根据特定网络服务的预定义规则来允许相关流量。你可以创建自己的自定义系统规则，并将它们添加到任何区域。 默认支持的服务的配置文件位于 `/usr/lib /firewalld/services`，用户创建的服务文件在 `/etc/firewalld/services` 中。
 
 Firewalld的服务，你不需要记住任何端口，并且可以一次性允许所有端口。
+
+
+
+> service说明： 在 /usr/lib/firewalld/services/ 目录中，还保存了另外一类配置文件，每个文件对应一项具体的网络服务，如 ssh 服务等。这个目录下的服务配置默认是放通的，不受firewalld-cmd 规则控制，除非把这个目录下的服务配置文件删掉，就恢复了默认了（默认拒绝），当然也可以添加一些服务配置文件。
+
+
 
 例如，执行以下命令允许 samba 服务。samba 服务需要启用以下一组端口：“139/tcp 和 445/tcp”以及“137/udp 和 138/udp”。
 
@@ -400,7 +405,7 @@ firewall-cmd --zone=public --list-ports
 
 ## 6.2 开放端口
 
-打开特定端口允许用户从外部访问系统，这代表了安全风险。因此，仅在必要时为某些服务打开所需的端口。
+允许用户从外部访问系统，这里是所有地址都能访问，有一定风险。
 
 （1）打开80端口
 
@@ -527,6 +532,7 @@ firewall-cmd --reload
 　　frewall-cmd规则来同时配置这两者，更高级的转发配置可以使用富规则来完成。
 
 　　这两种形式的NAT会在发送包之前修改包的某些方面如源或目标。
+
 2）伪装（注意：伪装只能和ipv4一起用，ipv6不行）
 
 　　通过伪装系统会将并非直接寻址到自身的包转发到指定接收方同时将通过的包的源地址更改为其自己的公共TP地址。
@@ -623,27 +629,27 @@ systemctl restart network
 
 **1、将 eth0的默认区域设置为 dmz。 在所提供的默认区域中，dmz（非军事区）是最适合于这个程序的，因为它只允许 SSH 和 ICMP。**
 
-```
+```sh
 sudo firewall-cmd --set-default-zone=dmz
 sudo firewall-cmd --zone=dmz --add-interface=eth0
 ```
 
 **2、把 HTTP 和 HTTPS 添加永久的服务规则到 dmz 区域中：**
 
-```
+```sh
 sudo firewall-cmd --zone=dmz --add-service=http --permanent
 sudo firewall-cmd --zone=dmz --add-service=https --permanent
 ```
 
 **3、 重新加载 FirewallD 让规则立即生效：**
 
-```
+```sh
 sudo firewall-cmd --reload
 ```
 
 如果你运行 firewall-cmd --zone=dmz --list-all， 会有下面的输出：
 
-```
+```sh
 dmz (default)
   interfaces: eth0
   sources:
@@ -663,7 +669,7 @@ dmz (default)
 
 
 
-# 10 丰富(Rich)规则
+# 10 富(Rich)规则
 
 富语言是firewalld防火墙提供的一种新的规则表达式，在iptables的基础上运行，用户不会iptables也能够学习使用，功能比iptables更多。通过这种语言可以表达firewalld的基本语法中未涵盖的自定义防火墙规则。
 
@@ -673,7 +679,7 @@ dmz (default)
 
 丰富规则允许使用易于理解的命令创建更复杂的防火墙规则，但丰富的规则很难记住，可以查看手册 `man firewalld.richlanguage`并找到示例。 
 
-```
+```sh
 --add-rich-rule				添加富规则
 --remove-rich-rule			删除富规则
 --query-rich-rule=‘rule’	查看单条rich规则           {查询rule是否已添加到指定区域，如果未指定区域，则为默认区域。规则存在，则返回0，否则返回1}
@@ -682,7 +688,7 @@ dmz (default)
 
  firewall-cmd命令来管理它们。
 
-```
+```sh
 富规则的一般规则结构如下：
 rule
   [source]
@@ -695,50 +701,47 @@ rule
 
 ## 10.1 添加规则
 
-要允许来自地址 192.168.0.0/24 的访问，请运行以下命令：
+要允许来自地址 192.168.0.0/24 的访问：
 
-```
-[root@server1 ~]# firewall-cmd --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.0.0/24" accept'
-success
-```
-
-要允许来自地址 192.168.0.0/24 的连接访问 ssh 服务，请运行以下命令：
-
-```
-[root@server1 ~]# firewall-cmd --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.0.0/24" service name="ssh" log prefix="ssh" level="info" accept'
-success
+```sh
+firewall-cmd --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.0.0/24" accept'
 ```
 
-要拒绝来自192.168.10.0/24的流量访问ssh服务，请运行以下命令：
+要允许来自地址 192.168.0.0/24 的连接访问 ssh 服务：
 
+```sh
+firewall-cmd --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.0.0/24" service name="ssh" log prefix="ssh" level="info" accept'
 ```
-[root@server1 ~]# firewall-cmd --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.10.0/24" port port=22 protocol=tcp reject'
-success
+
+要拒绝来自192.168.10.0/24的流量访问ssh服务：
+
+```sh
+firewall-cmd --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.10.0/24" port port=22 protocol=tcp reject'
 ```
 
 这里有一些常见的例子：
 
 允许来自主机 192.168.0.14 的所有 IPv4 流量。
 
-```
+```sh
 sudo firewall-cmd --zone=public --add-rich-rule 'rule family="ipv4" source address=192.168.0.14 accept'
 ```
 
 拒绝来自主机 192.168.1.10 到 22 端口的 IPv4 的 TCP 流量。
 
-```
+```sh
 sudo firewall-cmd --zone=public --add-rich-rule 'rule family="ipv4" source address="192.168.1.10" port port=22 protocol=tcp reject'
 ```
 
 允许来自主机 10.1.0.3 到 80 端口的 IPv4 的 TCP 流量，并将流量转发到 6532 端口上。 
 
-```
+```sh
 sudo firewall-cmd --zone=public --add-rich-rule 'rule family=ipv4 source address=10.1.0.3 forward-port port=80 protocol=tcp to-port=6532'
 ```
 
 将主机 172.31.4.2 上 80 端口的 IPv4 流量转发到 8080 端口（需要在区域上激活 masquerade）。
 
-```
+```sh
 sudo firewall-cmd --zone=public --add-rich-rule 'rule family=ipv4 forward-port port=80 protocol=tcp to-port=8080 to-addr=172.31.4.2'
 ```
 
@@ -746,7 +749,7 @@ sudo firewall-cmd --zone=public --add-rich-rule 'rule family=ipv4 forward-port p
 
 列出你目前的丰富规则：
 
-```
+```sh
 sudo firewall-cmd --list-rich-rules
 ```
 
@@ -756,7 +759,7 @@ sudo firewall-cmd --list-rich-rules
 
 ## 10.3 删除规则
 
-```
+```sh
 firewall-cmd --permanent --remove-rich-rule '规则列表'
 firewall-cmd --permanent --add-rich-rule 'rule family="ipv4" source address="0.0.0.0/0" forward-port port="8077" protocol="tcp" to-port="80" to-addr="192.168.4.245"'
 firewall-cmd --permanent --remove-rich-rule 'rule family="ipv4" source address="0.0.0.0/0" forward-port port="8077" protocol="tcp" to-port="80" to-addr="192.168.4.245"'
@@ -776,7 +779,7 @@ firewalld可以通过两种方法来实现此目的记录到syslog, 或者将消
 
 速率限制确保系统日志文件填充消息的速率不会使系统无法跟上或者填充其所有磁盘空间 。
 
-```
+```sh
 使用富规则记录到syslog的基本语法为：
 
 log [prefix="<PREFIX TEXT>" [level=<LOGLEVEL>] [limit value="<RATE/DURATION>"]
@@ -794,13 +797,13 @@ limit value = 3/m 这里是有BUG 的，常常时间控制会不精准。
 
 针对ssh 链接记录至日志中，每分钟3次
 
-```
+```sh
 firewall-cmd --permanent --zone=work --add-rich-rule='rule service name=ssh log prefix="ssh " level=notice limit value="3/m" accept'
 ```
 
 用于调试，规则在300秒后失效，防止规则设定错误导致网络连接断开
 
-```
+```sh
 firewall-cmd --add-rich-rule='rule family=ipv4 source address=192.168.0.11/32 service name=ssh reject' --timeout=300
 ```
 
@@ -819,45 +822,93 @@ firewall-cmd --reload
 
 Direct规则类似于 iptables 命令，对于熟悉 iptables 命令的用户很有用。或者，您可以编辑 `/etc/firewalld/direct.xml`文件中的规则并重新加载防火墙以激活这些规则。Direct规则主要由服务或应用程序用来添加特定的防火墙规则。
 
-以下Direct规则将在服务器上打开端口 8080：
+参数：
 
-```
-[root@server1 ~]# firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 0 -p tcp --dport 8081 -j ACCEPT
-success
-[root@server1 ~]# firewall-cmd --reload
-success
+```sh
+Direct Options
+  --direct             First option for all direct options
+  --get-all-chains
+                       Get all chains [P]
+  --get-chains {ipv4|ipv6|eb} <table>
+                       Get all chains added to the table [P]
+  --add-chain {ipv4|ipv6|eb} <table> <chain>
+                       Add a new chain to the table [P]
+  --remove-chain {ipv4|ipv6|eb} <table> <chain>
+                       Remove the chain from the table [P]
+  --query-chain {ipv4|ipv6|eb} <table> <chain>
+                       Return whether the chain has been added to the table [P]
+  --get-all-rules
+                       Get all rules [P]
+  --get-rules {ipv4|ipv6|eb} <table> <chain>
+                       Get all rules added to chain in table [P]
+  --add-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
+                       Add rule to chain in table [P]
+  --remove-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
+                       Remove rule with priority from chain in table [P]
+  --remove-rules {ipv4|ipv6|eb} <table> <chain>
+                       Remove rules from chain in table [P]
+  --query-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
+                       Return whether a rule with priority has been added to
+                       chain in table [P]
+  --passthrough {ipv4|ipv6|eb} <arg>...
+                       Pass a command through (untracked by firewalld)
+  --get-all-passthroughs
+                       Get all tracked passthrough rules [P]
+  --get-passthroughs {ipv4|ipv6|eb} <arg>...
+                       Get tracked passthrough rules [P]
+  --add-passthrough {ipv4|ipv6|eb} <arg>...
+                       Add a new tracked passthrough rule [P]
+  --remove-passthrough {ipv4|ipv6|eb} <arg>...
+                       Remove a tracked passthrough rule [P]
+  --query-passthrough {ipv4|ipv6|eb} <arg>...
+                       Return whether the tracked passthrough rule has been
+                       added [P]
 ```
 
-要列出当前区域中的Direct规则，请运行：
 
-```
-[root@server1 ~]# firewall-cmd --direct --get-all-rules 
-ipv4 filter INPUT 0 -p tcp --dport 8080 -j ACCEPT
-ipv4 filter INPUT 0 -p tcp --dport 8081 -j ACCEPT
-```
 
-使用下面命令删除Direct规则：
+实例：
 
-```
-[root@server1 ~]# firewall-cmd --direct --get-all-rules 
-ipv4 filter INPUT 0 -p tcp --dport 8080 -j ACCEPT
-ipv4 filter INPUT 0 -p tcp --dport 8081 -j ACCEPT
-[root@server1 ~]# firewall-cmd --permanent --direct --remove-rule ipv4 filter INPUT 0 -p tcp --dport 8080 -j ACCEPT
-success
-[root@server1 ~]# firewall-cmd --reload
-success
+
+
+允许源端172.25.254.77主机访问本机8081端口：
+
+```sh
+firewall-cmd --permanent --direct --add-rule ipv4 filter INPUT 0 -p tcp --dport 8081 -s 172.25.254.77 -j ACCEPT
+firewall-cmd --reload
 ```
 
-如何清空一个表的链？下面是语法和实例：
+查看当前区域中的Direct规则：
 
+```sh
+firewall-cmd --direct --get-all-rules 
 ```
+
+删除Direct规则：
+
+```sh
+firewall-cmd --permanent --direct --remove-rule ipv4 filter INPUT 0 -p tcp --dport 8081 -s 172.25.254.77 -j ACCEPT
+firewall-cmd --reload
+```
+
+如何清空一个表的链：
+
+```sh
+# 语法
 firewall-cmd --direct --remove-rules ipv4 [table] [chain]
-[root@server1 ~]# firewall-cmd --permanent --direct --remove-rules ipv4 filter INPUT
-success
-[root@server1 ~]# firewall-cmd --reload
-success
-[root@server1 ~]# firewall-cmd --direct --get-all-rules
+# 实例
+firewall-cmd --permanent --direct --remove-rules ipv4 filter INPUT
+firewall-cmd --reload
+firewall-cmd --direct --get-all-rules
 ```
+
+拒绝本机访问远端11.0.1.111的2202端口：
+
+```sh
+firewall-cmd --direct --add-rule ipv4 filter OUTPUT 0 -p tcp --dport 2202 -d 11.0.1.111/32 -j REJECT
+```
+
+
 
 
 
