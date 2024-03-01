@@ -98,6 +98,7 @@ faillog -r 命令亦可。
 用户为了增强linux系统的安全性，需要在用户操作空闲一段时间后自动断开。
 
 ```bash
+# 编辑/etc/profile系统文件，在文件后面添加：
 export TMOUT=600   #600秒无操作自动退出登录
 readonly TMOUT	# 将值设置为readonly 防止用户更改，在shell中无法修改TMOUT
 ```

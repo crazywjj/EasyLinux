@@ -101,13 +101,12 @@
         <td><a href="实训二/Jumpserver堡垒机.md">Jumpserver堡垒机</a></td>
     </tr>
     <tr>
-        <td><a href="实训二/KVM虚拟化.md">KVM虚拟化</a></td>
+        <td><a href="实训二/企业级虚拟化之KVM.md">企业级虚拟化之KVM</a></td>
         <td><a href="实训二/Linux日志切割工具cronolog.md">Linux日志切割工具cronolog</a></td>
         <td><a href="实训二/Nginx系列.md">Nginx系列</a></td>
         <td><a href="实训二/企业级VPN之OpenVPN.md">企业级VPN之OpenVPN</a></td>
     </tr>
 </table>
-
 
 
 
@@ -187,12 +186,6 @@
 
 
 
-
-
-
-
-
-
 # 网络
 
 <table border="0">
@@ -208,8 +201,6 @@
 </table>
 
 
-
-
 # Docker
 
 <table border="0">
@@ -221,10 +212,6 @@
 </table>
 
 
-
-
-
-
 # 链接分享
 
 > 浪潮信息技术网		http://www.4008600011.com/
@@ -232,8 +219,6 @@
 > 华为技术支持			https://support.huawei.com/enterprise
 >
 > 思维网络					http://www.023wg.com/
-
-
 
 
 

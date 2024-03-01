@@ -29,16 +29,21 @@ yum安装比较简单，适合对数据库要求不太高的场合，例如并�
 mysql5.7
 
 ```bash
-# 更新yum源
-yum update
 yum -y remove mysql*
-wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm
-yum -y install mysql57-community-release-el7-10.noarch.rpm
+curl -O https://repo.mysql.com/mysql57-community-release-el7.rpm
+yum -y localinstall mysql57-community-release-el7.rpm
 yum -y install mysql-community-server
-# 安装失败
 
-vi /etc/yum.repos.d/mysql-community.repo
-找到[mysql57-community] 并修改：gpgcheck 改为 0 ，即不校验gpg
+# 报错
+The GPG keys listed for the "MySQL 5.7 Community Server" repository are already installed but they are not correct for this package.
+Check that the correct key URLs are configured for this repository.
+
+
+ Failing package is: mysql-community-libs-5.7.44-1.el7.x86_64
+ GPG Keys are configured as: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql
+
+解决方案：
+rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
 ```
 
 注意：在新版本的CentOS7中，默认的数据库已更新为了Mariadb，而非 MySQL，所以执行 yum install mysql 命令只是更新Mariadb数据库，并不会安装 MySQL 。
@@ -485,4 +490,37 @@ find /data/sql_bak/ -type f -mtime +15 -name '*.sql' -delete
 mysql_config_editor revome  --login-path=test
 # login-path 不存在的话删除也不会报错
 ```
+
+
+
+
+
+
+
+# 1.4 如何升级
+
+
+
+## 二进制升级
+
+业务场景介绍
+
+   线上有个数据库主从环境的MySQL版本是5.5.19版本的，由于5.5.19环境的MySQL在运维侧的支持不太好，例如：不能动态修改buffer_pool的值，alter table增加列的操作会长时间锁表等等。所以经过商量，需要对它进行升级，这次我采用的是在线升级的办法。我总结了一下在线升级过程中的总体步骤：
+
+0、备份旧的数据库
+1、关闭旧的MySQL服务器
+2、用新的MySQL服务器二进制文件替换旧的MySQL二进制文件或软件包
+3、在现有的数据目录上重新启动MySQL
+4、运行mysql_upgrade
+5、重启新的MySQL服务器
+
+
+
+
+
+
+
+
+
+
 

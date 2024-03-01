@@ -4,9 +4,9 @@
 
 
 
-# Ambari一键部署大数据平台
+# Ambari搭建HDP大数据平台
 
-![image-20230505103513436](assets/image-20230505103513436.png)
+![image-20230505103513436](Ambari搭建HDP大数据平台.assets/image-20230505103513436.png)
 
 
 
@@ -68,25 +68,105 @@ Cloudera Hue: 是一个基于WEB的监控和管理系统，实现对HDFS，MapRe
 
 
 
-# 3 Ambari的工作原理与架构
+# 3 CDH和HDP平台对比
+
+![image-20240109174928715](Ambari搭建HDP大数据平台.assets/image-20240109174928715.png)
 
 
 
+部署一套大数据架构是相当麻烦的事情，各种组件、服务配置相当多而杂，由此诞生了能简化各种服务部署和配置的的工具，也就是大数据平台框架。
+
+**CDH**
+
+CDH （ Cloudera Distribution Hadoop ）是 Cloudera 公司提供的包含 Apache Hadoop 及其相关项目的软件发行版本。还有一种说法是 CDH 是 Cloudera Distribution including Apache Hadoop 的缩写。
+
+CDH 的所有组件都是 100% 开源的（Apache License），是唯一提供统一批处理、交互式 SQL、交互式搜索以及基于角色的访问控制的 Hadoop 解决方案。通过将 Hadoop 与十几个其他关键开源项目集成，Cloudera 创建了一个功能先进的系统，可以帮忙你执行端到端的大数据工作流。
+
+CDH 特性
+灵活性：存储任何类型的数据，并使用各种不同的计算框架进行操作，包括批处理、交互式SQL、文本搜索、机器学习和统计计算。
+集成：在完整的 Hadoop 平台上快速启动和运行，该平台可与广泛的硬件和软件解决方案配合使用。
+安全性：处理和控制敏感数据。
+可扩展性：启用广泛的应用程序，并根据要求进行扩容扩展。
+高可用性：能够胜任关键地方的业务任务。
+兼容性：利用现有的 IT 基础设施和资产。
+
+CDH 6.3 是 CDH 的最后一个主要版本。CDH是Apache hadoop和相关项目中最完整、最稳定、最流行的发行版。
+
+**CDH 6.3.2 对应的各组件版本号——**
+Apache Avro 1.8.2
+Apache Flume 1.9.0
+Apache Hadoop 3.0.0
+Apache HBase 2.1.4
+HBase Indexer 1.5
+Apache Hive 2.1.1
+Hue 4.3.0
+Apache Impala 3.2.0
+Apache Kafka 2.2.1
+Kite SDK 1.0.0
+Apache Kudu 1.10.0
+Apache Solr 7.4.0
+Apache Oozie 5.1.0
+Apache Parquet 1.9.0
+Parquet-format 2.4.0
+Apache Pig 0.17.0
+Apache Sentry 2.1.0
+Apache Spark 2.4.0
+Apache Sqoop 1.4.7
+Apache ZooKeeper 3.4.5
+
+**HDP**
+
+HDP是Hortonworks公司的代表产品，是一个企业级的Hadoop发行版。
+
+|        | CDH                                              | HDP                                                          |
+| ------ | ------------------------------------------------ | ------------------------------------------------------------ |
+| 相同点 | 两者都是免费版。                                 | 更易于维护，管理，且稳定性高。                               |
+| 不同点 | 文档详细，但区分免费版和企业版，企业版只有试用期 | HDP版本是比较新的版本，目前最新版（HDP3.1.5）与apache基本同步，因为Hortonworks内部大部分员工都是apache代码贡献者。 |
+
+其他区别：
+
+1. CDH支持的存储组件更丰富
+2. HDP支持的数据分析组件更丰富
+3. HDP对多维分析及可视化有了支持，引入Druid和Superset
+4. HDP的HBase数据使用Phoenix的jdbc查询；CDH的HBase数据使用映射Hive到Impala的jdbc查询，但分析数据可以存储Impala内部表，提高查询响应
+5. 多维分析Druid纳入集群，会方便管理；但可视化工具Superset可以单独安装使用
+6. CDH没有时序数据库，HDP将Druid作为时序数据库使用
+
+**CDP**
+
+CDP（Cloudera Data Platform）是 CDH 的继任者。CDP 是面向企业的云计算平台。它提供集成的多功能自助服务工具，以分析和集中数据。它在企业层面带来了安全和治理，所有这些都托管在公共、私有和多云部署上。
+
+如果启动一项新项目，建议从 CDP 开始，因为这是 Cloudera 最新一代的技术。根据其官方网站，CDP 可以做到：
+
+1. 必要时自动生成工作负载并在完成后暂停其操作，从而控制云成本
+2. 使用分析和机器学习来优化工作负载
+3. 显示所有云和瞬态集群的数据血缘关系
+4. 使用单一的管理平台来使用混合云和多云
+5. 可以扩展到 PB 级数据和成千上万多种多样的用户
+6. 使用多云和混合环境集中控制客户和操作数据
+7. CDP 有两个版本：CDP 公共云和 CDP 私有云。
+
+CDP私有云的部署依赖ClouderaManager。
+
+**相对于CDH/HDP，CDP有什么改进:**
+
+CDP是原先两个最好的企业级数据分析平台CDH和HDP融合在一起，同时增加一些新的功能，形成的一个新平台。这个平台有40多个组件，是可以提供更多功能的企业级分析平台。这个平台集合了CDH和HDP的精华来创建，把一些过时的技术淘汰掉，再融合新的技术，把双方差异性的技术保留下来，同时升级共享一些技术得到最新版本。
+
+值得一提的是，前两年官方已经声明，会逐渐停止对CDH和HDP的升级和维护。现在估计已经完全停了。
 
 
 
-
-
-
-# 4 部署Ambari
-
-## 4.1 Ambari版本介绍
+## 3.1 Ambari版本介绍
 
 > （注：Ambari各个版本对产品的支持可在[Ambari版本支持界面](https://links.jianshu.com/go?to=https%3A%2F%2Fsupportmatrix.hortonworks.com%2F)查看）
 
 
 
-## 4.2 环境准备
+# 4 准备环境
+
+
+
+## 4.1 服务器和软件准备
 
 **1、服务器信息**
 
@@ -111,7 +191,7 @@ Cloudera Hue: 是一个基于WEB的监控和管理系统，实现对HDFS，MapRe
 **安装包下载：** 已打包到百度网盘
 
 ```
-百度网盘下载：链接：https://pan.baidu.com/s/1x4RdWn2i8f3FkXmHuygEFQ?pwd=p5i1 
+百度网盘下载：https://pan.baidu.com/s/1x4RdWn2i8f3FkXmHuygEFQ?pwd=p5i1 
 提取码：p5i1
 ```
 
@@ -139,9 +219,7 @@ Cloudera Hue: 是一个基于WEB的监控和管理系统，实现对HDFS，MapRe
 
 
 
-## 4.3 部署安装
-
-### 4.3.1 初始化工作
+## 4.2 系统优化设置
 
 **1、修改主机名**
 
@@ -151,7 +229,7 @@ hostnamectl set-hostname node2.ambari.com
 hostnamectl set-hostname node3.ambari.com
 ```
 
-**2、添加hosts解析**
+**2、添加hosts解析(所有节点)**
 
 ```shell
 cat >/etc/hosts<<EOF
@@ -174,7 +252,7 @@ ssh-copy-id root@node2.ambari.com
 ssh-copy-id root@node3.ambari.com
 ```
 
-**4、关闭并禁用firewalld及selinux**
+**4、关闭firewalld及selinux(所有节点)**
 
  在每台机器上关闭防火墙，清理防火墙规则，设置默认转发策略 
 
@@ -185,7 +263,7 @@ setenforce 0
 sed -i  '/^SELINUX/s#enforcing#disabled#g' /etc/selinux/config
 ```
 
-**5、关闭swap分区**
+**5、关闭swap分区(所有节点)**
 
 ```shell
 swapoff -a
@@ -240,31 +318,9 @@ systemctl enable ntpd
 
 ```
 
-**7、安装JDK**
 
-```bash
-# 创建目录
-mkdir /usr/java
 
-# 上传jdk-8u202-linux-x64.tar.gz并解压到/usr/java
-tar -zxvf jdk-8u202-linux-x64.tar.gz -C /usr/java/
-
-# 设置环境变量
-[root@node1 java]# 
-cat >>/etc/profile<<\EOF
-#JAVA
-export JAVA_HOME=/usr/java/jdk1.8.0_202
-export PATH=$PATH:$JAVA_HOME/bin
-EOF
-
-[root@node1 java]# source /etc/profile
-[root@node1 java]# java -version
-java version "1.8.0_202"
-Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
-Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
-```
-
-**8、禁用THP**
+**7、禁用THP(所有节点)**
 
 THP 的本意是为提升内存的性能，但是在 Hadoop 环境中发现，此功能会将 CPU 占用率增大，进而影响 Hadoop 性能，因此建议将其关闭。
 
@@ -334,7 +390,7 @@ sysctl vm.nr_hugepages
 cat /proc/meminfo && grep AnonHugePages /proc/meminfo 
 ```
 
-**9、修改文件描述符打开数**
+**8、修改文件描述符打开数(所有节点)**
 
 ```bash
 echo 'ulimit -SHn 512000' >>/etc/profile
@@ -352,6 +408,7 @@ source /etc/profile
 # 修改内核配置
 cat >>/etc/sysctl.conf<<\EOF
 fs.file-max = 65535000
+fs.nr_open = 1000000
 net.core.somaxconn = 30000
 vm.swappiness = 0
 net.core.rmem_max = 16777216
@@ -370,15 +427,41 @@ net.ipv6.conf.lo.disable_ipv6=1
 EOF
 # 执行命令让配置生效
 sysctl -p
+
+#最后重启服务器
 ```
 
 
 
-### 4.3.2 安装Ambari&HDP
+## 4.4 安装Ambari&HDP
+
+### 4.4.1 安装JDK(所有节点)
+
+```bash
+# 创建目录
+mkdir /usr/java
+
+# 上传jdk-8u202-linux-x64.tar.gz并解压到/usr/java
+tar -zxvf jdk-8u202-linux-x64.tar.gz -C /usr/java/
+
+# 设置环境变量
+[root@node1 java]# 
+cat >>/etc/profile<<\EOF
+#JAVA
+export JAVA_HOME=/usr/java/jdk1.8.0_202
+export PATH=$PATH:$JAVA_HOME/bin
+EOF
+
+[root@node1 java]# source /etc/profile
+[root@node1 java]# java -version
+java version "1.8.0_202"
+Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
+Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
+```
 
 
 
-**1、安装httpd服务并启动**
+### 4.4.2 安装httpd(node1节点)
 
 ```bash
 yum install yum-utils createrepo -y
@@ -390,7 +473,7 @@ systemctl start httpd
 
 
 
-**2、 配置Ambari、HDP、libtirpc-devel本地源**
+### 4.4.3 配置本地yum源(node1节点)
 
 - 解压并创建本地源
 
@@ -410,11 +493,11 @@ createrepo /var/www/html/HDP-UTILS/
 - 创建libtirpc-devel本地源
 
 ```
-mkdir /var/www/html/libtrpc
-cd /var/www/html/libtrpc
+mkdir /var/www/html/libtirpc
+cd /var/www/html/libtirpc
 wget http://mirror.centos.org/centos/7/os/x86_64/Packages/libtirpc-0.2.4-0.16.el7.x86_64.rpm
 wget http://mirror.centos.org/centos/7/os/x86_64/Packages/libtirpc-devel-0.2.4-0.16.el7.x86_64.rpm
-createrepo .
+createrepo /var/www/html/libtirpc
 
 ```
 
@@ -422,37 +505,40 @@ createrepo .
 
 - 制作本地repo
 
-```
+```bash
+# 备份其他源
+mkdir -p /etc/yum.repos.d/bak
+mv /etc/yum.repos.d/*.repo /etc/yum.repos.d/bak
+
 # 配置ambari.repo
 cat >/etc/yum.repos.d/ambari.repo<<EOF
 [Ambari-2.7.5.0]
 name=Ambari-2.7.5.0
-baseurl=http://10.159.238.10/ambari/centos7/2.7.5.0-72/
+baseurl=http://node1.ambari.com/ambari/centos7/2.7.5.0-72/
 gpgcheck=0
 enabled=1
 priority=1
 EOF
 
 # 配置HDP和HDP-TILS
-
 cat >/etc/yum.repos.d/HDP.repo<<EOF
 [HDP-3.1.5.0]
 name=HDP Version - HDP-3.1.5.0
-baseurl=http://10.159.238.10/HDP/centos7/3.1.5.0-152/
+baseurl=http://node1.ambari.com/HDP/centos7/3.1.5.0-152/
 gpgcheck=0
 enabled=1
 priority=1
 
 [HDP-UTILS-1.1.0.22]
 name=HDP-UTILS Version - HDP-UTILS-1.1.0.22
-baseurl=http://10.159.238.10/HDP-UTILS/centos7/1.1.0.22/
+baseurl=http://node1.ambari.com/HDP-UTILS/centos7/1.1.0.22/
 gpgcheck=0
 enabled=1
 priority=1
 
 [HDP-GPL-3.1.5.0]
 name=HDP-GPL Version - HDP-GPL-3.1.5.0
-baseurl=http://10.159.238.10/HDP-GPL/centos7/3.1.5.0-152
+baseurl=http://node1.ambari.com/HDP-GPL/centos7/3.1.5.0-152
 gpgcheck=0
 enabled=1
 priority=1
@@ -463,18 +549,25 @@ EOF
 cat >/etc/yum.repos.d/libtirpc.repo<<EOF
 [libtirpc_repo]
 name=libtirpc-0.2.4-0.16
-baseurl=http://10.159.238.10/libtirpc/
+baseurl=http://node1.ambari.com/libtirpc/
 gpgcheck=0
 enabled=1
 priority=1
 EOF
+```
 
+- 分发repo文件
 
+```
+scp /etc/yum.repos.d/*.repo node2.ambari.com:/etc/yum.repos.d/
+scp /etc/yum.repos.d/*.repo node3.ambari.com:/etc/yum.repos.d/
+yum clean all
+yum makecache
 ```
 
 
 
-**3、node1安装mariadb**
+### 4.4.3 安装mariadb(node1节点)
 
 ```bash
 rpm -qa |grep -i mysql
@@ -482,8 +575,10 @@ rpm -qa |grep -i mariadb
 # 卸载旧版本包
 rpm -e --nodeps 旧包
 
+# 安装MySQL 5.7
 wget -i -c http://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm
 yum -y install mysql57-community-release-el7-10.noarch.rpm
+rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
 yum -y install mysql-community-server
 
 # 启动MySQL
@@ -515,27 +610,30 @@ default_character-set=utf8
 
 #重启MySQL
 systemctl restart mysqld.service
+
 ```
 
 
 
-**4、下载mysql-connection-java**
+### 4.4.4 安装mysql-connection-java(node1节点)
 
 ```
 yum -y install mysql-connector-java
+或者上传离线安装包执行
+yum --disablerepo=* localinstall -y *.rpm
 ```
 
 > **注：稍后会使用，没有该包则MySQL与ambari无法连接！**
 
 - 查看是否下载成功
   `ls /usr/share/java`
-  ![image-20230508104316785](assets/image-20230508104316785.png)
+  ![image-20230508104316785](Ambari搭建HDP大数据平台.assets/image-20230508104316785.png)
 
 
 
-**5、安装ambari**
+### 4.4.5 安装ambari-server(node1节点)
 
-- 在node1安装ambari-server
+**1、在node1安装ambari-server**
 
 ```bash
 yum -y install ambari-server
@@ -543,29 +641,13 @@ yum -y install ambari-server
 
 
 
-> 注：
->  1.选择JDK时选（2）自定义jdk，并填写jdk安装路径/usr/java/jdk1.8.0_202/
->  2.Enter advanced databse configration[y/n]?时选择y,进入到数据库选择界面，在Enter choice后选择3，配置hostname为node1.ambari.com，使用默认端口，Database name为ambari，密码为ambari123
->
-> 
-
-
-
-- 复制mysql-jdbc驱动到/var/lib/ambari-server/resources/
-
-```bash
-cp /usr/share/java/mysql-connector-java.jar /var/lib/ambari-server/resources/
-```
-
 - 配置/etc/ambari-server/conf/ambari.properties，添加如下行
 
 ```bash
-vim /etc/ambari-server/conf/ambari.properties
-server.jdbc.driver.path=/usr/share/java/mysql-connector-java.jar
-
+echo 'server.jdbc.driver.path=/usr/share/java/mysql-connector-java.jar' >>/etc/ambari-server/conf/ambari.properties
 ```
 
-- 执行安装：`ambari-server setup --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector-java.jar`
+- 执行安装：
 
 ```bash
 [root@node1 2.7.5.0-72]# ambari-server setup --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector-java.jar
@@ -576,6 +658,12 @@ If you are updating existing jdbc driver jar for mysql with mysql-connector-java
 JDBC driver was successfully initialized.
 Ambari Server 'setup' completed successfully.
 
+```
+
+其实这步就是复制mysql-jdbc驱动到/var/lib/ambari-server/resources/
+
+```sh
+cp /usr/share/java/mysql-connector-java.jar /var/lib/ambari-server/resources/
 ```
 
 
@@ -591,7 +679,7 @@ SELinux status is 'disabled'
 # 提示是否自定义设置
 Customize user account for ambari-server daemon [y/n] (n)? y
 # ambari-server账号
-Enter user account for ambari-server daemon (root):ambari
+Enter user account for ambari-server daemon (root):root
 Adjusting ambari-server permissions and ownership...
 Checking firewall status...
 Checking JDK...
@@ -632,7 +720,7 @@ Hostname (localhost): node1.ambari.com
 Port (3306): 3306
 Database name (ambari): ambari
 Username (ambari): ambari
-Enter Database Password (bigdata):ambari123
+Enter Database Password (bigdata): ambari123
 Re-enter password:ambari123
 Configuring ambari database...
 Configuring remote database connection properties...
@@ -650,9 +738,15 @@ Ambari Server 'setup' completed successfully.
 chkconfig
 ```
 
+> 注：
+> 1.选择JDK时选（2）自定义jdk，并填写jdk安装路径/usr/java/jdk1.8.0_202/
+> 2.Enter advanced databse configration[y/n]?时选择y,进入到数据库选择界面，在Enter choice后选择3，配置hostname为node1.ambari.com，使用默认端口，Database name为ambari，密码为ambari123
 
 
-**4、创建ambari和hive数据库**
+
+**2、创建ambari和hive数据库**
+
+登录mysql创建如下数据库：mysql  -uroot  -p'root123'
 
 - 创建ambari数据库
   用户名： **ambari**
@@ -688,17 +782,16 @@ FLUSH PRIVILEGES;
 
 
 
-5、导入ambari数据库表
+**3、导入ambari数据库表**
 
 ```sql
-mysql -uambari -p'ambari123'
 use ambari;
 source /var/lib/ambari-server/resources/Ambari-DDL-MySQL-CREATE.sql;
 ```
 
 
 
-6、启动ambari-server
+**4、启动ambari-server**
 
 ```bash
 [root@node1 2.7.5.0-72]# ambari-server start
@@ -716,13 +809,19 @@ Server started listening on 8080
 DB configs consistency check: no errors and warnings were found.
 Ambari Server 'start' completed successfully.
 
+#查看状态
+[root@node1 data]# ambari-server status
+Using python  /usr/bin/python
+Ambari-server status
+Ambari Server running
+Found Ambari Server PID: 17930 at: /var/run/ambari-server/ambari-server.pid
 ```
 
 
 
-7、所有节点部署ambari-agent
+### 4.4.6 安装ambari-agent(所有节点)
 
-```
+```bash
 yum -y install ambari-agent
 systemctl start ambari-agent
 systemctl enable ambari-agent
@@ -730,72 +829,75 @@ systemctl enable ambari-agent
 
 
 
-### 4.3.3 通过Ambari部署一个Hadoop3.x集群
+## 4.5 通过Ambari部署Hadoop3.x集群
 
 1、登录界面：http://10.159.238.10:8080
 默认管理员账户登录， 账户：admin 密码：admin
 
-- 创建集群名称为：bigdataPLAT
+### 4.5.1 创建集群名称
 
-![image-20230508145013654](assets/image-20230508145013654.png)
-
-
+![image-20230508145013654](Ambari搭建HDP大数据平台.assets/image-20230508145013654.png)
 
 
 
-- 选择版本，配置yum源
-  选HDP-3.1(Default Version Definition);
-  选Use Local Repository;
-  选redhat7:
+### 4.5.2 选择版本，配置yum源
 
-最终我们只保留 "readhat7" 的仓库，接下来要把直接部署 yum 本地仓库的地址填进去，同时
+选HDP-3.1(Default Version Definition);
+选Use Local Repository;
+选redhat7:
 
-**不要勾选**最下面的两个高级选项，如下图：
+最终我们只保留 "readhat7" 的仓库，接下来要把直接部署 yum 本地仓库的地址填进去，同时**不要勾选**最下面的两个高级选项，如下图：
 
-![image-20230508150140669](assets/image-20230508150140669.png)
+```
+http://node1.ambari.com/HDP/centos7/3.1.5.0-152/
+http://node1.ambari.com/HDP-GPL/centos7/3.1.5.0-152/
+http://node1.ambari.com/HDP-UTILS/centos7/1.1.0.22/
+```
+
+![image-20240115160654173](Ambari搭建HDP大数据平台.assets/image-20240115160654173.png)
 
 
 
-- 配置节点和密钥
+### 4.5.3 配置节点和密钥
 
 下载主节点的/root/.ssh/id_rsa，并上传！点击下一步，进入确认主机界面
 也可直接cat /root/.ssh/id_rsa 粘贴即可
 
-![image-20230508150834938](assets/image-20230508150834938.png)
+![image-20230508150834938](Ambari搭建HDP大数据平台.assets/image-20230508150834938.png)
 
 
 
-确保结果正常
+### 4.5.4 确保结果正常
 
-![image-20230508151119420](assets/image-20230508151119420.png)
+![image-20230508151119420](Ambari搭建HDP大数据平台.assets/image-20230508151119420.png)
+
+![image-20240115161229942](Ambari搭建HDP大数据平台.assets/image-20240115161229942.png)
 
 
 
-- 勾选需要安装的服务
+### 4.5.5 勾选需要安装的服务
 
 YARN + MapReduce2、Hive、HBase、Zookeeper、Kakfa、Spark2；并依据提示选择其他必备组件
 
-![image-20230508155857231](assets/image-20230508155857231.png)
+![image-20240115162312582](Ambari搭建HDP大数据平台.assets/image-20240115162312582.png)
+
+
+
+### 4.5.6 分配master服务
+
+![image-20230508152856269](Ambari搭建HDP大数据平台.assets/image-20230508152856269.png)
 
 
 
 
 
-- 分配master服务
+### 4.5.7 分配slaves服务
 
-![image-20230508152856269](assets/image-20230508152856269.png)
-
-
+![image-20230508155646180](Ambari搭建HDP大数据平台.assets/image-20230508155646180.png)
 
 
 
-- 分配slaves服务
-
-![image-20230508155646180](assets/image-20230508155646180.png)
-
-
-
-- 设置相关服务的密码
+### 4.5.8 设置相关服务的密码
 
 |                           | Username | Password   | Confirm Password |
 | ------------------------- | -------- | ---------- | ---------------- |
@@ -805,38 +907,96 @@ YARN + MapReduce2、Hive、HBase、Zookeeper、Kakfa、Spark2；并依据提示�
 
 
 
+### 4.5.9 与已有的hive数据库连接
 
+在Hive Database中选择 **Exisiting MySQL/MariaDB**
 
-- 与已有的hive数据库连接
-  在Hive Database中选择 **Exisiting MySQL/MariaDB**
-
-![image-20230508160432415](assets/image-20230508160432415.png)
-
-
+![image-20230508160432415](Ambari搭建HDP大数据平台.assets/image-20230508160432415.png)
 
 
 
-- 自定义服务：此处默认
+### 4.5.10 定义存储路径
 
-![image-20230508160641553](assets/image-20230508160641553.png)
-
-
-
-- 集群整体概况
-
-![image-20230508160903678](assets/image-20230508160903678.png)
+![image-20240115163703652](Ambari搭建HDP大数据平台.assets/image-20240115163703652.png)
 
 
+
+### 4.5.11 集群整体概况
+
+![image-20230508160903678](Ambari搭建HDP大数据平台.assets/image-20230508160903678.png)
 
 - 点击DEPLOY进行部署,等待部署完成即
 
 
 
+### 4.5.12 部署完成
+
+![image-20240116125919059](Ambari搭建HDP大数据平台.assets/image-20240116125919059.png)
+
+![image-20240116130152023](Ambari搭建HDP大数据平台.assets/image-20240116130152023.png)
 
 
 
 
 
+### 4.5.13 服务自启动
+
+如果让托管给Ambari的服务自动启动，则可以按照下图操作：
+
+![image-20240116142347341](Ambari搭建HDP大数据平台.assets/image-20240116142347341.png)
+
+
+
+
+
+
+
+
+
+
+
+# 常见报错
+
+## Requires: redhat-lsb
+
+```
+stderr:   /var/lib/ambari-agent/data/errors-676.txt
+2024-01-15 17:37:39,583 - The 'hadoop-hdfs-datanode' component did not advertise a version. This may indicate a problem with the component packaging.
+Traceback (most recent call last):
+  File "/var/lib/ambari-agent/cache/stacks/HDP/3.0/services/HDFS/package/scripts/datanode.py", line 126, in <module>
+    DataNode().execute()
+  File "/usr/lib/ambari-agent/lib/resource_management/libraries/script/script.py", line 352, in execute
+    method(env)
+  File "/var/lib/ambari-agent/cache/stacks/HDP/3.0/services/HDFS/package/scripts/datanode.py", line 45, in install
+    self.install_packages(env)
+  File "/usr/lib/ambari-agent/lib/resource_management/libraries/script/script.py", line 853, in install_packages
+    retry_count=agent_stack_retry_count)
+  File "/usr/lib/ambari-agent/lib/resource_management/core/base.py", line 166, in __init__
+    self.env.run()
+  File "/usr/lib/ambari-agent/lib/resource_management/core/environment.py", line 160, in run
+    self.run_action(resource, action)
+  File "/usr/lib/ambari-agent/lib/resource_management/core/environment.py", line 124, in run_action
+    provider_action()
+  File "/usr/lib/ambari-agent/lib/resource_management/core/providers/packaging.py", line 30, in action_install
+    self._pkg_manager.install_package(package_name, self.__create_context())
+  File "/usr/lib/ambari-agent/lib/ambari_commons/repo_manager/yum_manager.py", line 219, in install_package
+    shell.repository_manager_executor(cmd, self.properties, context)
+  File "/usr/lib/ambari-agent/lib/ambari_commons/shell.py", line 753, in repository_manager_executor
+    raise RuntimeError(message)
+RuntimeError: Failed to execute command '/usr/bin/yum -y install hadoop_3_1_5_0_152', exited with code '1', message: 'Repository base is listed more than once in the configuration
+
+Error: Package: hadoop_3_1_5_0_152-3.1.1.3.1.5.0-152.x86_64 (HDP-3.1-repo-5)
+
+           Requires: redhat-lsb
+```
+
+
+
+
+
+```
+yum -y install sendmail* redhat-lsb
+```
 
 
 

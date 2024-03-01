@@ -1,30 +1,16 @@
-- 日志切割之Logrotate
-  - [1、关于日志切割](#1-关于日志切割)
-  - [2、安装logrotate](#2-安装logrotate)
-  - 3、实践配置logrotate
-    - [3.1 测试logrotate如何管理日志](#31-测试logrotate如何管理日志)
-    - [3.2配置文件说明](#32配置文件说明)
-    - [3.3手动运行logrotate](#33手动运行logrotate)
-    - [3.4Logrotate的记录日志](#34logrotate的记录日志)
-    - [3.5 Logrotate定时任务](#35-logrotate定时任务)
-  - 4、logrotate生产应用
-    - [4.1为nginx设置日志切割](#41为nginx设置日志切割)
-  - 5、附录
-    - [5.1关于USR1信号解释](#51关于usr1信号解释)
-    - [5.2常见配置参数小结](#52常见配置参数小结)
-  - [6、参考文献](#6-参考文献)
-
-
-
 # 日志切割之Logrotate
 
-## 1、关于日志切割
+
+
+
+
+# 1、关于日志切割
 
 日志文件包含了关于系统中发生的事件的有用信息，在排障过程中或者系统性能分析时经常被用到。对于忙碌的服务器，日志文件大小会增长极快，服务器会很快消耗磁盘空间，这成了个问题。除此之外，处理一个单个的庞大日志文件也常常是件十分棘手的事。
 
 logrotate是个十分有用的工具，它可以自动对日志进行截断（或轮循）、压缩以及删除旧的日志文件。例如，你可以设置logrotate，让/var/log/foo日志文件每30天轮循，并删除超过6个月的日志。配置完后，logrotate的运作完全自动化，不必进行任何进一步的人为干预。
 
-## 2、安装logrotate
+# 2、安装logrotate
 
 系统版本说明
 
@@ -52,9 +38,9 @@ yum -y install logrotate crontabs
 
 logrotate的配置文件是/etc/logrotate.conf，通常不需要对它进行修改。日志文件的轮循设置在独立的配置文件中，它（们）放在/etc/logrotate.d/目录下。
 
-## 3、实践配置logrotate
+# 3、实践配置logrotate
 
-### 3.1 测试logrotate如何管理日志
+## 3.1 测试logrotate如何管理日志
 
 这里我们将创建一个10MB的日志文件/var/log/log-file。我们将展示怎样使用logrotate来管理该日志文件。
 
@@ -85,7 +71,7 @@ logrotate的配置文件是/etc/logrotate.conf，通常不需要对它进行修�
 
 上面的模板是通用的，而配置参数则根据你的需求进行调整，不是所有的参数都是必要的。也可以通过man手册中的例子进行配置。
 
-### 3.2配置文件说明
+## 3.2配置文件说明
 
 | **配置参数**                 | **说明**                                                     |
 | ---------------------------- | ------------------------------------------------------------ |
@@ -99,7 +85,7 @@ logrotate的配置文件是/etc/logrotate.conf，通常不需要对它进行修�
 | **postrotate/endscript**     | 在所有其它指令完成后，postrotate和endscript里面指定的命令将被执行。在这种情况下，rsyslogd 进程将立即再次读取其配置并继续运行。 |
 | 以上信息来源 "man logrotate" |                                                              |
 
-### 3.3手动运行logrotate
+## 3.3手动运行logrotate
 
 logrotate可以在任何时候从命令行手动调用。要调用为/etc/lograte.d/下配置的所有日志调用logrotate：
 
@@ -120,7 +106,7 @@ logrotate可以在任何时候从命令行手动调用。要调用为/etc/lograt
 
 即使轮循条件没有满足，我们也可以通过使用‘-f’选项来强制logrotate轮循日志文件，‘-v’参数提供了详细的输出。
 
-### 3.4Logrotate的记录日志
+## 3.4Logrotate的记录日志
 
 logrotate自身的日志通常存放于/var/lib/logrotate/status目录。如果处于排障目的，我们想要logrotate记录到任何指定的文件，我们可以指定像下面这样从命令行指定。
 
@@ -138,7 +124,7 @@ considering log /var/log/log-file
 not running postrotate script, since no logs were rotated
 ```
 
-### 3.5 Logrotate定时任务
+## 3.5 Logrotate定时任务
 
 logrotate需要的cron任务应该在安装时就自动创建了，我把cron文件的内容贴出来，以供大家参考。
 
@@ -154,9 +140,9 @@ fi
 exit 0
 ```
 
-## 4、logrotate生产应用
+# 4、logrotate生产应用
 
-### 4.1为nginx设置日志切割
+## 4.1为nginx设置日志切割
 
 防止访问日志文件过大
 
@@ -180,11 +166,9 @@ logrotate工具对于防止因庞大的日志文件而耗尽存储空间是十�
 
 **对于其他服务日志切割后续补充**
 
-## 5、附录
+# 5、附录
 
-### 5.1关于USR1信号解释
-
-摘自： <http://www.xuebuyuan.com/323422.html>
+## 5.1关于USR1信号解释
 
 > USR1亦通常被用来告知应用程序重载配置文件；例如，向Apache HTTP服务器发送一个USR1信号将导致以下步骤的发生：停止接受新的连接，等待当前连接停止，重新载入配置文件，重新打开日志文件，重启服务器，从而实现相对平滑的不关机的更改。内容摘自wiki：[http://zh.wikipedia.org/wiki/SIGUSR1和SIGUSR2](http://zh.wikipedia.org/wiki/SIGUSR1%E5%92%8CSIGUSR2)
 

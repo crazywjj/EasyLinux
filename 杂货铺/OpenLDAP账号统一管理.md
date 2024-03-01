@@ -1495,27 +1495,6 @@ systemctl restart slapd
 
 
 
-# 10 OpenLDAP高级知识（新增）
-
-ansible部署openldap认证
-
-密码策略高级定义
-
-
-
-
-
-# 11 OpenLDAP的docker 实现（新增）
-
- docker 安装
-
-使用 Docker 安装 OpenLDAP
-
-Openldap 配置
-
--  [自助密码修改服务部署（1）
--  [自助密码修改服务部署（2）
-
 
 
 

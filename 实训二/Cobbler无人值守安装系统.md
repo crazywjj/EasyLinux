@@ -964,8 +964,6 @@ systemctl disable postfix.service
 
 
 
-# 11 配置DHCP，以用于多VLAN环境
-
 
 
 

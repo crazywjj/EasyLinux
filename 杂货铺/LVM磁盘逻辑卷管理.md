@@ -65,11 +65,11 @@ LVM是在磁盘分区和文件系统之间添加的一个逻辑层，来为文�
 
 简单来说就是：
 
-PV:是物理的磁盘分区
+PV:是物理的磁盘分区或者整个磁盘。
 
 VG:LVM中的物理的磁盘分区，也就是PV，必须加入VG，可以将VG理解为一个仓库或者是几个大的硬盘。
 
-LV：也就是从VG中划分的逻辑分区
+LV：也就是从VG中划分的逻辑分区。
 
 如下图所示PV、VG、LV三者关系：
 
@@ -175,7 +175,7 @@ lvcreate {-L size(M/G) | -l PEnum} -n lv_name vg_name
 
 将磁盘转换为物理卷（PV）：
 
-```
+```sh
 1.将磁盘转换为物理卷（PV）
 [root@localhost ~]# pvcreate /dev/sdb
   Physical volume "/dev/sdc" successfully created.
@@ -401,11 +401,11 @@ lvextend命令的作用是在线扩展逻辑卷的空间大小，而不中断应
 **扩展逻辑卷：取决于vg卷中是否还有剩余的容量，lvextend可以在线扩容逻辑卷，不需要关闭，也不需要停服务。**
 **注意：扩展逻辑卷不能超过卷组VG的总大小**
 
+==**情况一、vg足够拉伸**==
+
 ```bash
-xfs系统：
-情况一、vg足够拉伸
 [root@localhost lv1]# vgs
-  VG     #PV #LV #SN Attr   VSize   VFree  
+  VG     #PV #LV #SN Attr   VSize   VFree
   datavg   1   1   0 wz--n- <30.00g <29.90g
 1.扩张lv逻辑卷，增加800M分配给逻辑卷
 [root@localhost lv1]# lvextend -L +800M /dev/datavg/lv1
@@ -414,9 +414,13 @@ xfs系统：
 2.扩展逻辑卷后需要更新xfs文件系统
 [root@localhost lv1]# xfs_growfs /dev/datavg/lv1	#xfs文件格式扩展
 [root@localhost lv1]# resize2fs /dev/datavg/lv1	    #ext文件格式扩展
+```
 
 
-情况二、vg不够拉伸，得先扩大设备，在扩大系统。
+
+==**情况二、vg不够拉伸，得先扩大设备，在扩大系统**==
+
+```bash
 [root@localhost ~]# pvcreate /dev/vdb2
   Physical volume "/dev/vdb2" successfully created
 [root@localhost ~]# vgextend vg0 /dev/vdb2               ##添加物理卷到物理卷组
@@ -424,8 +428,9 @@ xfs系统：
 [root@localhost ~]# lvextend -L 1500M /dev/vg0/lv0       ##划分物理卷 & 扩展逻辑卷大小
   Extending logical volume lv0 to 1.46 GiB
   Logical volume lv0 successfully resized
-
 ```
+
+
 
 
 

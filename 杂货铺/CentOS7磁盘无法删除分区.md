@@ -46,10 +46,6 @@ Command (m for help):
 
 
 
-
-
-
-
 ```
 [root@host-10-18-5-123 ~]# cat /proc/partitions 
 major minor  #blocks  name

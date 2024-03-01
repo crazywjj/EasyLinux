@@ -268,8 +268,6 @@ https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-r
 
 
 
-
-
 ```shell
 PostGIS是PostgreSQL的一个插件，需要注意其版本匹配关系，详细的版本匹配关系可以在官网（https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS）上找到。
 
@@ -284,6 +282,20 @@ yum install ogr_fdw_14  pgrouting_14
 
 
 ```
+
+版本配套关系：
+
+**Versions of PostgreSQL supported by which versions of PostGIS**
+
+| **PostgreSQL version** | **PostGIS 2.5 EOL** | **PostGIS 3.0** | **PostGIS 3.1** | **PostGIS 3.2** | **PostGIS 3.3** | **PostGIS 3.4** | **PostGIS 3.5** |
+| ---------------------- | ------------------- | --------------- | --------------- | --------------- | --------------- | --------------- | --------------- |
+| PostGIS release date   | 2018/09/23          | 2019/10/20      | 2020/12/18      | 2021/12/18      | 2022/08/27      | 2023/08/15      | 2024/xx/xx      |
+| **16**                 | No                  | No              | No              | No              | Yes             | Yes             | Yes             |
+| **15**                 | No                  | No              | No              | Yes             | Yes             | Yes             | Yes             |
+| **14**                 | No                  | No              | Yes             | Yes             | Yes             | Yes             | Yes             |
+| **13**                 | No                  | Yes             | Yes             | Yes             | Yes             | Yes             | Yes             |
+| **12**                 | Yes                 | Yes             | Yes             | Yes             | Yes             | Yes             | No              |
+| **11 EOL**             | Yes                 | Yes             | Yes             | Yes             | Yes             | No              | No              |
 
 
 
